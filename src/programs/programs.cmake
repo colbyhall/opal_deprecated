@@ -1,0 +1,1 @@
+include(${PROGRAMS_ROOT}/hello_world/hello_world.cmake)
