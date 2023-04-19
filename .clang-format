@@ -12,3 +12,5 @@ PointerAlignment: Left
 
 UseTab: Always
 AlignConsecutiveMacros: Consecutive
+
+IndentPPDirectives: BeforeHash

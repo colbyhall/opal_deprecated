@@ -5,7 +5,7 @@ set(SRC_ROOT ${EUPHORIA_REPO_ROOT}/src)
 set(PROGRAMS_ROOT ${SRC_ROOT}/programs)
 
 # Set the runtime root
-# set(RUNTIME_ROOT ${SRC_ROOT}/runtime)
+set(RUNTIME_ROOT ${SRC_ROOT}/runtime)
 
 # Set the test root
 # set(TEST_ROOT ${SRC_ROOT}/test)
@@ -17,5 +17,5 @@ set(PROGRAMS_ROOT ${SRC_ROOT}/programs)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 include(${SRC_ROOT}/programs/programs.cmake)
-# include(${SRC_ROOT}/runtime/runtime.cmake)
+include(${SRC_ROOT}/runtime/runtime.cmake)
 # include(${SRC_ROOT}/third_party/third_party.cmake)

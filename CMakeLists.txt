@@ -22,7 +22,7 @@ if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUAL
 	set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE "x64")
 
 	# Set general compiler flags
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /Zc:__cplusplus /Gm- /WX /MP /nologo /diagnostics:classic /FC /fp:except- /Zc:inline") # /Wall
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /Zc:__cplusplus /Gm- /WX /Wall /MP /nologo /diagnostics:classic /FC /fp:except- /Zc:inline")
 
 	# Optionally generate debug symbols
 	# if(GENERATE_DEBUG_SYMBOLS)
