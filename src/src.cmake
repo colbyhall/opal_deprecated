@@ -8,14 +8,15 @@ set(PROGRAMS_ROOT ${SRC_ROOT}/programs)
 set(RUNTIME_ROOT ${SRC_ROOT}/runtime)
 
 # Set the test root
-# set(TEST_ROOT ${SRC_ROOT}/test)
+set(TEST_ROOT ${SRC_ROOT}/test)
 
 # Set the third_party root
-# set(THIRD_PARTY_ROOT ${SRC_ROOT}/third_party)
+set(THIRD_PARTY_ROOT ${SRC_ROOT}/third_party)
 
 # Enable folders for visual studio
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 include(${SRC_ROOT}/programs/programs.cmake)
 include(${SRC_ROOT}/runtime/runtime.cmake)
-# include(${SRC_ROOT}/third_party/third_party.cmake)
+include(${SRC_ROOT}/test/test.cmake)
+include(${SRC_ROOT}/third_party/third_party.cmake)

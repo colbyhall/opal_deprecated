@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define SHORT			1
+#define SHORT_NAME		1
 #define SUPER_LONG_NAME 12
 
 auto main(int argc, char** argv) -> int {

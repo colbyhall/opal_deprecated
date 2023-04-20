@@ -3,6 +3,12 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(euphoria CXX)
 
+# When turning this option on, the library will be compiled with debug symbols
+option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
+
+# Enable all warnings
+option(ENABLE_ALL_WARNINGS "Enable all warnings and warnings as errors" ON)
+
 include(CMakeDependentOption)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -22,12 +28,17 @@ if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUAL
 	set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE "x64")
 
 	# Set general compiler flags
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /Zc:__cplusplus /Gm- /WX /Wall /MP /nologo /diagnostics:classic /FC /fp:except- /Zc:inline")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /Zc:__cplusplus /Gm- /MP /nologo /diagnostics:classic /FC /fp:except- /Zc:inline")
 
 	# Optionally generate debug symbols
-	# if(GENERATE_DEBUG_SYMBOLS)
-	# endif()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
+	if(GENERATE_DEBUG_SYMBOLS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
+	endif()
+
+	# Enable warnings
+	if (ENABLE_ALL_WARNINGS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
+	endif()
 
 	# Remove any existing compiler flag that enables RTTI
 	string(REPLACE "/GR" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -67,7 +78,7 @@ if(("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUAL
 
 	elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /showFilenames")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments") # Clang emits warnings about unused arguments such as /MP and /GL
+		set(CMAKE_CXX_FLAGS "-Qunused-arguments ${CMAKE_CXX_FLAGS}") # Clang emits warnings about unused arguments such as /MP and /GL
 
 		set(CMAKE_EXE_LINKER_FLAGS_RELEASEASAN "/SUBSYSTEM:CONSOLE /LIBPATH:${CLANG_LIB_PATH} clang_rt.asan-x86_64.lib -wholearchive:clang_rt.asan-x86_64.lib clang_rt.asan_cxx-x86_64.lib -wholearchive:clang_rt.asan_cxx-x86_64.lib")
 		set(CMAKE_EXE_LINKER_FLAGS_RELEASEUBSAN "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LIBPATH:${CLANG_LIB_PATH}")
@@ -80,6 +91,8 @@ set(CMAKE_EXE_LINKER_FLAGS_DISTRIBUTION "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
 
 # Set repository root
 set(EUPHORIA_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+enable_testing()
 
 # Include the source directory cmake file
 include(${EUPHORIA_REPO_ROOT}/src/src.cmake)
