@@ -4,9 +4,9 @@
 
 #include "core/core.h"
 
-SUPPRESS_WARNINGS_STD_BEGIN
+EU_SUPPRESS_WARNINGS_STD_BEGIN
 #include "doctest_internal.h"
-SUPPRESS_WARNINGS_STD_END
+EU_SUPPRESS_WARNINGS_STD_END
 
 #define TEST_MAIN()                                                            \
 	int main(int argc, char** argv) {                                          \

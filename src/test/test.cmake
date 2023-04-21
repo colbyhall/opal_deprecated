@@ -1,1 +1,1 @@
-include(${TEST_ROOT}/core/core.cmake)
+include(${TEST_ROOT}/core_test/core_test.cmake)

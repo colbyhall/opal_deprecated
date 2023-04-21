@@ -17,10 +17,10 @@ add_library(doctest STATIC ${DOCTEST_SRC_FILES})
 target_link_libraries(doctest LINK_PUBLIC core)
 target_include_directories(doctest PRIVATE ${RUNTIME_ROOT} ${THIRD_PARTY_ROOT})
 set_target_properties(doctest PROPERTIES FOLDER "third_party")
-set_target_properties(doctest PROPERTIES
-	VS_GLOBAL_RunCodeAnalysis true
+# set_target_properties(doctest PROPERTIES
+# 	VS_GLOBAL_RunCodeAnalysis true
 
-	 # Use clangtidy
-	 VS_GLOBAL_EnableClangTidyCodeAnalysis true
-	 VS_GLOBAL_ClangTidyChecks -checks=-*,modernize-*,-modernize-use-trailing-return-type
-)
+# 	 # Use clangtidy
+# 	 VS_GLOBAL_EnableClangTidyCodeAnalysis true
+# 	 VS_GLOBAL_ClangTidyChecks -checks=-*,modernize-*,-modernize-use-trailing-return-type
+# )

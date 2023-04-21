@@ -2,10 +2,10 @@
 
 #include "core.h"
 
-#ifdef PLATFORM_WINDOWS
-SUPPRESS_WARNING_PUSH
-MSVC_SUPPRESS_WARNING(5039) // 10.0.19041.0\um\winbase.h(7679)
-MSVC_SUPPRESS_WARNING(4668)
+#ifdef EU_PLATFORM_WINDOWS
+EU_SUPPRESS_WARNING_PUSH
+EU_MSVC_SUPPRESS_WARNING(5039) // 10.0.19041.0\um\winbase.h(7679)
+EU_MSVC_SUPPRESS_WARNING(4668)
 
 	#define UNICODE
 	#define WIN32_MEAN_AND_LEAN
@@ -13,13 +13,14 @@ MSVC_SUPPRESS_WARNING(4668)
 
 	#undef min
 	#undef max
-SUPPRESS_WARNING_POP
+EU_SUPPRESS_WARNING_POP
 
-SUPPRESS_WARNINGS_STD_BEGIN
+EU_SUPPRESS_WARNINGS_STD_BEGIN
 	#include <any>
 	#include <cstdio>
-SUPPRESS_WARNINGS_STD_END
+EU_SUPPRESS_WARNINGS_STD_END
 
+EU_CORE_NAMESPACE_BEGIN
 auto _assert_failed(bool must_crash, const char* expression,
 					const char* message, const char* file, u32 line) -> bool {
 	char buffer[1024];
@@ -53,6 +54,7 @@ auto _assert_failed(bool must_crash, const char* expression,
 									: (MB_YESNO | MB_ICONWARNING)));
 	return result != IDNO;
 }
+EU_CORE_NAMESPACE_END
 
 #else
 	#error Unimplemented Assert

@@ -21,10 +21,3 @@ source_group(TREE ${CORE_ROOT} FILES ${CORE_SRC_FILES})
 add_library(core STATIC ${CORE_SRC_FILES})
 target_include_directories(core PUBLIC ${RUNTIME_ROOT})
 set_target_properties(core PROPERTIES FOLDER "runtime")
-set_target_properties(core PROPERTIES
-	VS_GLOBAL_RunCodeAnalysis true
-
-	 # Use clangtidy
-	 VS_GLOBAL_EnableClangTidyCodeAnalysis true
-	 VS_GLOBAL_ClangTidyChecks -checks=-*,modernize-*,-modernize-use-trailing-return-type
-)
