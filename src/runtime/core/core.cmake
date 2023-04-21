@@ -7,6 +7,7 @@ set(CORE_SRC_FILES
 	${CORE_ROOT}/core.cpp
 	${CORE_ROOT}/core.h
 	${CORE_ROOT}/core.natvis
+	${CORE_ROOT}/containers/non_null.h
 )
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")

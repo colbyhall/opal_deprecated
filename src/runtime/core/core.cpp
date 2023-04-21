@@ -6,7 +6,6 @@
 EU_SUPPRESS_WARNING_PUSH
 EU_MSVC_SUPPRESS_WARNING(5039) // 10.0.19041.0\um\winbase.h(7679)
 EU_MSVC_SUPPRESS_WARNING(4668)
-
 	#define UNICODE
 	#define WIN32_MEAN_AND_LEAN
 	#include <Windows.h>
@@ -20,7 +19,9 @@ EU_SUPPRESS_WARNINGS_STD_BEGIN
 	#include <cstdio>
 EU_SUPPRESS_WARNINGS_STD_END
 
+	#ifdef EU_ENABLE_ASSERTS
 EU_CORE_NAMESPACE_BEGIN
+
 auto _assert_failed(bool must_crash, const char* expression,
 					const char* message, const char* file, u32 line) -> bool {
 	char buffer[1024];
@@ -54,7 +55,9 @@ auto _assert_failed(bool must_crash, const char* expression,
 									: (MB_YESNO | MB_ICONWARNING)));
 	return result != IDNO;
 }
+
 EU_CORE_NAMESPACE_END
+	#endif
 
 #else
 	#error Unimplemented Assert

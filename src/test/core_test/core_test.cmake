@@ -5,6 +5,7 @@ set(CORE_TEST_ROOT ${TEST_ROOT}/core_test)
 set(CORE_TEST_SRC_FILES
 	${CORE_TEST_ROOT}/core_test.cmake
 	${CORE_TEST_ROOT}/core_test.cpp
+	${CORE_TEST_ROOT}/containers/non_null_test.cpp
 )
 
 # Group source files

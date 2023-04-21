@@ -12,5 +12,13 @@ PointerAlignment: Left
 
 UseTab: Always
 AlignConsecutiveMacros: Consecutive
+# AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveBitFields: Consecutive
 
 IndentPPDirectives: BeforeHash
+
+EmptyLineBeforeAccessModifier: LogicalBlock
+AlwaysBreakTemplateDeclarations: Yes
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+AlignAfterOpenBracket : Align

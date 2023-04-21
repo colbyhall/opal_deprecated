@@ -98,7 +98,7 @@
 // Crashes the application
 #define EU_CRASH                                                               \
 	EU_SUPPRESS_WARNING_PUSH                                                   \
-	MSVC_SUPPRESS_WARNING(6011)                                                \
+	EU_MSVC_SUPPRESS_WARNING(6011)                                             \
 	do {                                                                       \
 		int* _ptr = nullptr;                                                   \
 		*_ptr = 0;                                                             \
@@ -282,34 +282,36 @@ EU_NAMESPACE_END
 	#define EU_ENABLE_ASSERTS
 #endif
 
-EU_CORE_NAMESPACE_BEGIN
-// EU_SUPPRESS_WARNING_PUSH
-// EU_MSVC_SUPPRESS_WARNING(4514)
+#ifdef EU_ENABLE_ASSERTS
 
+EU_CORE_NAMESPACE_BEGIN
 bool _assert_failed(bool must_crash, const char* expression,
 					const char* message, const char* file, u32 line);
 
-#ifdef EU_ENABLE_ASSERTS
 struct AssertLastParam {};
-inline bool _assert_failed_helper(bool must_crash, const char* expression,
-								  const char* file, u32 line, AssertLastParam) {
+EU_ALWAYS_INLINE bool _assert_failed_helper(bool must_crash,
+											const char* expression,
+											const char* file, u32 line,
+											AssertLastParam) {
 	return _assert_failed(must_crash, expression, nullptr, file, line);
 }
-inline bool _assert_failed_helper(bool must_crash, const char* expression,
-								  const char* file, u32 line,
-								  const char* message, AssertLastParam) {
+EU_ALWAYS_INLINE bool
+_assert_failed_helper(bool must_crash, const char* expression, const char* file,
+					  u32 line, const char* message, AssertLastParam) {
 	return _assert_failed(must_crash, expression, message, file, line);
 }
+EU_CORE_NAMESPACE_END
 
 	// Crashes application if expression evaluates to false. Usage:
 	// ASSERT(condition) or ASSERT(condition, message)
 	#define EU_ASSERT(expression, ...)                                         \
 		do {                                                                   \
 			if (!(expression) &&                                               \
-				_assert_failed_helper(true, #expression, __FILE__,             \
-									  u32(__LINE__), ##__VA_ARGS__,            \
-									  AssertLastParam()))                      \
+				eu::core::_assert_failed_helper(true, #expression, __FILE__,   \
+												u32(__LINE__), ##__VA_ARGS__,  \
+												AssertLastParam())) {          \
 				EU_CRASH;                                                      \
+			}                                                                  \
 		} while (false)
 
 	// Halts application if expression evaluates to false but can resume. Usage:
@@ -317,14 +319,21 @@ inline bool _assert_failed_helper(bool must_crash, const char* expression,
 	#define EU_ENSURE(expression, ...)                                         \
 		do {                                                                   \
 			if (!(expression) &&                                               \
-				_assert_failed_helper(false, #expression, __FILE__,            \
-									  u32(__LINE__), ##__VA_ARGS__,            \
-									  AssertLastParam()))                      \
+				eu::core::_assert_failed_helper(false, #expression, __FILE__,  \
+												u32(__LINE__), ##__VA_ARGS__,  \
+												AssertLastParam()))            \
 				EU_BREAKPOINT;                                                 \
 		} while (false)
+
 #else
 	#define EU_ASSERT(...) ((void)0)
 	#define EU_ENSURE(...) ((void)0)
-#endif // ENABLE_ASSERTS
+#endif // EU_ENABLE_ASSERTS
 
-EU_CORE_NAMESPACE_END
+#include <new>
+#include <utility>
+
+EU_NAMESPACE_BEGIN
+using std::forward;
+using std::move;
+EU_NAMESPACE_END
