@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <core/core.h>
+#include "core/core.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
@@ -20,7 +20,7 @@ public:
 
 EU_CORE_NAMESPACE_END
 
-// Export to of core namespace
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
 using core::NonCopyable;
 EU_NAMESPACE_END
