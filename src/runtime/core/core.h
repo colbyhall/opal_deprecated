@@ -330,7 +330,6 @@ EU_CORE_NAMESPACE_END
 	#define EU_ENSURE(...) ((void)0)
 #endif // EU_ENABLE_ASSERTS
 
-#include <new>
 #include <utility>
 
 EU_NAMESPACE_BEGIN
