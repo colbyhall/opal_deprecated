@@ -7,6 +7,9 @@ set(CORE_SRC_FILES
 	${CORE_ROOT}/core.cpp
 	${CORE_ROOT}/core.h
 	${CORE_ROOT}/core.natvis
+	${CORE_ROOT}/memory.h
+	${CORE_ROOT}/memory.cpp
+	${CORE_ROOT}/non_copyable.h
 	${CORE_ROOT}/containers/non_null.h
 )
 

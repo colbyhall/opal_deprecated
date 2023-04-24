@@ -7,6 +7,10 @@
 EU_CORE_NAMESPACE_BEGIN
 
 template <typename T>
+class NonNull;
+
+/// `T*` but can not be set to null.
+template <typename T>
 class NonNull {
 public:
 	// Only way to initialize NonNull is by a valid ptr
@@ -21,9 +25,12 @@ public:
 
 	// Accessors
 	EU_ALWAYS_INLINE operator T*() const { return m_ptr; }
-	EU_ALWAYS_INLINE operator void*() const { return m_ptr; }
+	// EU_ALWAYS_INLINE operator void*() const { return m_ptr; }
+	EU_ALWAYS_INLINE operator NonNull<void>() const { return m_ptr; }
+	EU_ALWAYS_INLINE operator NonNull<void const>() const { return m_ptr; }
 	EU_ALWAYS_INLINE T* operator->() const { return m_ptr; }
 	EU_ALWAYS_INLINE T& operator*() const { return *m_ptr; }
+	EU_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
 
 	// Compare ops
 	EU_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const {
@@ -54,7 +61,8 @@ public:
 	NonNull(NullPtr) = delete;
 
 	// Accessor
-	inline operator void*() const { return m_ptr; }
+	EU_ALWAYS_INLINE operator void*() const { return m_ptr; }
+	EU_ALWAYS_INLINE void* operator*() const { return m_ptr; }
 
 	// Compare ops
 	EU_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const {
@@ -65,6 +73,12 @@ public:
 		return ptr.m_ptr != m_ptr;
 	}
 	EU_ALWAYS_INLINE bool operator!=(void* ptr) const { return ptr != m_ptr; }
+
+	// Casting
+	template <typename T>
+	EU_ALWAYS_INLINE NonNull<T> as() const {
+		return static_cast<T*>(m_ptr);
+	}
 
 private:
 	void* m_ptr;
@@ -86,6 +100,7 @@ public:
 
 	// Accessor
 	EU_ALWAYS_INLINE operator void const*() const { return m_ptr; }
+	EU_ALWAYS_INLINE void const* operator*() const { return m_ptr; }
 
 	// Compare ops
 	EU_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const {
@@ -101,13 +116,19 @@ public:
 		return ptr != m_ptr;
 	}
 
+	// Casting
+	template <typename T>
+	EU_ALWAYS_INLINE NonNull<T> as() const {
+		return static_cast<T*>(m_ptr);
+	}
+
 private:
 	void const* m_ptr;
 };
 
 EU_CORE_NAMESPACE_END
 
-// Export NonNull out to eu namespace
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
 using core::NonNull;
 EU_NAMESPACE_END
