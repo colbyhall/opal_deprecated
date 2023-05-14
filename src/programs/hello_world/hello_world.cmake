@@ -11,7 +11,7 @@ set(HELLO_WORLD_SRC_FILES
 source_group(TREE ${HELLO_WORLD_ROOT} FILES ${HELLO_WORLD_SRC_FILES})
 
 add_executable(hello_world ${HELLO_WORLD_SRC_FILES})
-# target_include_directories(playground PUBLIC ${RUNTIME_ROOT})
+target_include_directories(hello_world PUBLIC ${RUNTIME_ROOT})
+target_link_libraries(hello_world LINK_PUBLIC core)
 # target_include_directories(playground PUBLIC ${THIRD_PARTY_ROOT})
-# target_link_libraries(playground LINK_PUBLIC core gui gpu dxc res)
 set_target_properties(hello_world PROPERTIES FOLDER "programs")

@@ -1,15 +1,14 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include <iostream>
+#include "core/core.h"
 
-#define SHORT_NAME		1
-#define SUPER_LONG_NAME 12
+EU_SUPPRESS_WARNINGS_STD_BEGIN
+#include <iostream>
+EU_SUPPRESS_WARNINGS_STD_END
 
 auto main(int argc, char** argv) -> int {
-	(void)argc;
-	(void)argv;
-
-	std::cout << "Hello World" << 4 << std::endl;
+	EU_UNUSED(argc);
+	EU_UNUSED(argv);
 
 	return 0;
 }
