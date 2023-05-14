@@ -30,7 +30,7 @@ public:
 	EU_ALWAYS_INLINE bool is_valid_index(usize index) const {
 		return index < m_len;
 	}
-	EU_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
+	EU_ALWAYS_INLINE operator bool() const { return !is_empty(); }
 
 	// Range accessors
 	EU_ALWAYS_INLINE T* begin() const { return m_ptr; }
@@ -74,7 +74,7 @@ public:
 	EU_ALWAYS_INLINE bool is_valid_index(usize index) const {
 		return index < m_len;
 	}
-	EU_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
+	EU_ALWAYS_INLINE operator bool() const { return !is_empty(); }
 
 	// Range accessors
 	EU_ALWAYS_INLINE T const* begin() const { return m_ptr; }

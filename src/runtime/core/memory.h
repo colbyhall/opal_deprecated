@@ -1,5 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
+#pragma once
+
 #include "core/containers/non_null.h"
 
 EU_SUPPRESS_WARNINGS_STD_BEGIN

@@ -33,7 +33,7 @@ TEST_CASE("eu::core::Slice") {
 		CHECK(!s.is_valid_index(array_len));
 	}
 
-	SUBCASE("Testing explicit operator bool()") { CHECK(static_cast<bool>(s)); }
+	SUBCASE("Testing operator bool()") { CHECK(static_cast<bool>(s)); }
 
 	SUBCASE("Testing range accessors") {
 		CHECK(s.begin() == test_array);

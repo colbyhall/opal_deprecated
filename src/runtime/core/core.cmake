@@ -12,6 +12,8 @@ set(CORE_SRC_FILES
 	${CORE_ROOT}/memory.cpp
 	${CORE_ROOT}/non_copyable.h
 	${CORE_ROOT}/type_traits.h
+	${CORE_ROOT}/containers/array.h
+	${CORE_ROOT}/containers/array.inl
 	${CORE_ROOT}/containers/non_null.h
 	${CORE_ROOT}/containers/option.h
 	${CORE_ROOT}/containers/slice.h

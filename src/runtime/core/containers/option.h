@@ -61,7 +61,7 @@ public:
 	}
 
 	EU_ALWAYS_INLINE bool is_set() const { return m_set; }
-	EU_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+	EU_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	EU_ALWAYS_INLINE T unwrap() {
 		EU_ASSERT(is_set(), "Value must be set to be unwrapped");
@@ -113,7 +113,7 @@ public:
 	}
 
 	EU_ALWAYS_INLINE bool is_set() const { return m_set; }
-	EU_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+	EU_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	EU_ALWAYS_INLINE T unwrap() const {
 		EU_ASSERT(is_set(), "Value must be set to be unwrapped");
@@ -163,7 +163,7 @@ public:
 	EU_ALWAYS_INLINE constexpr Option(T& t) : m_ptr(&t) {}
 
 	EU_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
-	EU_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+	EU_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	EU_ALWAYS_INLINE T& unwrap() {
 		EU_ASSERT(is_set());
