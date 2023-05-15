@@ -5,7 +5,7 @@
 
 EU_TEST_BEGIN
 
-TEST_CASE("eu::eu::math") {
+TEST_CASE("eu::core::math") {
 	using namespace eu;
 
 	SUBCASE("min/max") {
