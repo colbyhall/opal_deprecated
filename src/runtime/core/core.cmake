@@ -22,6 +22,8 @@ set(CORE_SRC_FILES
 	${CORE_ROOT}/math/math.cpp
 	${CORE_ROOT}/math/vec2.h
 	${CORE_ROOT}/math/vec2.inl
+	${CORE_ROOT}/math/vec3.h
+	${CORE_ROOT}/math/vec3.inl
 )
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")

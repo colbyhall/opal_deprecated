@@ -5,7 +5,7 @@
 
 EU_TEST_BEGIN
 
-TEST_CASE("eu::core::vec2") {
+TEST_CASE("eu::core::Vec2") {
 	using namespace eu;
 
 	SUBCASE("Constructors") {

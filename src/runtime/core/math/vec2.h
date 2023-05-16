@@ -8,19 +8,16 @@
 EU_CORE_NAMESPACE_BEGIN
 
 template <typename T>
-struct Vec2 {
+struct alignas(16) Vec2 {
 	union {
 		struct {
-			T x;
-			T y;
+			T x, y;
 		};
 		struct {
-			T width;
-			T height;
+			T width, height;
 		};
 		struct {
-			T u;
-			T v;
+			T u, v;
 		};
 		T xy[2];
 	};
