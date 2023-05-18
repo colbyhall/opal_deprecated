@@ -18,6 +18,8 @@ set(CORE_SRC_FILES
 	${CORE_ROOT}/containers/option.h
 	${CORE_ROOT}/containers/slice.h
 	${CORE_ROOT}/containers/slice.inl
+	${CORE_ROOT}/containers/unique.h
+	${CORE_ROOT}/containers/unique.inl
 	${CORE_ROOT}/math/math.h
 	${CORE_ROOT}/math/math.cpp
 	${CORE_ROOT}/math/vec2.h

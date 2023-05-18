@@ -307,9 +307,9 @@ EU_CORE_NAMESPACE_END
 	#define EU_ASSERT(expression, ...)                                         \
 		do {                                                                   \
 			if (!(expression) &&                                               \
-				eu::core::_assert_failed_helper(true, #expression, __FILE__,   \
-												u32(__LINE__), ##__VA_ARGS__,  \
-												AssertLastParam())) {          \
+				eu::core::_assert_failed_helper(                               \
+					true, #expression, __FILE__, eu::u32(__LINE__),            \
+					##__VA_ARGS__, eu::core::AssertLastParam())) {             \
 				EU_CRASH;                                                      \
 			}                                                                  \
 		} while (false)
@@ -319,9 +319,9 @@ EU_CORE_NAMESPACE_END
 	#define EU_ENSURE(expression, ...)                                         \
 		do {                                                                   \
 			if (!(expression) &&                                               \
-				eu::core::_assert_failed_helper(false, #expression, __FILE__,  \
-												u32(__LINE__), ##__VA_ARGS__,  \
-												AssertLastParam()))            \
+				eu::core::_assert_failed_helper(                               \
+					false, #expression, __FILE__, eu::u32(__LINE__),           \
+					##__VA_ARGS__, eu::core::AssertLastParam()))               \
 				EU_BREAKPOINT;                                                 \
 		} while (false)
 
