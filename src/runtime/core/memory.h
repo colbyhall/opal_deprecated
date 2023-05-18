@@ -41,3 +41,6 @@ NonNull<void> move(NonNull<void> dst, NonNull<void const> src, usize count);
 NonNull<void> set(NonNull<void> ptr, u8 value, usize count);
 
 EU_CORE_NAMESPACE_END
+
+void* operator new(size_t size);
+void operator delete(void* ptr);
