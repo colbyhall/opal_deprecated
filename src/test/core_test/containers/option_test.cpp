@@ -5,8 +5,7 @@
 
 using namespace eu;
 
-EU_SUPPRESS_WARNING_PUSH
-EU_SUPPRESS_WARNINGS
+EU_TEST_BEGIN
 
 class NonTriviallyCopyable {
 public:
@@ -72,4 +71,4 @@ TEST_CASE("eu::core::Option") {
 	}
 }
 
-EU_SUPPRESS_WARNING_POP
+EU_TEST_END

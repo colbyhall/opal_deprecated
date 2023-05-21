@@ -3,9 +3,10 @@
 #include "core/containers/non_null.h"
 #include "doctest/doctest.h"
 
-using namespace eu;
+EU_TEST_BEGIN
 
 TEST_CASE("eu::core::NonNull") {
+	using namespace eu;
 	int x = 42;
 
 	// NonNull's behave as references but are easier to work with
@@ -31,3 +32,5 @@ TEST_CASE("eu::core::NonNull") {
 	auto p_z = p_v.as<int>();
 	CHECK(p_z == p_x);
 }
+
+EU_TEST_END
