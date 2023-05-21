@@ -4,144 +4,161 @@
 
 EU_CORE_NAMESPACE_BEGIN
 
-template <typename T>
-EU_ALWAYS_INLINE Array<T>::Array(Array<T>&& move) noexcept
-	: m_ptr(move.m_ptr), m_len(move.m_len), m_cap(move.m_cap) {
-	move.m_ptr = nullptr;
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Array<Element, Allocator>::Array(Array&& move) noexcept
+	: m_allocation(eu::move(move.m_allocation)), m_len(move.m_len),
+	  m_cap(move.m_cap) {
+	move.m_allocation.~Allocation();
 	move.m_len = 0;
 	move.m_cap = 0;
 }
 
-template <typename T>
-EU_ALWAYS_INLINE Array<T>& Array<T>::operator=(Array<T>&& move) noexcept {
-	Array<T> to_destroy = core::move(*this);
-	m_ptr = move.m_ptr;
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Array<Element, Allocator>&
+Array<Element, Allocator>::operator=(Array&& move) noexcept {
+	auto to_destroy = core::move(*this);
+	m_allocation = eu::move(move.m_allocation);
 	m_len = move.m_len;
 	m_cap = move.m_cap;
-	move.m_ptr = nullptr;
+
+	move.m_allocation.~Allocation();
 	move.m_len = 0;
 	move.m_cap = 0;
 	return *this;
 }
 
-template <typename T>
-Array<T>::~Array() {
-	if (m_ptr) {
-		for (usize i = 0; i < m_len; ++i) {
-			T& item = m_ptr[i];
-			item.~T();
-		}
-		core::free(m_ptr);
-		m_ptr = nullptr;
+template <typename Element, typename Allocator>
+Array<Element, Allocator>::~Array() {
+	for (i32 i = 0; i < m_len; ++i) {
+		Element& item = m_allocation.ptr()[i];
+		item.~Element();
 	}
 }
 
-template <typename T>
-EU_ALWAYS_INLINE T& Array<T>::operator[](usize index) {
-	EU_ASSERT(is_valid_index(index), "Index out of bounds");
-	return m_ptr[index];
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE bool
+Array<Element, Allocator>::is_valid_index(i32 index) const {
+	return index >= 0 && index < len();
 }
 
-template <typename T>
-EU_ALWAYS_INLINE const T& Array<T>::operator[](usize index) const {
-	EU_ASSERT(is_valid_index(index), "Index out of bounds");
-	return m_ptr[index];
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Array<Element, Allocator>::operator Slice<Element>() {
+	return {m_allocation.ptr(), m_len};
 }
 
-template <typename T>
-EU_ALWAYS_INLINE Option<T&> Array<T>::last() {
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE
+	Array<Element, Allocator>::operator Slice<Element const>() const {
+	return {m_allocation.ptr(), m_len};
+}
+
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE const Element* Array<Element, Allocator>::cbegin() const {
+	return m_allocation.ptr();
+}
+
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE const Element* Array<Element, Allocator>::cend() const {
+	return m_allocation.ptr() + m_len;
+}
+
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Element& Array<Element, Allocator>::operator[](i32 index) {
+	EU_ASSERT(is_valid_index(index), "Index out of bounds");
+	return m_allocation.ptr()[index];
+}
+
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE const Element&
+Array<Element, Allocator>::operator[](i32 index) const {
+	EU_ASSERT(is_valid_index(index), "Index out of bounds");
+	return m_allocation.ptr()[index];
+}
+
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Option<Element&> Array<Element, Allocator>::last() {
 	if (len() > 0)
-		return m_ptr[len() - 1];
+		return m_allocation.ptr()[len() - 1];
 	return nullptr;
 }
 
-template <typename T>
-EU_ALWAYS_INLINE Option<T const&> Array<T>::last() const {
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Option<Element const&>
+Array<Element, Allocator>::last() const {
 	if (len() > 0)
-		return m_ptr[len() - 1];
+		return m_allocation.ptr()[len() - 1];
 	return nullptr;
 }
 
-template <typename T>
-void Array<T>::reserve(usize amount) {
-	const auto old_cap = m_cap;
-	auto new_cap = old_cap + amount;
-	while (m_cap < new_cap) {
-		m_cap += new_cap >> 1;
-		m_cap += 1;
-	}
-
-	if (m_ptr == nullptr) {
-		void* ptr = core::malloc(core::Layout::array<T>(m_cap));
-		m_ptr = static_cast<T*>(ptr);
-	} else {
-		void* ptr = core::realloc(m_ptr, core::Layout::array<T>(old_cap),
-								  core::Layout::array<T>(m_cap));
-		m_ptr = static_cast<T*>(ptr);
-	}
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE void Array<Element, Allocator>::reserve(i32 amount) {
+	m_cap = m_allocation.resize(m_cap, m_cap + amount);
 }
 
-template <typename T>
-void Array<T>::insert(usize index, T&& item) {
+template <typename Element, typename Allocator>
+void Array<Element, Allocator>::insert(i32 index, Element&& item) {
 	EU_ASSERT(index <= m_len);
 	if (len() == cap())
 		reserve(1);
 
-	auto* src = m_ptr + index;
+	auto* src = m_allocation.ptr() + index;
 	if (index != len()) {
-		core::move(src + 1, src, (len() - index) * sizeof(T));
-		core::set(src, 0, sizeof(T));
+		core::move(src + 1, src,
+				   static_cast<usize>(len() - index) * sizeof(Element));
+		core::set(src, 0, sizeof(Element));
 	}
 
-	new (src) T(eu::forward<T>(item));
+	new (src) Element(eu::forward<Element>(item));
 	m_len += 1;
 }
 
-template <typename T>
-EU_ALWAYS_INLINE void Array<T>::insert(usize index, const T& item) {
-	T copy = item;
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE void Array<Element, Allocator>::insert(i32 index,
+														const Element& item) {
+	Element copy = item;
 	insert(index, eu::move(copy));
 }
 
-template <typename T>
-EU_ALWAYS_INLINE usize Array<T>::push(T&& item) {
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE i32 Array<Element, Allocator>::push(Element&& item) {
 	const auto index = len();
 	insert(index, eu::move(item));
 	return index;
 }
 
-template <typename T>
-EU_ALWAYS_INLINE usize Array<T>::push(const T& item) {
-	T copy = item;
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE i32 Array<Element, Allocator>::push(const Element& item) {
+	Element copy = item;
 	return push(eu::move(copy));
 }
 
-template <typename T>
-T Array<T>::remove(usize index) {
+template <typename Element, typename Allocator>
+Element Array<Element, Allocator>::remove(i32 index) {
 	EU_ASSERT(is_valid_index(index), "Index out of bounds");
 
-	T result = eu::move(m_ptr[index]);
-	void* clear = &m_ptr[index];
-	core::set(clear, 0, sizeof(T));
+	Element result = eu::move(m_allocation.ptr()[index]);
+	void* clear = &m_allocation.ptr()[index];
+	core::set(clear, 0, sizeof(Element));
 	if (index < m_len - 1) {
-		auto* src = m_ptr + index;
-		eu::core::move(src, src + 1, (len() - index) * sizeof(T));
+		auto* src = m_allocation.ptr() + index;
+		eu::core::move(src, src + 1,
+					   static_cast<usize>(len() - index) * sizeof(Element));
 	}
 	m_len -= 1;
 	return result;
 }
 
-template <typename T>
-EU_ALWAYS_INLINE Option<T> Array<T>::pop() {
+template <typename Element, typename Allocator>
+EU_ALWAYS_INLINE Option<Element> Array<Element, Allocator>::pop() {
 	if (m_len > 0) {
 		m_len -= 1;
-		return eu::move(m_ptr[m_len]);
+		return eu::move(m_allocation.ptr()[m_len]);
 	}
 	return nullptr;
 }
 
-template <typename T>
-void Array<T>::reset() {
+template <typename Element, typename Allocator>
+void Array<Element, Allocator>::reset() {
 	const i32 count = (i32)len();
 	for (i32 i = count - 1; i >= 0; --i) {
 		remove(i);

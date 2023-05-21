@@ -2,61 +2,66 @@
 
 #pragma once
 
+#include "core/containers/allocator.h"
 #include "core/containers/option.h"
 #include "core/containers/slice.h"
 #include "core/non_copyable.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
-template <typename T>
+template <typename Element, typename Allocator = MallocAllocator>
 class Array : private NonCopyable {
 public:
+	static_assert(
+		core::is_allocator<Allocator>,
+		"Allocator is not valid. See \"core/containers/allocator.h\"");
+
+	using Allocation = typename Allocator::template Allocation<Element>;
+
 	Array() = default;
-	EU_ALWAYS_INLINE Array(Array<T>&& move) noexcept;
-	EU_ALWAYS_INLINE Array& operator=(Array<T>&& move) noexcept;
+	EU_ALWAYS_INLINE Array(Array&& move) noexcept;
+	EU_ALWAYS_INLINE Array& operator=(Array&& move) noexcept;
 	~Array();
 
-	EU_ALWAYS_INLINE usize len() const { return m_len; }
-	EU_ALWAYS_INLINE usize cap() const { return m_cap; }
+	EU_ALWAYS_INLINE i32 len() const { return m_len; }
+	EU_ALWAYS_INLINE i32 cap() const { return m_cap; }
 
 	EU_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
 	EU_ALWAYS_INLINE operator bool() const { return !is_empty(); }
-	EU_ALWAYS_INLINE bool is_valid_index(usize index) const {
-		return index < len();
-	}
+	EU_ALWAYS_INLINE bool is_valid_index(i32 index) const;
 
-	EU_ALWAYS_INLINE operator Slice<T>() { return {m_ptr, m_len}; }
-	EU_ALWAYS_INLINE operator Slice<T const>() { return {m_ptr, m_len}; }
+	EU_ALWAYS_INLINE operator Slice<Element>();
+	EU_ALWAYS_INLINE operator Slice<Element const>() const;
 
-	EU_ALWAYS_INLINE T* begin() { return m_ptr; }
-	EU_ALWAYS_INLINE T* end() { return m_ptr + m_len; }
+	EU_ALWAYS_INLINE Element* begin() { return m_allocation.ptr(); }
+	EU_ALWAYS_INLINE Element* end() { return m_allocation.ptr() + m_len; }
 
-	EU_ALWAYS_INLINE const T* cbegin() const { return m_ptr; }
-	EU_ALWAYS_INLINE const T* cend() const { return m_ptr + m_len; }
+	EU_ALWAYS_INLINE const Element* cbegin() const;
+	EU_ALWAYS_INLINE const Element* cend() const;
 
-	EU_ALWAYS_INLINE T& operator[](usize index);
-	EU_ALWAYS_INLINE const T& operator[](usize index) const;
+	EU_ALWAYS_INLINE Element& operator[](i32 index);
+	EU_ALWAYS_INLINE const Element& operator[](i32 index) const;
 
-	EU_ALWAYS_INLINE Option<T&> last();
-	EU_ALWAYS_INLINE Option<T const&> last() const;
+	EU_ALWAYS_INLINE Option<Element&> last();
+	EU_ALWAYS_INLINE Option<Element const&> last() const;
 
-	void reserve(usize amount);
+	EU_ALWAYS_INLINE void reserve(i32 amount);
 
-	void insert(usize index, T&& item);
-	EU_ALWAYS_INLINE void insert(usize index, const T& item_to_copy);
-	EU_ALWAYS_INLINE usize push(T&& item);
-	EU_ALWAYS_INLINE usize push(const T& item);
+	void insert(i32 index, Element&& item);
+	EU_ALWAYS_INLINE void insert(i32 index, const Element& item_to_copy);
+	EU_ALWAYS_INLINE i32 push(Element&& item);
+	EU_ALWAYS_INLINE i32 push(const Element& item);
 
-	/// Throws assertion if `index` is out of bounds
-	T remove(usize index);
-	EU_ALWAYS_INLINE Option<T> pop();
+	/// throws assertion if `index` is out of bounds
+	Element remove(i32 index);
+	EU_ALWAYS_INLINE Option<Element> pop();
 	/// Removes all items from array
 	void reset();
 
 private:
-	T* m_ptr = nullptr;
-	usize m_len = 0;
-	usize m_cap = 0;
+	Allocation m_allocation{};
+	i32 m_len = 0;
+	i32 m_cap = 0;
 };
 
 EU_CORE_NAMESPACE_END

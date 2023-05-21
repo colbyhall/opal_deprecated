@@ -6,6 +6,7 @@
 EU_TEST_BEGIN
 
 TEST_CASE("eu::core::Array") {
+	using namespace eu;
 	eu::Array<int> arr;
 
 	CHECK(arr.len() == 0); // eu::Array default initialization is to zero
@@ -41,7 +42,7 @@ TEST_CASE("eu::core::Array") {
 		CHECK(arr.is_empty());
 	}
 
-	SUBCASE("using range") {
+	SUBCASE("Range operators") {
 		arr.push(5);
 		arr.push(10);
 		arr.push(15);
@@ -52,6 +53,12 @@ TEST_CASE("eu::core::Array") {
 			CHECK(arr[index] == value);
 			index += 1;
 		}
+	}
+
+	SUBCASE("Using the inline allocator") {
+		Array<i32, InlineAllocator<256>> bytes;
+		bytes.push(5);
+		CHECK(bytes.cap() == 256);
 	}
 }
 
