@@ -18,7 +18,7 @@ struct alignas(16) Vec3 {
 		struct {
 			T u, v, w;
 		};
-		Vec2<f32> xy;
+		Vec2<T> xy;
 		T xyz[3];
 	};
 
