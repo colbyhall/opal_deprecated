@@ -11,6 +11,11 @@ EU_CORE_NAMESPACE_BEGIN
 template <typename Base>
 class Unique : private NonCopyable {
 public:
+	template <typename... Args>
+	static EU_ALWAYS_INLINE Unique make(Args&&... args) {
+		return Unique<Base>(eu::move(Base(forward<Args>(args)...)));
+	}
+
 	EU_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
 	EU_ALWAYS_INLINE operator NonNull<Base const>() const;
 	EU_ALWAYS_INLINE operator Base*() { return m_ptr; }
@@ -42,9 +47,6 @@ public:
 private:
 	Unique() = default;
 
-	template <typename T, typename... Args>
-	friend Unique<T> make_unique(Args&&... args);
-
 	template <typename Derived>
 	friend class Unique;
 
@@ -56,18 +58,10 @@ private:
 	Base* m_ptr;
 };
 
-template <typename T, typename... Args>
-EU_ALWAYS_INLINE Unique<T> make_unique(Args&&... args) {
-	return Unique<T>(eu::move(T(forward<Args>(args)...)));
-}
-
 EU_CORE_NAMESPACE_END
 
 #include "core/containers/unique.inl"
 
 EU_NAMESPACE_BEGIN
-
-using core::make_unique;
 using core::Unique;
-
 EU_NAMESPACE_END

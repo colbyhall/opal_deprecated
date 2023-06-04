@@ -22,3 +22,7 @@ AlwaysBreakTemplateDeclarations: Yes
 IndentAccessModifiers: false
 AccessModifierOffset: -4
 AlignAfterOpenBracket : Align
+
+BreakConstructorInitializers: AfterColon
+
+Cpp11BracedListStyle: false

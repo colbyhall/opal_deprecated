@@ -18,7 +18,7 @@ public:
 };
 
 TEST_CASE("eu::core::Unique") {
-	eu::Unique<Foo> foo = eu::make_unique<Bar>();
+	eu::Unique<Foo> foo = eu::Unique<Bar>::make();
 	CHECK(foo->get_value() == 100);
 }
 
