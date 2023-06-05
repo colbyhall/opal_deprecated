@@ -16,11 +16,11 @@ struct Layout {
 	usize alignment;
 
 	template <typename T>
-	static constexpr Layout single = {sizeof(T), alignof(T)};
+	static constexpr Layout single = { sizeof(T), alignof(T) };
 
 	template <typename T>
 	static inline constexpr Layout array(usize len) {
-		return Layout{sizeof(T) * len, alignof(T)};
+		return Layout{ sizeof(T) * len, alignof(T) };
 	}
 };
 
@@ -32,8 +32,7 @@ EU_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
 	return eu::core::malloc(Layout::array<T>(len)).as<T>();
 }
 
-NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout,
-					  const Layout& new_layout);
+NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout);
 void free(NonNull<void> ptr);
 
 NonNull<void> copy(NonNull<void> dst, NonNull<void const> src, usize count);
@@ -41,6 +40,3 @@ NonNull<void> move(NonNull<void> dst, NonNull<void const> src, usize count);
 NonNull<void> set(NonNull<void> ptr, u8 value, usize count);
 
 EU_CORE_NAMESPACE_END
-
-void* operator new(size_t size);
-void operator delete(void* ptr);

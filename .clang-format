@@ -21,8 +21,9 @@ EmptyLineBeforeAccessModifier: LogicalBlock
 AlwaysBreakTemplateDeclarations: Yes
 IndentAccessModifiers: false
 AccessModifierOffset: -4
-AlignAfterOpenBracket : Align
+AlignAfterOpenBracket: Align
 
 BreakConstructorInitializers: AfterColon
 
 Cpp11BracedListStyle: false
+ColumnLimit: 120

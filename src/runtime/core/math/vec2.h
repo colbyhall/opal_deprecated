@@ -43,7 +43,7 @@ struct alignas(16) Vec2 {
 	EU_ALWAYS_INLINE void operator-=(const Vec2& rhs) { *this = *this - rhs; }
 	EU_ALWAYS_INLINE void operator*=(const Vec2& rhs) { *this = *this * rhs; }
 	EU_ALWAYS_INLINE void operator/=(const Vec2& rhs) { *this = *this / rhs; }
-	EU_ALWAYS_INLINE Vec2 operator-() const { return {-x, -y}; }
+	EU_ALWAYS_INLINE Vec2 operator-() const { return { -x, -y }; }
 
 	EU_ALWAYS_INLINE T dot(const Vec2<T>& rhs) const;
 	EU_ALWAYS_INLINE T cross(const Vec2<T>& rhs) const;
@@ -52,14 +52,14 @@ struct alignas(16) Vec2 {
 	EU_ALWAYS_INLINE T len() const { return eu::sqrt(len_sq()); }
 	EU_ALWAYS_INLINE Option<Vec2<T>> normalized() const;
 
-	EU_ALWAYS_INLINE bool is_zero() const { return *this == zero; }
-	EU_ALWAYS_INLINE bool is_near_zero() const;
-	EU_ALWAYS_INLINE bool has_nan() const;
-	EU_ALWAYS_INLINE bool has_infinite() const;
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_zero() const { return *this == zero; }
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_near_zero() const;
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool has_nan() const;
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool has_infinite() const;
 
 	template <typename D>
-	EU_ALWAYS_INLINE Vec2<D> cast() const {
-		return {static_cast<D>(x), static_cast<D>(y)};
+	EU_NO_DISCARD EU_ALWAYS_INLINE Vec2<D> cast() const {
+		return { static_cast<D>(x), static_cast<D>(y) };
 	}
 };
 

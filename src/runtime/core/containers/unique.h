@@ -27,15 +27,13 @@ public:
 
 	template <typename Derived = Base>
 	Unique(Unique<Derived>&& move) noexcept : m_ptr(move.m_ptr) {
-		static_assert(core::is_base_of<Base, Derived>,
-					  "Base is not a base of Derived");
+		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
 
 		move.m_ptr = nullptr;
 	}
 	template <typename Derived = Base>
 	Unique& operator=(Unique<Derived>&& m) noexcept {
-		static_assert(core::is_base_of<Base, Derived>,
-					  "Base is not a base of Derived");
+		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
 
 		Unique<Base> to_destroy = core::move(*this);
 		m_ptr = m.m_ptr;

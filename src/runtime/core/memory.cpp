@@ -13,36 +13,37 @@ EU_SUPPRESS_WARNINGS_STD_END
 EU_CORE_NAMESPACE_BEGIN
 
 NonNull<void> malloc(const Layout& layout) {
-	void* result = std::malloc(layout.size);
-	return result; // Nullptr check happens inside of NonNull
+	void* result = std::malloc(static_cast<std::size_t>(layout.size));
+	return result; // Nullptr check happens inside NonNull
 }
 
 NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout,
 					  const Layout& new_layout) {
 	EU_UNUSED(old_layout);
 
-	void* result = std::realloc(old_ptr, new_layout.size);
+	void* result =
+		std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
 	return result; // Nullptr check happens inside of NonNull
 }
 
 void free(NonNull<void> ptr) { std::free(ptr); }
 
 NonNull<void> copy(NonNull<void> dst, NonNull<void const> src, usize count) {
-	return std::memcpy(dst, src, count);
+	return std::memcpy(dst, src, static_cast<std::size_t>(count));
 }
 
 NonNull<void> move(NonNull<void> dst, NonNull<void const> src, usize count) {
-	return std::memmove(dst, src, count);
+	return std::memmove(dst, src, static_cast<std::size_t>(count));
 }
 
 NonNull<void> set(NonNull<void> ptr, u8 value, usize count) {
-	return std::memset(ptr, value, count);
+	return std::memset(ptr, value, static_cast<std::size_t>(count));
 }
 
 EU_CORE_NAMESPACE_END
 
 void* operator new(size_t size) {
-	return eu::core::malloc(eu::core::Layout{size, 8});
+	return eu::core::malloc(eu::core::Layout{ size, 8 });
 }
 
 void operator delete(void* ptr) { eu::core::free(ptr); }

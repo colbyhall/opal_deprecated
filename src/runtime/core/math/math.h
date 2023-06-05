@@ -61,32 +61,32 @@ inline constexpr T epsilon = std::numeric_limits<T>::epsilon();
 template <typename T>
 inline constexpr T nan = std::numeric_limits<T>::signaling_NaN();
 
-f32 cos(f32 x);
-f64 cos(f64 x);
+EU_NO_DISCARD f32 cos(f32 x);
+EU_NO_DISCARD f64 cos(f64 x);
 
-f32 sin(f32 x);
-f64 sin(f64 x);
+EU_NO_DISCARD f32 sin(f32 x);
+EU_NO_DISCARD f64 sin(f64 x);
 
-f32 tan(f32 x);
-f64 tan(f64 x);
+EU_NO_DISCARD f32 tan(f32 x);
+EU_NO_DISCARD f64 tan(f64 x);
 
-f32 acos(f32 x);
-f64 acos(f64 x);
+EU_NO_DISCARD f32 acos(f32 x);
+EU_NO_DISCARD f64 acos(f64 x);
 
-f32 asin(f32 x);
-f64 asin(f64 x);
+EU_NO_DISCARD f32 asin(f32 x);
+EU_NO_DISCARD f64 asin(f64 x);
 
-f32 atan(f32 x);
-f64 atan(f64 x);
+EU_NO_DISCARD f32 atan(f32 x);
+EU_NO_DISCARD f64 atan(f64 x);
 
-f32 atan2(f32 y, f32 x);
-f64 atan2(f64 y, f64 x);
+EU_NO_DISCARD f32 atan2(f32 y, f32 x);
+EU_NO_DISCARD f64 atan2(f64 y, f64 x);
 
-f32 sqrt(f32 x);
-f64 sqrt(f64 x);
+EU_NO_DISCARD f32 sqrt(f32 x);
+EU_NO_DISCARD f64 sqrt(f64 x);
 
-f32 fmod(f32 numerator, f32 denominator);
-f64 fmod(f64 numerator, f64 denominator);
+EU_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
+EU_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
 
 template <typename T>
 EU_ALWAYS_INLINE T abs(T x) {
@@ -137,7 +137,7 @@ template <typename T>
 inline constexpr T infinity = core::infinity<T>;
 
 template <typename T>
-inline constexpr T epsilon = cpre::epsilon<T>;
+inline constexpr T epsilon = core::epsilon<T>;
 
 template <typename T>
 inline constexpr T nan = core::nan<T>;

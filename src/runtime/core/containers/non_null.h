@@ -15,8 +15,7 @@ class NonNull {
 public:
 	// Only way to initialize NonNull is by a valid ptr
 	EU_ALWAYS_INLINE constexpr NonNull(T* ptr) : m_ptr(ptr) {
-		EU_ASSERT(m_ptr != nullptr,
-				  "NonNull only accepts pointers that are not nullptr");
+		EU_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 	}
 
 	// Prevent default and nullptr initialization
@@ -33,13 +32,9 @@ public:
 	EU_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
 
 	// Compare ops
-	EU_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const {
-		return ptr.m_ptr == m_ptr;
-	}
+	EU_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const { return ptr.m_ptr == m_ptr; }
 	EU_ALWAYS_INLINE bool operator==(T* ptr) const { return ptr == m_ptr; }
-	EU_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const {
-		return ptr.m_ptr != m_ptr;
-	}
+	EU_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const { return ptr.m_ptr != m_ptr; }
 	EU_ALWAYS_INLINE bool operator!=(T* ptr) const { return ptr != m_ptr; }
 
 private:
@@ -52,8 +47,7 @@ class NonNull<void> {
 public:
 	// Only way to initialize NonNull is by a valid ptr
 	EU_ALWAYS_INLINE constexpr NonNull(void* ptr) : m_ptr(ptr) {
-		EU_ASSERT(m_ptr != nullptr,
-				  "NonNull only accepts pointers that are not nullptr");
+		EU_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 	}
 
 	// Prevent default and nullptr initialization
@@ -65,13 +59,9 @@ public:
 	EU_ALWAYS_INLINE void* operator*() const { return m_ptr; }
 
 	// Compare ops
-	EU_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const {
-		return ptr.m_ptr == m_ptr;
-	}
+	EU_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const { return ptr.m_ptr == m_ptr; }
 	EU_ALWAYS_INLINE bool operator==(void* ptr) const { return ptr == m_ptr; }
-	EU_ALWAYS_INLINE bool operator!=(NonNull<void> ptr) const {
-		return ptr.m_ptr != m_ptr;
-	}
+	EU_ALWAYS_INLINE bool operator!=(NonNull<void> ptr) const { return ptr.m_ptr != m_ptr; }
 	EU_ALWAYS_INLINE bool operator!=(void* ptr) const { return ptr != m_ptr; }
 
 	// Casting
@@ -90,8 +80,7 @@ class NonNull<void const> {
 public:
 	// Only way to initialize NonNull is by a valid ptr
 	EU_ALWAYS_INLINE constexpr NonNull(void const* ptr) : m_ptr(ptr) {
-		EU_ASSERT(m_ptr != nullptr,
-				  "NonNull only accepts pointers that are not nullptr");
+		EU_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 	}
 
 	// Prevent default and nullptr initialization
@@ -103,18 +92,10 @@ public:
 	EU_ALWAYS_INLINE void const* operator*() const { return m_ptr; }
 
 	// Compare ops
-	EU_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const {
-		return ptr.m_ptr == m_ptr;
-	}
-	EU_ALWAYS_INLINE bool operator==(void const* ptr) const {
-		return ptr == m_ptr;
-	}
-	EU_ALWAYS_INLINE bool operator!=(NonNull<void const> ptr) const {
-		return ptr.m_ptr != m_ptr;
-	}
-	EU_ALWAYS_INLINE bool operator!=(void const* ptr) const {
-		return ptr != m_ptr;
-	}
+	EU_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const { return ptr.m_ptr == m_ptr; }
+	EU_ALWAYS_INLINE bool operator==(void const* ptr) const { return ptr == m_ptr; }
+	EU_ALWAYS_INLINE bool operator!=(NonNull<void const> ptr) const { return ptr.m_ptr != m_ptr; }
+	EU_ALWAYS_INLINE bool operator!=(void const* ptr) const { return ptr != m_ptr; }
 
 	// Casting
 	template <typename T>

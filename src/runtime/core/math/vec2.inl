@@ -4,42 +4,42 @@ EU_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 EU_ALWAYS_INLINE Vec2<T> Vec2<T>::from_rad(T theta) {
-	return {eu::sin(theta), eu::cos(theta)};
+	return { eu::sin(theta), eu::cos(theta) };
 }
 
 template <typename T>
-const Vec2<T> Vec2<T>::zero = {0};
+const Vec2<T> Vec2<T>::zero = { 0 };
 
 template <typename T>
-const Vec2<T> Vec2<T>::one = {1};
+const Vec2<T> Vec2<T>::one = { 1 };
 
 template <typename T>
-const Vec2<T> Vec2<T>::infinite = {eu::infinity};
+const Vec2<T> Vec2<T>::infinite = { eu::infinity };
 
 template <typename T>
-const Vec2<T> Vec2<T>::right = {1, 0};
+const Vec2<T> Vec2<T>::right = { 1, 0 };
 
 template <typename T>
-const Vec2<T> Vec2<T>::up = {0, 1};
+const Vec2<T> Vec2<T>::up = { 0, 1 };
 
 template <typename T>
 EU_ALWAYS_INLINE Vec2<T> Vec2<T>::operator+(const Vec2<T>& rhs) const {
-	return {x + rhs.x, y + rhs.y};
+	return { x + rhs.x, y + rhs.y };
 }
 
 template <typename T>
 EU_ALWAYS_INLINE Vec2<T> Vec2<T>::operator-(const Vec2<T>& rhs) const {
-	return {x - rhs.x, y - rhs.y};
+	return { x - rhs.x, y - rhs.y };
 }
 
 template <typename T>
 EU_ALWAYS_INLINE Vec2<T> Vec2<T>::operator*(const Vec2<T>& rhs) const {
-	return {x * rhs.x, y * rhs.y};
+	return { x * rhs.x, y * rhs.y };
 }
 
 template <typename T>
 EU_ALWAYS_INLINE Vec2<T> Vec2<T>::operator/(const Vec2<T>& rhs) const {
-	return {x / rhs.x, y / rhs.y};
+	return { x / rhs.x, y / rhs.y };
 }
 
 template <typename T>
@@ -54,7 +54,7 @@ EU_ALWAYS_INLINE T Vec2<T>::cross(const Vec2<T>& rhs) const {
 
 template <typename T>
 EU_ALWAYS_INLINE Vec2<T> Vec2<T>::perp() const {
-	return {y, -x};
+	return { y, -x };
 }
 
 template <typename T>

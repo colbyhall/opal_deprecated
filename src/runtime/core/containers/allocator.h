@@ -18,7 +18,7 @@ public:
 		Allocation() = default;
 		EU_ALWAYS_INLINE Element* ptr() { return m_ptr; }
 		EU_ALWAYS_INLINE Element const* ptr() const { return m_ptr; }
-		i32 resize(i32 current, i32 desired) {
+		usize resize(usize current, usize desired) {
 			if (current == desired) {
 				return current;
 			}
@@ -33,9 +33,8 @@ public:
 				void* ptr = core::malloc(core::Layout::array<Element>(current));
 				m_ptr = static_cast<Element*>(ptr);
 			} else {
-				void* ptr = core::realloc(
-					m_ptr, core::Layout::array<Element>(old_current),
-					core::Layout::array<Element>(current));
+				void* ptr = core::realloc(m_ptr, core::Layout::array<Element>(old_current),
+										  core::Layout::array<Element>(current));
 				m_ptr = static_cast<Element*>(ptr);
 			}
 
@@ -65,19 +64,14 @@ public:
 	public:
 		// ~Begin Allocator Interface
 		Allocation() = default;
-		EU_ALWAYS_INLINE Element* ptr() {
-			return reinterpret_cast<Element*>(&m_data[0]);
-		}
-		EU_ALWAYS_INLINE Element const* ptr() const {
-			return reinterpret_cast<Element const*>(&m_data[0]);
-		}
-		EU_ALWAYS_INLINE i32 resize(i32 current, i32 desired) { return Count; }
-		~Allocation() {}
+		EU_ALWAYS_INLINE Element* ptr() { return reinterpret_cast<Element*>(&m_data[0]); }
+		EU_ALWAYS_INLINE Element const* ptr() const { return reinterpret_cast<Element const*>(&m_data[0]); }
+		EU_ALWAYS_INLINE usize resize(usize current, usize desired) { return Count; }
+		~Allocation() = default;
 		// ~End Allocator Interface
 
 	private:
-		alignas(Element)
-			u8 m_data[sizeof(Element) * static_cast<usize>(Count)] = {};
+		alignas(Element) u8 m_data[sizeof(Element) * static_cast<usize>(Count)] = {};
 	};
 };
 

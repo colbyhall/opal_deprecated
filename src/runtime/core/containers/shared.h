@@ -83,8 +83,7 @@ public:
 		};
 
 		constexpr auto layout = core::Layout::single<Combined>;
-		void* ptr = new (core::malloc(layout))
-			Combined{ SharedCounter<Mode>(), Base(forward<Args>(args)...) };
+		void* ptr = new (core::malloc(layout)) Combined{ SharedCounter<Mode>(), Base(forward<Args>(args)...) };
 
 		auto result = Shared(ptr);
 		if constexpr (core::is_base_of<SharedFromThisBase, Base>) {
@@ -95,14 +94,12 @@ public:
 
 	template <typename Derived = Base>
 	Shared(Shared<Derived, Mode>&& move) noexcept : m_ptr(move.m_ptr) {
-		static_assert(core::is_base_of<Base, Derived>,
-					  "Base is not a base of Derived");
+		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
 		move.m_ptr = nullptr;
 	}
 	template <typename Derived = Base>
 	Shared& operator=(Shared<Derived, Mode>&& m) noexcept {
-		static_assert(core::is_base_of<Base, Derived>,
-					  "Base is not a base of Derived");
+		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
 
 		Shared<Base, Mode> to_destroy = eu::move(*this);
 		m_ptr = m.m_ptr;
@@ -138,9 +135,7 @@ private:
 	template <typename Derived, SMode Mode>
 	friend class Weak;
 
-	EU_ALWAYS_INLINE Counter const& counter() const {
-		return *((Counter*)m_ptr);
-	}
+	EU_ALWAYS_INLINE Counter const& counter() const { return *((Counter*)m_ptr); }
 	EU_ALWAYS_INLINE Base& value() const {
 		void* ptr = &((Counter*)m_ptr)[1];
 		return *((Base*)ptr);
@@ -156,14 +151,12 @@ public:
 
 	template <typename Derived = Base>
 	Weak(Weak<Derived, Mode>&& move) noexcept : m_ptr(move.m_ptr) {
-		static_assert(core::is_base_of<Base, Derived>,
-					  "Base is not a base of Derived");
+		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
 		move.m_ptr = nullptr;
 	}
 	template <typename Derived = Base>
 	Weak& operator=(Weak<Derived, Mode>&& m) noexcept {
-		static_assert(core::is_base_of<Base, Derived>,
-					  "Base is not a base of Derived");
+		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
 
 		Weak<Base, Mode> to_destroy = eu::move(*this);
 		m_ptr = m.m_ptr;
@@ -189,9 +182,7 @@ private:
 	template <typename Derived, SMode Mode>
 	friend class Weak;
 
-	EU_ALWAYS_INLINE Counter const& counter() const {
-		return *((Counter*)m_ptr);
-	}
+	EU_ALWAYS_INLINE Counter const& counter() const { return *((Counter*)m_ptr); }
 
 	void* m_ptr;
 };
