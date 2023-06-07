@@ -15,6 +15,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/allocator.h
         ${CORE_ROOT}/containers/array.h
         ${CORE_ROOT}/containers/array.inl
+        ${CORE_ROOT}/containers/function.h
+        ${CORE_ROOT}/containers/function.inl
         ${CORE_ROOT}/containers/non_null.h
         ${CORE_ROOT}/containers/option.h
         ${CORE_ROOT}/containers/shared.h

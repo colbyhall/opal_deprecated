@@ -86,7 +86,7 @@ public:
 		void* ptr = new (core::malloc(layout)) Combined{ SharedCounter<Mode>(), Base(forward<Args>(args)...) };
 
 		auto result = Shared(ptr);
-		if constexpr (core::is_base_of<SharedFromThisBase, Base>) {
+		if constexpr (std::is_base_of_v<SharedFromThisBase, Base>) {
 			result->m_this = result.downgrade();
 		}
 		return result;
@@ -94,12 +94,12 @@ public:
 
 	template <typename Derived = Base>
 	Shared(Shared<Derived, Mode>&& move) noexcept : m_ptr(move.m_ptr) {
-		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 		move.m_ptr = nullptr;
 	}
 	template <typename Derived = Base>
 	Shared& operator=(Shared<Derived, Mode>&& m) noexcept {
-		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
 		Shared<Base, Mode> to_destroy = eu::move(*this);
 		m_ptr = m.m_ptr;
@@ -122,8 +122,8 @@ public:
 	EU_ALWAYS_INLINE Base& operator*() { return value(); }
 	EU_ALWAYS_INLINE Base const& operator*() const { return value(); }
 
-	EU_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
-	EU_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
+	EU_NO_DISCARD EU_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
+	EU_NO_DISCARD EU_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
 
 private:
 	Shared() = default;
@@ -151,12 +151,12 @@ public:
 
 	template <typename Derived = Base>
 	Weak(Weak<Derived, Mode>&& move) noexcept : m_ptr(move.m_ptr) {
-		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 		move.m_ptr = nullptr;
 	}
 	template <typename Derived = Base>
 	Weak& operator=(Weak<Derived, Mode>&& m) noexcept {
-		static_assert(core::is_base_of<Base, Derived>, "Base is not a base of Derived");
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
 		Weak<Base, Mode> to_destroy = eu::move(*this);
 		m_ptr = m.m_ptr;
@@ -166,20 +166,20 @@ public:
 
 	~Weak();
 
-	Option<Shared<Base, Mode>> upgrade() const;
+	EU_NO_DISCARD Option<Shared<Base, Mode>> upgrade() const;
 	Weak<Base, Mode> clone() const;
 
-	EU_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
-	EU_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
+	EU_NO_DISCARD EU_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
+	EU_NO_DISCARD EU_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
 
 private:
 	Weak() = default;
 	explicit Weak(void* ptr) : m_ptr(ptr) {}
 
-	template <typename Derived, SMode Mode>
+	template <typename Derived, SMode>
 	friend class Shared;
 
-	template <typename Derived, SMode Mode>
+	template <typename Derived, SMode>
 	friend class Weak;
 
 	EU_ALWAYS_INLINE Counter const& counter() const { return *((Counter*)m_ptr); }
@@ -197,7 +197,7 @@ public:
 	Shared<T, Mode> to_shared() const;
 
 private:
-	template <typename Derived, SMode Mode>
+	template <typename Derived, SMode>
 	friend class Shared;
 
 	Option<Weak<T, Mode>> m_this;

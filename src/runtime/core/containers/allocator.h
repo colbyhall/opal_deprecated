@@ -56,7 +56,7 @@ public:
 template <>
 inline constexpr bool is_allocator<MallocAllocator> = true;
 
-template <i32 Count>
+template <usize Count>
 class InlineAllocator {
 public:
 	template <typename Element>
@@ -66,12 +66,16 @@ public:
 		Allocation() = default;
 		EU_ALWAYS_INLINE Element* ptr() { return reinterpret_cast<Element*>(&m_data[0]); }
 		EU_ALWAYS_INLINE Element const* ptr() const { return reinterpret_cast<Element const*>(&m_data[0]); }
-		EU_ALWAYS_INLINE usize resize(usize current, usize desired) { return Count; }
+		EU_ALWAYS_INLINE usize resize(usize current, usize desired) {
+			EU_UNUSED(current);
+			EU_UNUSED(desired);
+			return Count;
+		}
 		~Allocation() = default;
 		// ~End Allocator Interface
 
 	private:
-		alignas(Element) u8 m_data[sizeof(Element) * static_cast<usize>(Count)] = {};
+		alignas(Element) u8 m_data[sizeof(Element) * Count] = {};
 	};
 };
 
@@ -84,7 +88,7 @@ EU_NAMESPACE_BEGIN
 
 using MallocAllocator = core::MallocAllocator;
 
-template <i32 Count>
+template <usize Count>
 using InlineAllocator = core::InlineAllocator<Count>;
 
 EU_NAMESPACE_END

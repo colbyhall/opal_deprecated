@@ -60,7 +60,7 @@ public:
 		return *this;
 	}
 
-	EU_ALWAYS_INLINE bool is_set() const { return m_set; }
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_set() const { return m_set; }
 	EU_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	EU_ALWAYS_INLINE T unwrap() {
@@ -103,7 +103,7 @@ private:
 };
 
 template <typename T>
-class Option<T, EnabledIf<core::is_trivially_copyable<T>>> {
+class Option<T, std::enable_if_t<std::is_trivially_copyable_v<T>>> {
 public:
 	Option() = default;
 	EU_ALWAYS_INLINE constexpr Option(NullPtr) : m_set(false), m_data() {}
@@ -112,7 +112,7 @@ public:
 		new (p) T(t);
 	}
 
-	EU_ALWAYS_INLINE bool is_set() const { return m_set; }
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_set() const { return m_set; }
 	EU_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	EU_ALWAYS_INLINE T unwrap() const {
@@ -162,7 +162,7 @@ public:
 	EU_ALWAYS_INLINE constexpr Option(NullPtr) : m_ptr(nullptr) {}
 	EU_ALWAYS_INLINE constexpr Option(T& t) : m_ptr(&t) {}
 
-	EU_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
+	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
 	EU_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	EU_ALWAYS_INLINE T& unwrap() {

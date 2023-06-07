@@ -188,6 +188,10 @@
 	}                                                                                                                  \
 	EU_NAMESPACE_END
 
+#define EU_HIDDEN_NAMESPACE_BEGIN namespace hidden {
+
+#define EU_HIDDEN_NAMESPACE_END }
+
 // Declare primitive types under core namespace
 EU_CORE_NAMESPACE_BEGIN
 
