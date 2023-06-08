@@ -70,9 +70,8 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-
-using CharsIterator = core::CharsIterator;
-using StringView = core::StringView;
-
+using core::CharsIterator;
+using core::StringView;
 EU_NAMESPACE_END

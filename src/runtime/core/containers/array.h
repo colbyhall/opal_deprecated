@@ -64,8 +64,10 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Include the implementation
 #include "core/containers/array.inl"
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
 using core::Array;
 EU_NAMESPACE_END

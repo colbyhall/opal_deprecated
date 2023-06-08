@@ -32,7 +32,8 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-using WChar = core::WChar;
-using WStringView = core::WStringView;
+using core::WChar;
+using core::WStringView;
 EU_NAMESPACE_END

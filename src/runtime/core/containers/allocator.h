@@ -79,16 +79,12 @@ public:
 	};
 };
 
-template <i32 Count>
+template <usize Count>
 inline constexpr bool is_allocator<InlineAllocator<Count>> = true;
 
 EU_CORE_NAMESPACE_END
 
 EU_NAMESPACE_BEGIN
-
-using MallocAllocator = core::MallocAllocator;
-
-template <usize Count>
-using InlineAllocator = core::InlineAllocator<Count>;
-
+using core::InlineAllocator;
+using core::MallocAllocator;
 EU_NAMESPACE_END

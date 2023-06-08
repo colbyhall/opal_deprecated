@@ -64,15 +64,15 @@ struct alignas(16) Vec3 {
 
 EU_CORE_NAMESPACE_END
 
+// Include the implementation
 #include "core/math/vec3.inl"
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-
 using Vec3f32 = core::Vec3<f32>;
 using Vec3f64 = core::Vec3<f64>;
 using Vec3i32 = core::Vec3<i32>;
 using Vec3i64 = core::Vec3<i64>;
 using Vec3u32 = core::Vec3<u32>;
 using Vec3u64 = core::Vec3<u64>;
-
 EU_NAMESPACE_END

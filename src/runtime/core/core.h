@@ -258,8 +258,6 @@ static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 using NullPtr = decltype(nullptr);
 
-using wchar = wchar_t;
-
 EU_CORE_NAMESPACE_END
 
 // Export primitive types to eu namespace
@@ -278,7 +276,6 @@ using core::u32;
 using core::u64;
 using core::u8;
 using core::usize;
-using core::wchar;
 
 EU_NAMESPACE_END
 

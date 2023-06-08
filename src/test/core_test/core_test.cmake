@@ -8,6 +8,7 @@ set(CORE_TEST_SRC_FILES
         ${CORE_TEST_ROOT}/memory_test.cpp
         ${CORE_TEST_ROOT}/containers/array_test.cpp
         ${CORE_TEST_ROOT}/containers/function_test.cpp
+        ${CORE_TEST_ROOT}/containers/map_test.cpp
         ${CORE_TEST_ROOT}/containers/non_null_test.cpp
         ${CORE_TEST_ROOT}/containers/option_test.cpp
         ${CORE_TEST_ROOT}/containers/shared_test.cpp

@@ -100,6 +100,7 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Include the implementation
 #include "core/containers/slice.inl"
 
 // Export to eu namespace

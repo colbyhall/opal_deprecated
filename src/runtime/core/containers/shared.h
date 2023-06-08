@@ -205,13 +205,13 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Include the implementation
 #include "core/containers/shared.inl"
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-
 using core::Shared;
 using core::SharedFromThis;
 using core::SMode;
 using core::Weak;
-
 EU_NAMESPACE_END

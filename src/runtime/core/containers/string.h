@@ -42,5 +42,5 @@ private:
 EU_CORE_NAMESPACE_END
 
 EU_NAMESPACE_BEGIN
-using String = core::String;
+using core::String;
 EU_NAMESPACE_END

@@ -7,7 +7,7 @@
 
 EU_CORE_NAMESPACE_BEGIN
 
-wchar utf32_to_utf16(Char c);
+WChar utf32_to_utf16(Char c);
 
 class WString {
 public:
@@ -45,6 +45,7 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-using WString = core::WString;
+using core::WString;
 EU_NAMESPACE_END

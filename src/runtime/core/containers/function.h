@@ -2,6 +2,7 @@
 
 #pragma once
 
+// Include the implementation early
 #include "core/containers/function.inl"
 
 EU_CORE_NAMESPACE_BEGIN
@@ -65,16 +66,14 @@ public:
 	// clang-format on
 
 	Function(Function&& move) noexcept = default;
-	
+
 	~Function() = default;
 };
 
 EU_CORE_NAMESPACE_END
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-template <typename F>
-using FunctionRef = core::FunctionRef<F>;
-
-template <typename F>
-using Function = core::Function<F>;
+using core::Function;
+using core::FunctionRef;
 EU_NAMESPACE_END

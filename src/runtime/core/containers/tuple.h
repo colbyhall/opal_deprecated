@@ -15,7 +15,7 @@ using Tuple = std::tuple<T>;
 
 EU_CORE_NAMESPACE_END
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
-template <typename T>
-using Tuple = core::Tuple<T>;
+using core::Tuple;
 EU_NAMESPACE_END

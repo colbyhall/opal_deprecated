@@ -58,8 +58,10 @@ private:
 
 EU_CORE_NAMESPACE_END
 
+// Include the implementation
 #include "core/containers/unique.inl"
 
+// Export to eu namespace
 EU_NAMESPACE_BEGIN
 using core::Unique;
 EU_NAMESPACE_END

@@ -11,12 +11,12 @@ struct FunctionRefCaller;
 
 template <typename Functor, typename R, typename... P>
 struct FunctionRefCaller<Functor, R(P...)> {
-	static R call(void* obj, P&... params) { return std::invoke(*(Functor*)obj, forward<P>(params)...); }
+	static R call(void* obj, P&... params) { return std::invoke(*(Functor*)obj, eu::move(params)...); }
 };
 
 template <typename Functor, typename... P>
 struct FunctionRefCaller<Functor, void(P...)> {
-	static void call(void* obj, P&... params) { std::invoke(*(Functor*)obj, forward<P>(params)...); }
+	static void call(void* obj, P&... params) { std::invoke(*(Functor*)obj, eu::move(params)...); }
 };
 
 template <typename S, typename F>
