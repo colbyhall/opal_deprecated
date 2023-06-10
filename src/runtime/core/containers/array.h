@@ -10,9 +10,11 @@
 EU_CORE_NAMESPACE_BEGIN
 
 template <typename Element, typename Allocator = MallocAllocator>
-class Array : private NonCopyable {
+class Array {
 public:
-	static_assert(core::is_allocator<Allocator>, "Allocator is not valid. See \"core/containers/allocator.h\"");
+	static_assert(
+		core::is_allocator<Allocator>,
+		"Allocator is not valid. See \"core/containers/allocator.h\"");
 
 	using Allocation = typename Allocator::template Allocation<Element>;
 
@@ -50,9 +52,13 @@ public:
 	EU_ALWAYS_INLINE usize push(Element&& item);
 	EU_ALWAYS_INLINE usize push(const Element& item);
 
-	/// throws assertion if `index` is out of bounds
+	/// Removes the item at index from the array.
+	/// Throws assertion if index is not valid
 	Element remove(usize index);
+
+	/// Removes the last item in the array and returns it.
 	EU_ALWAYS_INLINE Option<Element> pop();
+
 	/// Removes all items from array
 	void reset();
 

@@ -1,7 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "core/memory.h"
 #include "core/non_copyable.h"
+#include "core/os/memory.h"
 
 EU_CORE_NAMESPACE_BEGIN
 EU_HIDDEN_NAMESPACE_BEGIN

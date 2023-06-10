@@ -2,9 +2,9 @@
 
 #pragma once
 
+#include "core/atomic.h"
 #include "core/containers/option.h"
 #include "core/non_copyable.h"
-#include "core/sync/atomic.h"
 #include "core/type_traits.h"
 
 EU_CORE_NAMESPACE_BEGIN

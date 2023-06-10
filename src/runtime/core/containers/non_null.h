@@ -9,7 +9,7 @@ EU_CORE_NAMESPACE_BEGIN
 template <typename T>
 class NonNull;
 
-/// `T*` but can not be set to null.
+/// `Value*` but can not be set to null.
 template <typename T>
 class NonNull {
 public:

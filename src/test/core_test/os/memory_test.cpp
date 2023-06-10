@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "core/memory.h"
+#include "core/os/memory.h"
 #include "doctest/doctest.h"
 
 using namespace eu;
@@ -9,8 +9,7 @@ EU_SUPPRESS_WARNING_PUSH
 EU_MSVC_SUPPRESS_WARNING(5045)
 
 TEST_CASE("eu::core::memory") {
-	SUBCASE(
-		"eu::core::malloc, eu::core::realloc, eu::core::free, eu::core::set") {
+	SUBCASE("eu::core::malloc, eu::core::realloc, eu::core::free, eu::core::set") {
 		// All allocation functions require the use of the Layout struct. This
 		// stores size and alignment requirements
 		const auto count = 45;

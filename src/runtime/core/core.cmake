@@ -3,6 +3,8 @@ set(CORE_ROOT ${RUNTIME_ROOT}/core)
 
 # Source files
 set(CORE_SRC_FILES
+        ${CORE_ROOT}/atomic.h
+        ${CORE_ROOT}/atomic.inl
         ${CORE_ROOT}/core.cmake
         ${CORE_ROOT}/core.cpp
         ${CORE_ROOT}/core.h
@@ -10,19 +12,19 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/hash.h
         ${CORE_ROOT}/hash.cpp
         ${CORE_ROOT}/initializer_list.h
-        ${CORE_ROOT}/memory.h
-        ${CORE_ROOT}/memory.cpp
         ${CORE_ROOT}/non_copyable.h
         ${CORE_ROOT}/type_traits.h
         ${CORE_ROOT}/containers/allocator.h
         ${CORE_ROOT}/containers/array.h
         ${CORE_ROOT}/containers/array.inl
+        ${CORE_ROOT}/containers/bitflag.h
         ${CORE_ROOT}/containers/function.h
         ${CORE_ROOT}/containers/function.inl
         ${CORE_ROOT}/containers/map.h
         ${CORE_ROOT}/containers/map.inl
         ${CORE_ROOT}/containers/non_null.h
         ${CORE_ROOT}/containers/option.h
+        ${CORE_ROOT}/containers/result.h
         ${CORE_ROOT}/containers/shared.h
         ${CORE_ROOT}/containers/shared.inl
         ${CORE_ROOT}/containers/slice.h
@@ -43,8 +45,13 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/math/vec2.inl
         ${CORE_ROOT}/math/vec3.h
         ${CORE_ROOT}/math/vec3.inl
-        ${CORE_ROOT}/sync/atomic.h
-        ${CORE_ROOT}/sync/atomic.inl
+        ${CORE_ROOT}/os/file_system.h
+        ${CORE_ROOT}/os/file_system.cpp
+        ${CORE_ROOT}/os/library.h
+        ${CORE_ROOT}/os/library.cpp
+        ${CORE_ROOT}/os/memory.h
+        ${CORE_ROOT}/os/memory.cpp
+        ${CORE_ROOT}/os/windows.h
         )
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")

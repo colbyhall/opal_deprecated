@@ -7,19 +7,26 @@
 
 EU_CORE_NAMESPACE_BEGIN
 
+class WStringView;
+
 class String {
 public:
 	String() = default;
 	static String from(Array<char>&& bytes);
-	static String from(StringView view);
+	static String from(const StringView& view);
+	static String from(const WStringView& view);
 
 	operator Slice<char const>() const;
 	operator StringView() const;
 	EU_ALWAYS_INLINE char* operator*() { return &m_bytes[0]; }
 	EU_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
 
-	EU_NO_DISCARD EU_ALWAYS_INLINE CharsIterator chars() const { return CharsIterator(m_bytes); }
-	EU_NO_DISCARD EU_ALWAYS_INLINE usize len() const { return m_bytes.len() > 0 ? m_bytes.len() - 1 : 0; }
+	EU_NO_DISCARD EU_ALWAYS_INLINE CharsIterator chars() const {
+		return CharsIterator(m_bytes);
+	}
+	EU_NO_DISCARD EU_ALWAYS_INLINE usize len() const {
+		return m_bytes.len() > 0 ? m_bytes.len() - 1 : 0;
+	}
 	EU_NO_DISCARD EU_ALWAYS_INLINE usize cap() const { return m_bytes.cap(); }
 
 	EU_ALWAYS_INLINE bool operator==(StringView rhs) const {

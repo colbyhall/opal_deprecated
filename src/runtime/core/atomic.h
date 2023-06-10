@@ -50,7 +50,7 @@ private:
 
 EU_CORE_NAMESPACE_END
 
-#include "core/sync/atomic.inl"
+#include "atomic.inl"
 
 EU_NAMESPACE_BEGIN
 using core::Atomic;

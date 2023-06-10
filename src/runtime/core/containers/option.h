@@ -3,8 +3,8 @@
 #pragma once
 
 #include "core/containers/non_null.h"
-#include "core/memory.h"
 #include "core/non_copyable.h"
+#include "core/os/memory.h"
 #include "core/type_traits.h"
 
 EU_CORE_NAMESPACE_BEGIN

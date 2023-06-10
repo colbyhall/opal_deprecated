@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "core/memory.h"
 #include "core/non_copyable.h"
+#include "core/os/memory.h"
 #include "core/type_traits.h"
 
 EU_CORE_NAMESPACE_BEGIN

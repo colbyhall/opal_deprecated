@@ -5,12 +5,12 @@ set(CORE_TEST_ROOT ${TEST_ROOT}/core_test)
 set(CORE_TEST_SRC_FILES
         ${CORE_TEST_ROOT}/core_test.cmake
         ${CORE_TEST_ROOT}/core_test.cpp
-        ${CORE_TEST_ROOT}/memory_test.cpp
         ${CORE_TEST_ROOT}/containers/array_test.cpp
         ${CORE_TEST_ROOT}/containers/function_test.cpp
         ${CORE_TEST_ROOT}/containers/map_test.cpp
         ${CORE_TEST_ROOT}/containers/non_null_test.cpp
         ${CORE_TEST_ROOT}/containers/option_test.cpp
+        ${CORE_TEST_ROOT}/containers/result_test.cpp
         ${CORE_TEST_ROOT}/containers/shared_test.cpp
         ${CORE_TEST_ROOT}/containers/slice_test.cpp
         ${CORE_TEST_ROOT}/containers/string_view_test.cpp
@@ -21,6 +21,9 @@ set(CORE_TEST_SRC_FILES
         ${CORE_TEST_ROOT}/math/math_test.cpp
         ${CORE_TEST_ROOT}/math/vec2_test.cpp
         ${CORE_TEST_ROOT}/math/vec3_test.cpp
+        ${CORE_TEST_ROOT}/os/file_system_test.cpp
+        ${CORE_TEST_ROOT}/os/library_test.cpp
+        ${CORE_TEST_ROOT}/os/memory_test.cpp
         )
 
 # Group source files

@@ -23,7 +23,7 @@
 //
 // The concept of subcases (sections in Catch) and expression decomposition are from there.
 // Some parts of the code are taken directly:
-// - stringification - the detection of "ostream& operator<<(ostream&, const T&)" and StringMaker<>
+// - stringification - the detection of "ostream& operator<<(ostream&, const Value&)" and StringMaker<>
 // - the Approx() helper class for floating point comparison
 // - colors in the console
 // - breaking into a debugger
@@ -971,30 +971,30 @@ namespace detail {
 
 // MSVS 2015 :(
 #if defined(_MSC_VER) && _MSC_VER <= 1900
-    template <typename T, typename = void>
+    template <typename Value, typename = void>
     struct has_global_insertion_operator : types::false_type { };
 
-    template <typename T>
-    struct has_global_insertion_operator<T, decltype(::operator<<(declval<std::ostream&>(), declval<const T&>()), void())> : types::true_type { };
+    template <typename Value>
+    struct has_global_insertion_operator<Value, decltype(::operator<<(declval<std::ostream&>(), declval<const Value&>()), void())> : types::true_type { };
 
-    template <typename T, typename = void>
-    struct has_insertion_operator { static DOCTEST_CONSTEXPR bool value = has_global_insertion_operator<T>::value; };
+    template <typename Value, typename = void>
+    struct has_insertion_operator { static DOCTEST_CONSTEXPR bool value = has_global_insertion_operator<Value>::value; };
 
-    template <typename T, bool global>
+    template <typename Value, bool global>
     struct insert_hack;
 
-    template <typename T>
-    struct insert_hack<T, true> {
-        static void insert(std::ostream& os, const T& t) { ::operator<<(os, t); }
+    template <typename Value>
+    struct insert_hack<Value, true> {
+        static void insert(std::ostream& os, const Value& t) { ::operator<<(os, t); }
     };
 
-    template <typename T>
-    struct insert_hack<T, false> {
-        static void insert(std::ostream& os, const T& t) { operator<<(os, t); }
+    template <typename Value>
+    struct insert_hack<Value, false> {
+        static void insert(std::ostream& os, const Value& t) { operator<<(os, t); }
     };
 
-    template <typename T>
-    using insert_hack_t = insert_hack<T, has_global_insertion_operator<T>::value>;
+    template <typename Value>
+    using insert_hack_t = insert_hack<Value, has_global_insertion_operator<Value>::value>;
 #else
     template <typename T, typename = void>
     struct has_insertion_operator : types::false_type { };
@@ -1011,7 +1011,7 @@ struct has_insertion_operator<T, decltype(operator<<(declval<std::ostream&>(), d
         template <typename T>
         static String convert(const DOCTEST_REF_WRAP(T)) {
 #ifdef DOCTEST_CONFIG_REQUIRE_STRINGIFICATION_FOR_ALL_USED_TYPES
-            static_assert(deferred_false<T>::value, "No stringification detected for type T. See string conversion manual");
+            static_assert(deferred_false<Value>::value, "No stringification detected for type Value. See string conversion manual");
 #endif
             return "{?}";
         }
@@ -1027,7 +1027,7 @@ struct has_insertion_operator<T, decltype(operator<<(declval<std::ostream&>(), d
 
     template <typename T, size_t N>
     void filloss(std::ostream* stream, const T (&in)[N]) { // NOLINT(*-avoid-c-arrays)
-        // T[N], T(&)[N], T(&&)[N] have same behaviour.
+        // Value[N], Value(&)[N], Value(&&)[N] have same behaviour.
         // Hence remove reference.
         filloss<typename types::remove_reference<decltype(in)>::type>(stream, in);
     }
@@ -1068,7 +1068,7 @@ String toString() {
     String::size_type beginPos = ret.find('<');
     return ret.substr(beginPos + 1, ret.size() - beginPos - static_cast<String::size_type>(sizeof(">(void)")));
 #else
-    String ret = __PRETTY_FUNCTION__; // doctest::String toString() [with T = TYPE]
+    String ret = __PRETTY_FUNCTION__; // doctest::String toString() [with Value = TYPE]
     String::size_type begin = ret.find('=') + 2;
     return ret.substr(begin, ret.size() - begin - 1);
 #endif
@@ -1122,7 +1122,7 @@ namespace detail {
     {
         static void fill(std::ostream* stream, const T& in) {
 #if defined(_MSC_VER) && _MSC_VER <= 1900
-        insert_hack_t<T>::insert(*stream, in);
+        insert_hack_t<Value>::insert(*stream, in);
 #else
         operator<<(*stream, in);
 #endif
@@ -1175,10 +1175,10 @@ struct DOCTEST_INTERFACE Approx
     Approx operator()(double value) const;
 
 #ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
-    template <typename T>
-    explicit Approx(const T& value,
-                    typename detail::types::enable_if<std::is_constructible<double, T>::value>::type* =
-                            static_cast<T*>(nullptr)) {
+    template <typename Value>
+    explicit Approx(const Value& value,
+                    typename detail::types::enable_if<std::is_constructible<double, Value>::value>::type* =
+                            static_cast<Value*>(nullptr)) {
         *this = static_cast<double>(value);
     }
 #endif // DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
@@ -1186,9 +1186,9 @@ struct DOCTEST_INTERFACE Approx
     Approx& epsilon(double newEpsilon);
 
 #ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
-    template <typename T>
-    typename std::enable_if<std::is_constructible<double, T>::value, Approx&>::type epsilon(
-            const T& newEpsilon) {
+    template <typename Value>
+    typename std::enable_if<std::is_constructible<double, Value>::value, Approx&>::type epsilon(
+            const Value& newEpsilon) {
         m_epsilon = static_cast<double>(newEpsilon);
         return *this;
     }
@@ -1197,9 +1197,9 @@ struct DOCTEST_INTERFACE Approx
     Approx& scale(double newScale);
 
 #ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
-    template <typename T>
-    typename std::enable_if<std::is_constructible<double, T>::value, Approx&>::type scale(
-            const T& newScale) {
+    template <typename Value>
+    typename std::enable_if<std::is_constructible<double, Value>::value, Approx&>::type scale(
+            const Value& newScale) {
         m_scale = static_cast<double>(newScale);
         return *this;
     }
@@ -1221,20 +1221,20 @@ struct DOCTEST_INTERFACE Approx
 
 #ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
 #define DOCTEST_APPROX_PREFIX \
-    template <typename T> friend typename std::enable_if<std::is_constructible<double, T>::value, bool>::type
+    template <typename Value> friend typename std::enable_if<std::is_constructible<double, Value>::value, bool>::type
 
-    DOCTEST_APPROX_PREFIX operator==(const T& lhs, const Approx& rhs) { return operator==(static_cast<double>(lhs), rhs); }
-    DOCTEST_APPROX_PREFIX operator==(const Approx& lhs, const T& rhs) { return operator==(rhs, lhs); }
-    DOCTEST_APPROX_PREFIX operator!=(const T& lhs, const Approx& rhs) { return !operator==(lhs, rhs); }
-    DOCTEST_APPROX_PREFIX operator!=(const Approx& lhs, const T& rhs) { return !operator==(rhs, lhs); }
-    DOCTEST_APPROX_PREFIX operator<=(const T& lhs, const Approx& rhs) { return static_cast<double>(lhs) < rhs.m_value || lhs == rhs; }
-    DOCTEST_APPROX_PREFIX operator<=(const Approx& lhs, const T& rhs) { return lhs.m_value < static_cast<double>(rhs) || lhs == rhs; }
-    DOCTEST_APPROX_PREFIX operator>=(const T& lhs, const Approx& rhs) { return static_cast<double>(lhs) > rhs.m_value || lhs == rhs; }
-    DOCTEST_APPROX_PREFIX operator>=(const Approx& lhs, const T& rhs) { return lhs.m_value > static_cast<double>(rhs) || lhs == rhs; }
-    DOCTEST_APPROX_PREFIX operator< (const T& lhs, const Approx& rhs) { return static_cast<double>(lhs) < rhs.m_value && lhs != rhs; }
-    DOCTEST_APPROX_PREFIX operator< (const Approx& lhs, const T& rhs) { return lhs.m_value < static_cast<double>(rhs) && lhs != rhs; }
-    DOCTEST_APPROX_PREFIX operator> (const T& lhs, const Approx& rhs) { return static_cast<double>(lhs) > rhs.m_value && lhs != rhs; }
-    DOCTEST_APPROX_PREFIX operator> (const Approx& lhs, const T& rhs) { return lhs.m_value > static_cast<double>(rhs) && lhs != rhs; }
+    DOCTEST_APPROX_PREFIX operator==(const Value& lhs, const Approx& rhs) { return operator==(static_cast<double>(lhs), rhs); }
+    DOCTEST_APPROX_PREFIX operator==(const Approx& lhs, const Value& rhs) { return operator==(rhs, lhs); }
+    DOCTEST_APPROX_PREFIX operator!=(const Value& lhs, const Approx& rhs) { return !operator==(lhs, rhs); }
+    DOCTEST_APPROX_PREFIX operator!=(const Approx& lhs, const Value& rhs) { return !operator==(rhs, lhs); }
+    DOCTEST_APPROX_PREFIX operator<=(const Value& lhs, const Approx& rhs) { return static_cast<double>(lhs) < rhs.m_value || lhs == rhs; }
+    DOCTEST_APPROX_PREFIX operator<=(const Approx& lhs, const Value& rhs) { return lhs.m_value < static_cast<double>(rhs) || lhs == rhs; }
+    DOCTEST_APPROX_PREFIX operator>=(const Value& lhs, const Approx& rhs) { return static_cast<double>(lhs) > rhs.m_value || lhs == rhs; }
+    DOCTEST_APPROX_PREFIX operator>=(const Approx& lhs, const Value& rhs) { return lhs.m_value > static_cast<double>(rhs) || lhs == rhs; }
+    DOCTEST_APPROX_PREFIX operator< (const Value& lhs, const Approx& rhs) { return static_cast<double>(lhs) < rhs.m_value && lhs != rhs; }
+    DOCTEST_APPROX_PREFIX operator< (const Approx& lhs, const Value& rhs) { return lhs.m_value < static_cast<double>(rhs) && lhs != rhs; }
+    DOCTEST_APPROX_PREFIX operator> (const Value& lhs, const Approx& rhs) { return static_cast<double>(lhs) > rhs.m_value && lhs != rhs; }
+    DOCTEST_APPROX_PREFIX operator> (const Approx& lhs, const Value& rhs) { return lhs.m_value > static_cast<double>(rhs) && lhs != rhs; }
 #undef DOCTEST_APPROX_PREFIX
 #endif // DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
 
@@ -1271,15 +1271,15 @@ DOCTEST_INTERFACE String toString(IsNaN<double long> in);
 namespace detail {
     // clang-format off
 #ifdef DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
-    template<class T>               struct decay_array       { using type = T; };
-    template<class T, unsigned N>   struct decay_array<T[N]> { using type = T*; };
-    template<class T>               struct decay_array<T[]>  { using type = T*; };
+    template<class Value>               struct decay_array       { using type = Value; };
+    template<class Value, unsigned N>   struct decay_array<Value[N]> { using type = Value*; };
+    template<class Value>               struct decay_array<Value[]>  { using type = Value*; };
 
-    template<class T>   struct not_char_pointer              { static DOCTEST_CONSTEXPR value = 1; };
+    template<class Value>   struct not_char_pointer              { static DOCTEST_CONSTEXPR value = 1; };
     template<>          struct not_char_pointer<char*>       { static DOCTEST_CONSTEXPR value = 0; };
     template<>          struct not_char_pointer<const char*> { static DOCTEST_CONSTEXPR value = 0; };
 
-    template<class T> struct can_use_op : public not_char_pointer<typename decay_array<T>::type> {};
+    template<class Value> struct can_use_op : public not_char_pointer<typename decay_array<Value>::type> {};
 #endif // DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
     // clang-format on
 
@@ -1908,8 +1908,8 @@ DOCTEST_INTERFACE doctest::detail::TestSuite& getCurrentTestSuite();
 
 namespace doctest {
 #else  // DOCTEST_CONFIG_DISABLE
-template <typename T>
-int registerExceptionTranslator(String (*)(T)) {
+template <typename Value>
+int registerExceptionTranslator(String (*)(Value)) {
     return 0;
 }
 #endif // DOCTEST_CONFIG_DISABLE
@@ -3362,16 +3362,16 @@ using ticks_t = timer_large_integer::type;
     };
 
 #ifdef DOCTEST_CONFIG_NO_MULTITHREADING
-    template <typename T>
-    using Atomic = T;
+    template <typename Value>
+    using Atomic = Value;
 #else // DOCTEST_CONFIG_NO_MULTITHREADING
-    template <typename T>
-    using Atomic = std::atomic<T>;
+    template <typename Value>
+    using Atomic = std::atomic<Value>;
 #endif // DOCTEST_CONFIG_NO_MULTITHREADING
 
 #if defined(DOCTEST_CONFIG_NO_MULTI_LANE_ATOMICS) || defined(DOCTEST_CONFIG_NO_MULTITHREADING)
-    template <typename T>
-    using MultiLaneAtomic = Atomic<T>;
+    template <typename Value>
+    using MultiLaneAtomic = Atomic<Value>;
 #else // DOCTEST_CONFIG_NO_MULTI_LANE_ATOMICS
     // Provides a multilane implementation of an atomic variable that supports add, sub, load,
     // store. Instead of using a single atomic variable, this splits up into multiple ones,
@@ -3383,13 +3383,13 @@ using ticks_t = timer_large_integer::type;
     //
     // The disadvantage is that there is a small overhead due to the use of TLS, and load/store
     // is slower because all atomics have to be accessed.
-    template <typename T>
+    template <typename Value>
     class MultiLaneAtomic
     {
         struct CacheLineAlignedAtomic
         {
-            Atomic<T> atomic{};
-            char padding[DOCTEST_MULTI_LANE_ATOMICS_CACHE_LINE_SIZE - sizeof(Atomic<T>)];
+            Atomic<Value> atomic{};
+            char padding[DOCTEST_MULTI_LANE_ATOMICS_CACHE_LINE_SIZE - sizeof(Atomic<Value>)];
         };
         CacheLineAlignedAtomic m_atomics[DOCTEST_MULTI_LANE_ATOMICS_THREAD_LANES];
 
@@ -3397,34 +3397,34 @@ using ticks_t = timer_large_integer::type;
                       "guarantee one atomic takes exactly one cache line");
 
     public:
-        T operator++() DOCTEST_NOEXCEPT { return fetch_add(1) + 1; }
+        Value operator++() DOCTEST_NOEXCEPT { return fetch_add(1) + 1; }
 
-        T operator++(int) DOCTEST_NOEXCEPT { return fetch_add(1); }
+        Value operator++(int) DOCTEST_NOEXCEPT { return fetch_add(1); }
 
-        T fetch_add(T arg, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
+        Value fetch_add(Value arg, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
             return myAtomic().fetch_add(arg, order);
         }
 
-        T fetch_sub(T arg, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
+        Value fetch_sub(Value arg, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
             return myAtomic().fetch_sub(arg, order);
         }
 
-        operator T() const DOCTEST_NOEXCEPT { return load(); }
+        operator Value() const DOCTEST_NOEXCEPT { return load(); }
 
-        T load(std::memory_order order = std::memory_order_seq_cst) const DOCTEST_NOEXCEPT {
-            auto result = T();
+        Value load(std::memory_order order = std::memory_order_seq_cst) const DOCTEST_NOEXCEPT {
+            auto result = Value();
             for(auto const& c : m_atomics) {
                 result += c.atomic.load(order);
             }
             return result;
         }
 
-        T operator=(T desired) DOCTEST_NOEXCEPT { // lgtm [cpp/assignment-does-not-return-this]
+        Value operator=(Value desired) DOCTEST_NOEXCEPT { // lgtm [cpp/assignment-does-not-return-this]
             store(desired);
             return desired;
         }
 
-        void store(T desired, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
+        void store(Value desired, std::memory_order order = std::memory_order_seq_cst) DOCTEST_NOEXCEPT {
             // first value becomes desired", all others become 0.
             for(auto& c : m_atomics) {
                 c.atomic.store(desired, order);
@@ -3445,7 +3445,7 @@ using ticks_t = timer_large_integer::type;
         //    assigned in a round-robin fashion.
         // 3. This tlsLaneIdx is stored in the thread local data, so it is directly available with
         //    little overhead.
-        Atomic<T>& myAtomic() DOCTEST_NOEXCEPT {
+        Atomic<Value>& myAtomic() DOCTEST_NOEXCEPT {
             static Atomic<size_t> laneCounter;
             DOCTEST_THREAD_LOCAL size_t tlsLaneIdx =
                     laneCounter++ % DOCTEST_MULTI_LANE_ATOMICS_THREAD_LANES;
@@ -3868,8 +3868,8 @@ namespace detail {
         else { *stream << "nullptr"; }
     }
 
-    template <typename T>
-    String toStreamLit(T t) {
+    template <typename Value>
+    String toStreamLit(Value t) {
         std::ostream* os = tlssPush();
         os->operator<<(t);
         return tlssPop();
@@ -5008,8 +5008,8 @@ namespace {
 
             ScopedElement& writeText( std::string const& text, bool indent = true );
 
-            template<typename T>
-            ScopedElement& writeAttribute( std::string const& name, T const& attribute ) {
+            template<typename Value>
+            ScopedElement& writeAttribute( std::string const& name, Value const& attribute ) {
                 m_writer->writeAttribute( name, attribute );
                 return *this;
             }
@@ -5036,8 +5036,8 @@ namespace {
 
         XmlWriter& writeAttribute( std::string const& name, bool attribute );
 
-        template<typename T>
-        XmlWriter& writeAttribute( std::string const& name, T const& attribute ) {
+        template<typename Value>
+        XmlWriter& writeAttribute( std::string const& name, Value const& attribute ) {
         std::stringstream rss;
             rss << attribute;
             return writeAttribute( name, rss.str() );

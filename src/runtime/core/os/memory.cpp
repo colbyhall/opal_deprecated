@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "core/memory.h"
+#include "memory.h"
 
 EU_SUPPRESS_WARNINGS_STD_BEGIN
 
@@ -17,12 +17,10 @@ NonNull<void> malloc(const Layout& layout) {
 	return result; // Nullptr check happens inside NonNull
 }
 
-NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout,
-					  const Layout& new_layout) {
+NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout) {
 	EU_UNUSED(old_layout);
 
-	void* result =
-		std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
+	void* result = std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
 	return result; // Nullptr check happens inside of NonNull
 }
 
@@ -42,8 +40,6 @@ NonNull<void> set(NonNull<void> ptr, u8 value, usize count) {
 
 EU_CORE_NAMESPACE_END
 
-void* operator new(size_t size) {
-	return eu::core::malloc(eu::core::Layout{ size, 8 });
-}
+void* operator new(size_t size) { return eu::core::malloc(eu::core::Layout{ size, 8 }); }
 
 void operator delete(void* ptr) { eu::core::free(ptr); }

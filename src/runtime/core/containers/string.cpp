@@ -1,6 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "core/containers/string.h"
+#include "core/containers/wstring_view.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
@@ -9,16 +10,26 @@ String String::from(Array<char>&& bytes) {
 	string.m_bytes = eu::forward<Array<char>>(bytes);
 
 	// Add a null terminator if one is not found
-	if (!string.m_bytes.is_empty() && string.m_bytes[string.m_bytes.len() - 1] != 0) {
+	if (!string.m_bytes.is_empty() &&
+		string.m_bytes[string.m_bytes.len() - 1] != 0) {
 		string.m_bytes.push(0);
 	}
 	return string;
 }
 
-String String::from(StringView view) {
+String String::from(const StringView& view) {
 	String string;
 	string.push(view);
 	return string;
+}
+
+String String::from(const WStringView& view) {
+	// FIXME: Do proper utf16 decode
+	String ret;
+	ret.reserve(view.len());
+	for (auto c : view)
+		ret.push((Char)c);
+	return ret;
 }
 
 String::operator Slice<char const>() const {

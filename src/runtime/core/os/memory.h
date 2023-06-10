@@ -28,7 +28,7 @@ NonNull<void> malloc(const Layout& layout);
 
 template <typename T>
 EU_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
-	static_assert(std::is_trivial_v<T>, "T must be a trivial type to malloc");
+	static_assert(std::is_trivial_v<T>, "Value must be a trivial type to malloc");
 	return eu::core::malloc(Layout::array<T>(len)).as<T>();
 }
 
