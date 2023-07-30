@@ -26,4 +26,3 @@ AlignAfterOpenBracket: Align
 BreakConstructorInitializers: AfterColon
 
 Cpp11BracedListStyle: false
-ColumnLimit: 120

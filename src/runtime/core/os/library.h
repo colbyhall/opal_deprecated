@@ -1,0 +1,48 @@
+// Copyright Colby Hall. All Rights Reserved.
+
+#pragma once
+
+#include "core/containers/option.h"
+#include "core/containers/string_view.h"
+#include "core/non_copyable.h"
+
+EU_CORE_NAMESPACE_BEGIN
+
+class Library : NonCopyable {
+public:
+	static Option<Library> open(const StringView& path);
+
+	template <typename F>
+	Option<F&> find(const StringView& path) {
+		static_assert(std::is_function_v<F> || std::is_pod_v<F>);
+		void* f = find_internal(path);
+		if (f != nullptr) {
+			F* casted = static_cast<F*>(f);
+			return *casted;
+		}
+		return eu::none;
+	}
+
+	EU_ALWAYS_INLINE Library(Library&& move) noexcept :
+		m_handle(move.m_handle) {
+		move.m_handle = nullptr;
+	}
+	EU_ALWAYS_INLINE Library& operator=(Library&& move) noexcept {
+		auto to_destroy = eu::move(*this);
+		EU_UNUSED(to_destroy);
+
+		m_handle = move.m_handle;
+		move.m_handle = nullptr;
+
+		return *this;
+	}
+	~Library();
+
+private:
+	EU_ALWAYS_INLINE explicit Library(void* handle) : m_handle(handle) {}
+	void* find_internal(const StringView& name);
+
+	void* m_handle;
+};
+
+EU_CORE_NAMESPACE_END
