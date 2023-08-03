@@ -17,7 +17,6 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/allocator.h
         ${CORE_ROOT}/containers/array.h
         ${CORE_ROOT}/containers/array.inl
-        ${CORE_ROOT}/containers/bitflag.h
         ${CORE_ROOT}/containers/function.h
         ${CORE_ROOT}/containers/function.inl
         ${CORE_ROOT}/containers/map.h

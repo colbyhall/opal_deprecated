@@ -7,24 +7,24 @@
 
 EU_CORE_NAMESPACE_BEGIN
 
-class Hasher {
+class IHasher {
 public:
 	virtual u64 finish() = 0;
 	virtual void write(Slice<u8 const> bytes) = 0;
-	virtual ~Hasher() = default;
+	virtual ~IHasher() = default;
 };
 
-class FNV1Hasher : public Hasher {
+class FNV1Hasher : public IHasher {
 public:
 	constexpr FNV1Hasher() = default;
 
 	static const u64 offset_basic;
 	static const u64 prime;
 
-	// Hasher
+	// IHasher
 	u64 finish() override;
 	void write(Slice<u8 const> bytes) override;
-	// ~Hasher
+	// IHasherr
 
 private:
 	u64 m_result = 0;

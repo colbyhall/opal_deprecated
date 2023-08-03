@@ -13,22 +13,24 @@ EU_CORE_NAMESPACE_BEGIN
 
 #ifdef EU_PLATFORM_WINDOWS
 
-Result<File, File::Error> File::open(const StringView& path,
-									 BitFlag<Flags> flags) {
-	const bool read = flags[Flags::Read];
-	const bool write = flags[Flags::Write];
-	const bool create = flags[Flags::Create];
+Result<File, File::Error> File::open(const StringView& path, Flags flags) {
+	const bool read = (flags & Flags::Read) == Flags::Read;
+	const bool write = (flags & Flags::Write) == Flags::Write;
+	const bool create = (flags & Flags::Create) == Flags::Create;
 	EU_ASSERT(read || write);
 
 	DWORD access = 0;
-	if (read)
+	if (read) {
 		access |= GENERIC_READ;
-	if (write)
+	}
+	if (write) {
 		access |= GENERIC_WRITE;
+	}
 
 	DWORD creation = OPEN_EXISTING;
-	if (create)
+	if (create) {
 		creation = OPEN_ALWAYS;
+	}
 
 	WString wpath;
 	wpath.reserve(path.len() + 16);
@@ -77,15 +79,16 @@ usize File::seek(Seek method, isize distance) {
 }
 
 void File::set_eof() {
-	EU_ASSERT((m_flags & FileFlags::Write) != 0,
-			  "Can only write to file that has been open with FF_Write");
+	EU_ASSERT(
+		(m_flags & Flags::Write) == Flags::Write,
+		"Can only write to file that has been open with File::Flags::Read");
 	const bool ok = ::SetEndOfFile(m_handle);
 	EU_ASSERT(ok);
 }
 
 usize File::read(Slice<u8> buffer) {
-	EU_ASSERT((m_flags & FileFlags::Read) != 0,
-			  "Can only read a file that has been open with FF_Read");
+	EU_ASSERT((m_flags & Flags::Read) == Flags::Write,
+			  "Can only read a file that has been open with File::Flags::Read");
 
 	DWORD amount_read;
 	const bool ok = ::ReadFile(m_handle, buffer.begin(), (DWORD)buffer.len(),
@@ -98,8 +101,9 @@ usize File::read(Slice<u8> buffer) {
 }
 
 void File::write(Slice<const u8> buffer) {
-	EU_ASSERT((m_flags & FileFlags::Write) != 0,
-			  "Can only write to file that has been open with FF_Write");
+	EU_ASSERT(
+		(m_flags & Flags::Write) == Flags::Write,
+		"Can only write to file that has been open with File::Flags::Read");
 
 	const bool ok = ::WriteFile(m_handle, buffer.cbegin(), (DWORD)buffer.len(),
 								nullptr, nullptr);
@@ -231,8 +235,10 @@ String cwd() {
 #endif
 
 Result<String, File::Error> read_to_string(const StringView& path) {
+	using Flags = File::Flags;
+
 	// Open the file to read
-	auto result = File::open(path, FileFlags::Read);
+	auto result = File::open(path, Flags::Read);
 	if (!result.is_ok())
 		return result.unwrap_err();
 	File file = result.unwrap();

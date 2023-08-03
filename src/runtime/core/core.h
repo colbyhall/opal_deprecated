@@ -285,6 +285,33 @@ EU_NAMESPACE_END
 	#define EU_ENABLE_ASSERTS
 #endif
 
+#define EU_ENUM_CLASS_BITFIELD(Enum)                                           \
+	inline Enum& operator|=(Enum& A, Enum B) {                                 \
+		return (Enum&)((__underlying_type(Enum)&)A |=                          \
+					   (__underlying_type(Enum))B);                            \
+	}                                                                          \
+	inline Enum& operator&=(Enum& A, Enum B) {                                 \
+		return (Enum&)((__underlying_type(Enum)&)A &=                          \
+					   (__underlying_type(Enum))B);                            \
+	}                                                                          \
+	inline Enum& operator^=(Enum& A, Enum B) {                                 \
+		return (Enum&)((__underlying_type(Enum)&)A ^=                          \
+					   (__underlying_type(Enum))B);                            \
+	}                                                                          \
+	inline Enum operator|(Enum A, Enum B) {                                    \
+		return (Enum)((__underlying_type(Enum))A |                             \
+					  (__underlying_type(Enum))B);                             \
+	}                                                                          \
+	inline Enum operator&(Enum A, Enum B) {                                    \
+		return (Enum)((__underlying_type(Enum))A &                             \
+					  (__underlying_type(Enum))B);                             \
+	}                                                                          \
+	inline Enum operator^(Enum A, Enum B) {                                    \
+		return (Enum)((__underlying_type(Enum))A ^                             \
+					  (__underlying_type(Enum))B);                             \
+	}                                                                          \
+	inline Enum operator~(Enum A) { return (Enum) ~(__underlying_type(Enum))A; }
+
 #ifdef EU_ENABLE_ASSERTS
 
 EU_CORE_NAMESPACE_BEGIN

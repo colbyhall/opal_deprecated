@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "core/containers/bitflag.h"
 #include "core/containers/function.h"
 #include "core/containers/result.h"
 #include "core/containers/string.h"
@@ -13,8 +12,7 @@ class File final : NonCopyable {
 public:
 	enum class Flags : u32 { Read, Write, Create };
 	enum class Error : u32 { NotFound, InUse };
-	static Result<File, Error> open(const StringView& path,
-									BitFlag<Flags> flags);
+	static Result<File, Error> open(const StringView& path, Flags flags);
 
 	EU_NO_DISCARD usize size() const;
 	EU_NO_DISCARD usize cursor() const { return m_cursor; }
@@ -43,13 +41,14 @@ public:
 	~File();
 
 private:
-	EU_ALWAYS_INLINE File(void* handle, BitFlag<Flags> flags) :
+	EU_ALWAYS_INLINE File(void* handle, Flags flags) :
 		m_handle(handle), m_flags(flags), m_cursor(0) {}
 
 	void* m_handle;
-	BitFlag<Flags> m_flags;
+	Flags m_flags;
 	usize m_cursor;
 };
+EU_ENUM_CLASS_BITFIELD(File::Flags)
 
 Result<String, File::Error> read_to_string(const StringView& path);
 
