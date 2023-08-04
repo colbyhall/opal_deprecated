@@ -60,10 +60,8 @@ void CharsIterator::next() {
 		const u8 c = m_string[m_index];
 		utf8_decode(&m_decoder_state, &m_codepoint, c);
 
-		if (m_decoder_state == utf8_reject)
-			return;
-		if (m_decoder_state != utf8_accept)
-			continue;
+		if (m_decoder_state == utf8_reject) return;
+		if (m_decoder_state != utf8_accept) continue;
 
 		break;
 	}
@@ -79,10 +77,8 @@ Char CharsIterator::get() const {
 		const u8 c = (u8)m_string[get_index];
 		utf8_decode(&get_state, &get_codepoint, c);
 
-		if (get_state == utf8_reject)
-			return 0xfffd;
-		if (get_state != utf8_accept)
-			continue;
+		if (get_state == utf8_reject) return 0xfffd;
+		if (get_state != utf8_accept) continue;
 
 		break;
 	}
@@ -91,13 +87,11 @@ Char CharsIterator::get() const {
 
 bool StringView::operator==(const StringView& right) const {
 	// If our string are not the same length they can not be equal
-	if (len() != right.len())
-		return false;
+	if (len() != right.len()) return false;
 
 	// Compare bytes of strings
 	for (usize i = 0; i < len(); i++) {
-		if (m_bytes[i] != right.m_bytes[i])
-			return false;
+		if (m_bytes[i] != right.m_bytes[i]) return false;
 	}
 
 	return true;

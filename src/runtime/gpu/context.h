@@ -21,13 +21,17 @@ class Context {
 public:
 	static const Context& the();
 
-	EU_NO_DISCARD EU_ALWAYS_INLINE Backend backend() const {
-		return m_interface->backend();
+	EU_NO_DISCARD EU_ALWAYS_INLINE Backend backend() const { return m_interface->backend(); }
+
+	template <typename T = IContext>
+	T const& interface() const {
+		static_assert(std::is_base_of_v<IContext, T>, "T is not derived of ContextInterface");
+		return static_cast<const T&>(*m_interface);
 	}
 
 private:
-	EU_ALWAYS_INLINE explicit Context(Unique<IContext>&& interface) :
-		m_interface(eu::forward<Unique<IContext>>(interface)) {}
+	EU_ALWAYS_INLINE explicit Context(Unique<IContext>&& interface)
+		: m_interface(eu::forward<Unique<IContext>>(interface)) {}
 
 	friend const Context& init();
 

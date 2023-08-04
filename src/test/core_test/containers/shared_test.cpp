@@ -19,7 +19,7 @@ public:
 	int get_value() const override { return 100; }
 };
 
-TEST_CASE("eu::core::Shared") {
+TEST_CASE("eu::core::InterfacePtr") {
 	Shared<SharedFoo> foo = Shared<SharedBar>::make();
 	CHECK(foo->get_value() == 100);
 

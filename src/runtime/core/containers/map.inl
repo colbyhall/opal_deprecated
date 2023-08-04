@@ -38,10 +38,8 @@ Option<Value> Map<Key, Value, Allocator, Hasher>::remove(const Key& key) {
 	i32 bucket_index = -1;
 	while (true) {
 		bucket_index = bucket->next;
-		if (bucket->key == key)
-			return bucket->value;
-		if (bucket->next == -1)
-			break;
+		if (bucket->key == key) return bucket->value;
+		if (bucket->next == -1) break;
 		bucket = &m_buckets[bucket->next];
 	}
 
@@ -77,10 +75,8 @@ Option<Value&> Map<Key, Value, Allocator, Hasher>::find_mut(const Key& key) {
 
 	Bucket* bucket = &m_buckets[mapped];
 	while (true) {
-		if (bucket->key == key)
-			return bucket->value;
-		if (bucket->next == -1)
-			break;
+		if (bucket->key == key) return bucket->value;
+		if (bucket->next == -1) break;
 		bucket = &m_buckets[bucket->next];
 	}
 
@@ -101,10 +97,8 @@ Option<Value const&> Map<Key, Value, Allocator, Hasher>::find(const Key& key) co
 
 	Bucket const* bucket = &m_buckets[mapped];
 	while (true) {
-		if (bucket->key == key)
-			return bucket->value;
-		if (bucket->next == -1)
-			break;
+		if (bucket->key == key) return bucket->value;
+		if (bucket->next == -1) break;
 		bucket = &m_buckets[bucket->next];
 	}
 

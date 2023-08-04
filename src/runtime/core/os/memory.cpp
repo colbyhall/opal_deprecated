@@ -17,12 +17,10 @@ NonNull<void> malloc(const Layout& layout) {
 	return result; // Nullptr check happens inside NonNull
 }
 
-NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout,
-					  const Layout& new_layout) {
+NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout) {
 	EU_UNUSED(old_layout);
 
-	void* result =
-		std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
+	void* result = std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
 	return result; // Nullptr check happens inside NonNull
 }
 

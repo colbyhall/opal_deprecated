@@ -25,8 +25,7 @@ public:
 	usize read(Slice<u8> buffer);
 	void write(Slice<const u8> buffer);
 
-	EU_ALWAYS_INLINE File(File&& move) noexcept :
-		m_handle(move.m_handle), m_flags(move.m_flags), m_cursor(0) {
+	EU_ALWAYS_INLINE File(File&& move) noexcept : m_handle(move.m_handle), m_flags(move.m_flags), m_cursor(0) {
 		move.m_handle = nullptr;
 	}
 	EU_ALWAYS_INLINE File& operator=(File&& move) noexcept {
@@ -41,8 +40,7 @@ public:
 	~File();
 
 private:
-	EU_ALWAYS_INLINE File(void* handle, Flags flags) :
-		m_handle(handle), m_flags(flags), m_cursor(0) {}
+	EU_ALWAYS_INLINE File(void* handle, Flags flags) : m_handle(handle), m_flags(flags), m_cursor(0) {}
 
 	void* m_handle;
 	Flags m_flags;

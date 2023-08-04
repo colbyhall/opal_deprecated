@@ -6,7 +6,7 @@
 EU_TEST_BEGIN
 
 TEST_CASE("eu::core::Slice") {
-	int test_array[] = {1, 2, 3, 4, 5};
+	int test_array[] = { 1, 2, 3, 4, 5 };
 	eu::usize array_len = sizeof(test_array) / sizeof(test_array[0]);
 
 	eu::Slice<int> s(test_array, array_len);
@@ -63,7 +63,7 @@ TEST_CASE("eu::core::Slice") {
 	}
 
 	SUBCASE("Testing initializer_list constructor") {
-		eu::Slice<const int> s_initializer({1, 2, 3, 4, 5});
+		eu::Slice<const int> s_initializer({ 1, 2, 3, 4, 5 });
 		CHECK(s_initializer.len() == 5);
 		CHECK(!s_initializer.is_empty());
 

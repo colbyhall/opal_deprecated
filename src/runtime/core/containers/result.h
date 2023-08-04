@@ -45,7 +45,7 @@ public:
 				auto* p = reinterpret_cast<Error*>(&m_data[0]);
 				p->~Error();
 			}
-			
+
 			m_set = false;
 			m_ok = false;
 		}

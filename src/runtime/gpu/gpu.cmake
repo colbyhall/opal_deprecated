@@ -4,9 +4,13 @@ set(GPU_ROOT ${RUNTIME_ROOT}/gpu)
 # Source files
 set(GPU_SRC_FILES
         ${GPU_ROOT}/d3d12/d3d12.h
+        ${GPU_ROOT}/d3d12/d3d12_buffer.h
+        ${GPU_ROOT}/d3d12/d3d12_buffer.cpp
         ${GPU_ROOT}/d3d12/d3d12_context.h
         ${GPU_ROOT}/d3d12/d3d12_context.cpp
 
+        ${GPU_ROOT}/buffer.h
+        ${GPU_ROOT}/buffer.cpp
         ${GPU_ROOT}/context.h
         ${GPU_ROOT}/context.cpp
         ${GPU_ROOT}/gpu.cmake

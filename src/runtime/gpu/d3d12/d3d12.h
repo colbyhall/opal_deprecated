@@ -41,10 +41,10 @@ EU_ALWAYS_INLINE void throw_if_failed(HRESULT hr) {
 
 EU_GPU_NAMESPACE_END
 
-#define EU_GPU_D3D12_NAMESPACE_BEGIN                                           \
-	EU_GPU_NAMESPACE_BEGIN                                                     \
+#define EU_GPU_D3D12_NAMESPACE_BEGIN                                                                                   \
+	EU_GPU_NAMESPACE_BEGIN                                                                                             \
 	namespace d3d12 {
 
-#define EU_GPU_D3D12_NAMESPACE_END                                             \
-	}                                                                          \
+#define EU_GPU_D3D12_NAMESPACE_END                                                                                     \
+	}                                                                                                                  \
 	EU_GPU_NAMESPACE_END

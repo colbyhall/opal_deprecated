@@ -13,9 +13,7 @@ public:
 	NonTriviallyCopyable(const NonTriviallyCopyable&) = delete;
 	NonTriviallyCopyable& operator=(const NonTriviallyCopyable&) = delete;
 	NonTriviallyCopyable(NonTriviallyCopyable&&) noexcept {}
-	NonTriviallyCopyable& operator=(NonTriviallyCopyable&&) noexcept {
-		return *this;
-	}
+	NonTriviallyCopyable& operator=(NonTriviallyCopyable&&) noexcept { return *this; }
 
 	int m_x = 0;
 };

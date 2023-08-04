@@ -25,11 +25,11 @@ public:
 	EU_NO_DISCARD EU_ALWAYS_INLINE T load(Order order = Order::SeqCst) const noexcept;
 	EU_NO_DISCARD EU_ALWAYS_INLINE T exchange(T desired, Order order = Order::SeqCst) const noexcept;
 
-	EU_NO_DISCARD EU_ALWAYS_INLINE Option<T> compare_exchange_weak(T expected, T desired,
-																   Order order = Order::SeqCst) const noexcept;
+	EU_NO_DISCARD EU_ALWAYS_INLINE Option<T>
+	compare_exchange_weak(T expected, T desired, Order order = Order::SeqCst) const noexcept;
 
-	EU_NO_DISCARD EU_ALWAYS_INLINE Option<T> compare_exchange_strong(T expected, T desired,
-																	 Order order = Order::SeqCst) const noexcept;
+	EU_NO_DISCARD EU_ALWAYS_INLINE Option<T>
+	compare_exchange_strong(T expected, T desired, Order order = Order::SeqCst) const noexcept;
 
 	EU_NO_DISCARD EU_ALWAYS_INLINE T fetch_add(T arg, Order order = Order::SeqCst) const noexcept;
 	EU_NO_DISCARD EU_ALWAYS_INLINE T fetch_sub(T arg, Order order = Order::SeqCst) const noexcept;
@@ -39,8 +39,10 @@ public:
 
 private:
 	EU_ALWAYS_INLINE std::memory_order to_std(Order order) const {
-		static const std::memory_order convert[] = { std::memory_order_relaxed, std::memory_order_release,
-													 std::memory_order_acquire, std::memory_order_acq_rel,
+		static const std::memory_order convert[] = { std::memory_order_relaxed,
+													 std::memory_order_release,
+													 std::memory_order_acquire,
+													 std::memory_order_acq_rel,
 													 std::memory_order_seq_cst };
 		return convert[(u8)order];
 	}

@@ -17,10 +17,7 @@ public:
 	public:
 		// ~Begin Allocator Interface
 		Allocation() = default;
-		EU_ALWAYS_INLINE Allocation(Allocation&& other) noexcept :
-			m_ptr(other.m_ptr) {
-			other.m_ptr = nullptr;
-		}
+		EU_ALWAYS_INLINE Allocation(Allocation&& other) noexcept : m_ptr(other.m_ptr) { other.m_ptr = nullptr; }
 		EU_ALWAYS_INLINE Allocation& operator=(Allocation&& other) noexcept {
 			auto destroy = eu::move(*this);
 			EU_UNUSED(destroy);
@@ -49,8 +46,10 @@ public:
 				m_ptr = static_cast<Element*>(ptr);
 			} else {
 				void* ptr = core::realloc(
-					m_ptr, core::Layout::array<Element>(old_current),
-					core::Layout::array<Element>(current));
+					m_ptr,
+					core::Layout::array<Element>(old_current),
+					core::Layout::array<Element>(current)
+				);
 				m_ptr = static_cast<Element*>(ptr);
 			}
 
@@ -80,8 +79,7 @@ public:
 	public:
 		// ~Begin Allocator Interface
 		Allocation() = default;
-		EU_ALWAYS_INLINE Allocation(Allocation&& other) noexcept :
-			m_data(other.m_data) {}
+		EU_ALWAYS_INLINE Allocation(Allocation&& other) noexcept : m_data(other.m_data) {}
 		EU_ALWAYS_INLINE Allocation& operator=(Allocation&& other) noexcept {
 			auto destroy = eu::move(*this);
 			EU_UNUSED(destroy);
@@ -89,12 +87,8 @@ public:
 			return *this;
 		}
 
-		EU_ALWAYS_INLINE Element* ptr() {
-			return reinterpret_cast<Element*>(&m_data[0]);
-		}
-		EU_ALWAYS_INLINE Element const* ptr() const {
-			return reinterpret_cast<Element const*>(&m_data[0]);
-		}
+		EU_ALWAYS_INLINE Element* ptr() { return reinterpret_cast<Element*>(&m_data[0]); }
+		EU_ALWAYS_INLINE Element const* ptr() const { return reinterpret_cast<Element const*>(&m_data[0]); }
 		EU_ALWAYS_INLINE usize resize(usize current, usize desired) {
 			EU_UNUSED(current);
 			EU_UNUSED(desired);

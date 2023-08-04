@@ -18,6 +18,8 @@ public:
 	Backend backend() const override { return Backend::D3D12; }
 	// ~IContext
 
+	EU_NO_DISCARD EU_ALWAYS_INLINE ComPtr<ID3D12Device1> device() const { return m_device; }
+
 private:
 	Option<core::Library> m_d3d12;
 

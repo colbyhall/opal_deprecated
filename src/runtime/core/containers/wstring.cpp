@@ -70,11 +70,9 @@ WString& WString::push(WChar w) {
 
 WString& WString::push(WStringView string) {
 	const usize slag = m_chars.cap() - m_chars.len();
-	if (slag < string.len())
-		m_chars.reserve(string.len());
+	if (slag < string.len()) m_chars.reserve(string.len());
 
-	if (m_chars.len() == 0)
-		m_chars.push(0);
+	if (m_chars.len() == 0) m_chars.push(0);
 	for (WChar w : string)
 		m_chars.insert(m_chars.len() - 1, w);
 
@@ -83,8 +81,7 @@ WString& WString::push(WStringView string) {
 
 WString& WString::push(StringView string) {
 	const usize slag = m_chars.cap() - m_chars.len();
-	if (slag < string.len())
-		m_chars.reserve(string.len());
+	if (slag < string.len()) m_chars.reserve(string.len());
 
 	for (auto iter = string.chars(); iter; ++iter) {
 		push(utf32_to_utf16(*iter));

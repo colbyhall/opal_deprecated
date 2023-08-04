@@ -5,23 +5,23 @@
 EU_CORE_NAMESPACE_BEGIN
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE Array<Element, Allocator>::Array(Array&& move) noexcept :
-	m_allocation(eu::move(move.m_allocation)), m_len(move.m_len),
-	m_cap(move.m_cap) {
+EU_ALWAYS_INLINE Array<Element, Allocator>::Array(Array&& move) noexcept
+	: m_allocation(eu::move(move.m_allocation))
+	, m_len(move.m_len)
+	, m_cap(move.m_cap) {
 	move.m_len = 0;
 	move.m_cap = 0;
 }
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE Array<Element, Allocator>&
-Array<Element, Allocator>::operator=(Array&& move) noexcept {
+EU_ALWAYS_INLINE Array<Element, Allocator>& Array<Element, Allocator>::operator=(Array&& move) noexcept {
 	auto to_destroy = eu::move(*this);
 	EU_UNUSED(to_destroy);
 
 	m_allocation = eu::move(move.m_allocation);
 	m_len = move.m_len;
 	m_cap = move.m_cap;
-	
+
 	move.m_len = 0;
 	move.m_cap = 0;
 	return *this;
@@ -36,8 +36,7 @@ Array<Element, Allocator>::~Array() {
 }
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE bool
-Array<Element, Allocator>::is_valid_index(usize index) const {
+EU_ALWAYS_INLINE bool Array<Element, Allocator>::is_valid_index(usize index) const {
 	return index < len();
 }
 
@@ -47,8 +46,7 @@ EU_ALWAYS_INLINE Array<Element, Allocator>::operator Slice<Element>() {
 }
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE
-	Array<Element, Allocator>::operator Slice<Element const>() const {
+EU_ALWAYS_INLINE Array<Element, Allocator>::operator Slice<Element const>() const {
 	return { m_allocation.ptr(), m_len };
 }
 
@@ -69,24 +67,20 @@ EU_ALWAYS_INLINE Element& Array<Element, Allocator>::operator[](usize index) {
 }
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE const Element&
-Array<Element, Allocator>::operator[](usize index) const {
+EU_ALWAYS_INLINE const Element& Array<Element, Allocator>::operator[](usize index) const {
 	EU_ASSERT(is_valid_index(index), "Index out of bounds");
 	return m_allocation.ptr()[index];
 }
 
 template <typename Element, typename Allocator>
 EU_ALWAYS_INLINE Option<Element&> Array<Element, Allocator>::last() {
-	if (len() > 0)
-		return m_allocation.ptr()[len() - 1];
+	if (len() > 0) return m_allocation.ptr()[len() - 1];
 	return nullptr;
 }
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE Option<Element const&>
-Array<Element, Allocator>::last() const {
-	if (len() > 0)
-		return m_allocation.ptr()[len() - 1];
+EU_ALWAYS_INLINE Option<Element const&> Array<Element, Allocator>::last() const {
+	if (len() > 0) return m_allocation.ptr()[len() - 1];
 	return nullptr;
 }
 
@@ -98,8 +92,7 @@ EU_ALWAYS_INLINE void Array<Element, Allocator>::reserve(usize amount) {
 template <typename Element, typename Allocator>
 void Array<Element, Allocator>::insert(usize index, Element&& item) {
 	EU_ASSERT(index <= m_len);
-	if (len() == cap())
-		reserve(1);
+	if (len() == cap()) reserve(1);
 
 	auto* src = m_allocation.ptr() + index;
 	if (index != len()) {
@@ -112,8 +105,7 @@ void Array<Element, Allocator>::insert(usize index, Element&& item) {
 }
 
 template <typename Element, typename Allocator>
-EU_ALWAYS_INLINE void Array<Element, Allocator>::insert(usize index,
-														const Element& item) {
+EU_ALWAYS_INLINE void Array<Element, Allocator>::insert(usize index, const Element& item) {
 	Element copy = item;
 	insert(index, eu::move(copy));
 }

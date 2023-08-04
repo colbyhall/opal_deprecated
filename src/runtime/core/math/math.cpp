@@ -32,11 +32,7 @@ f64 atan2(f64 y, f64 x) { return std::atan2(y, x); }
 f32 sqrt(f32 x) { return std::sqrt(x); }
 f64 sqrt(f64 x) { return std::sqrt(x); }
 
-f32 fmod(f32 numerator, f32 denominator) {
-	return std::fmod(numerator, denominator);
-}
-f64 fmod(f64 numerator, f64 denominator) {
-	return std::fmod(numerator, denominator);
-}
+f32 fmod(f32 numerator, f32 denominator) { return std::fmod(numerator, denominator); }
+f64 fmod(f64 numerator, f64 denominator) { return std::fmod(numerator, denominator); }
 
 EU_CORE_NAMESPACE_END

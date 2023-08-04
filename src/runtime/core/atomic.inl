@@ -27,8 +27,8 @@ EU_NO_DISCARD EU_ALWAYS_INLINE T Atomic<T>::exchange(T desired, Order order) con
 }
 
 template <typename T>
-EU_NO_DISCARD EU_ALWAYS_INLINE Option<T> Atomic<T>::compare_exchange_weak(T expected, T desired,
-																		  Order order) const noexcept {
+EU_NO_DISCARD EU_ALWAYS_INLINE Option<T>
+Atomic<T>::compare_exchange_weak(T expected, T desired, Order order) const noexcept {
 	if (m_atomic.compare_exchange_weak(expected, desired, to_std(order))) {
 		return expected;
 	}
@@ -36,8 +36,8 @@ EU_NO_DISCARD EU_ALWAYS_INLINE Option<T> Atomic<T>::compare_exchange_weak(T expe
 }
 
 template <typename T>
-EU_NO_DISCARD EU_ALWAYS_INLINE Option<T> Atomic<T>::compare_exchange_strong(T expected, T desired,
-																			Order order) const noexcept {
+EU_NO_DISCARD EU_ALWAYS_INLINE Option<T>
+Atomic<T>::compare_exchange_strong(T expected, T desired, Order order) const noexcept {
 	if (m_atomic.compare_exchange_strong(expected, desired, to_std(order))) {
 		return expected;
 	}

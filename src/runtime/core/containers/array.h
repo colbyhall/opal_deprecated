@@ -12,9 +12,7 @@ EU_CORE_NAMESPACE_BEGIN
 template <typename Element, typename Allocator = MallocAllocator>
 class Array {
 public:
-	static_assert(
-		core::is_allocator<Allocator>,
-		"Allocator is not valid. See \"core/containers/allocator.h\"");
+	static_assert(core::is_allocator<Allocator>, "Allocator is not valid. See \"core/containers/allocator.h\"");
 
 	using Allocation = typename Allocator::template Allocation<Element>;
 

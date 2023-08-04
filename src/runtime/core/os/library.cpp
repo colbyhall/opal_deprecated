@@ -17,8 +17,7 @@ Option<Library> Library::open(const StringView& path) {
 	wpath.push(path);
 
 	void* handle = LoadLibraryW(wpath.ptr());
-	if (handle != nullptr)
-		return Library{ handle };
+	if (handle != nullptr) return Library{ handle };
 	return nullptr;
 }
 
@@ -29,8 +28,6 @@ Library::~Library() {
 	}
 }
 
-void* Library::find_internal(const StringView& name) {
-	return (void*)GetProcAddress((HMODULE)m_handle, *name);
-}
+void* Library::find_internal(const StringView& name) { return (void*)GetProcAddress((HMODULE)m_handle, *name); }
 
 EU_CORE_NAMESPACE_END

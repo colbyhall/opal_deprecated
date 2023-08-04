@@ -9,8 +9,7 @@ EU_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 constexpr usize constexpr_strlen(const T* string) {
-	if (*string == 0)
-		return 0;
+	if (*string == 0) return 0;
 	string += 1;
 	return 1 + constexpr_strlen(string);
 }
@@ -28,8 +27,11 @@ i32 utf8_encode(u32 c, void* dest, u32* errors);
 
 class CharsIterator {
 public:
-	EU_ALWAYS_INLINE explicit CharsIterator(Slice<char const> string) :
-		m_string(string), m_index(0), m_decoder_state(0), m_codepoint(0) {}
+	EU_ALWAYS_INLINE explicit CharsIterator(Slice<char const> string)
+		: m_string(string)
+		, m_index(0)
+		, m_decoder_state(0)
+		, m_codepoint(0) {}
 
 	EU_ALWAYS_INLINE operator bool() const { return should_continue(); }
 	EU_ALWAYS_INLINE CharsIterator& operator++() {

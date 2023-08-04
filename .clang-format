@@ -1,9 +1,8 @@
 ---
 # We'll use defaults from the LLVM style, but with 4 columns indentation.
-BasedOnStyle: LLVM
 IndentWidth: 4
 TabWidth: 4
-AllowShortIfStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: true
 IndentCaseLabels: false
 
 # Force pointers to the type for C++.
@@ -21,8 +20,17 @@ EmptyLineBeforeAccessModifier: LogicalBlock
 AlwaysBreakTemplateDeclarations: Yes
 IndentAccessModifiers: false
 AccessModifierOffset: -4
-AlignAfterOpenBracket: Align
-
-BreakConstructorInitializers: AfterColon
+AlignAfterOpenBracket: BlockIndent
 
 Cpp11BracedListStyle: false
+
+ColumnLimit: 120
+BreakStringLiterals: true
+ReflowComments: true
+BinPackParameters: false
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: false
+
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: CurrentLine
+AllowAllArgumentsOnNextLine: false

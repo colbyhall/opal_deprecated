@@ -42,7 +42,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/os/memory.h
         ${CORE_ROOT}/os/memory.cpp
         ${CORE_ROOT}/os/windows.h
-        
+
         ${CORE_ROOT}/atomic.h
         ${CORE_ROOT}/atomic.inl
         ${CORE_ROOT}/core.cmake

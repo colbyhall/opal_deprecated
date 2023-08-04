@@ -10,7 +10,8 @@ Slice<T>& Slice<T>::operator=(const Slice<T>& c) {
 }
 
 template <typename T>
-Slice<T>::Slice(Slice<T>&& m) noexcept : m_ptr(m.m_ptr), m_len(m.m_len) {
+Slice<T>::Slice(Slice<T>&& m) noexcept : m_ptr(m.m_ptr)
+									   , m_len(m.m_len) {
 	m.m_ptr = nullptr;
 	m.m_len = 0;
 }
@@ -19,7 +20,7 @@ template <typename T>
 Slice<T>& Slice<T>::operator=(Slice<T>&& m) noexcept {
 	m_ptr = m.m_ptr;
 	m_len = m.m_len;
-	
+
 	m.m_ptr = nullptr;
 	m.m_len = 0;
 
@@ -34,7 +35,8 @@ Slice<T const>& Slice<T const>::operator=(const Slice<T const>& c) {
 }
 
 template <typename T>
-Slice<T const>::Slice(Slice<T const>&& m) noexcept : m_ptr(m.m_ptr), m_len(m.m_len) {
+Slice<T const>::Slice(Slice<T const>&& m) noexcept : m_ptr(m.m_ptr)
+												   , m_len(m.m_len) {
 	m.m_ptr = nullptr;
 	m.m_len = 0;
 }

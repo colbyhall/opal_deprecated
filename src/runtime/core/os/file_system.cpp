@@ -38,9 +38,15 @@ Result<File, File::Error> File::open(const StringView& path, Flags flags) {
 	// path.push(L"\\\\?\\");
 	wpath.push(path);
 
-	void* handle =
-		::CreateFileW(wpath.ptr(), access, FILE_SHARE_READ | FILE_SHARE_WRITE,
-					  nullptr, creation, FILE_ATTRIBUTE_NORMAL, nullptr);
+	void* handle = ::CreateFileW(
+		wpath.ptr(),
+		access,
+		FILE_SHARE_READ | FILE_SHARE_WRITE,
+		nullptr,
+		creation,
+		FILE_ATTRIBUTE_NORMAL,
+		nullptr
+	);
 
 	// If the handle is invalid then an error occurred
 	if (handle == INVALID_HANDLE_VALUE) {
@@ -70,8 +76,7 @@ usize File::seek(Seek method, isize distance) {
 	LARGE_INTEGER win32_distance;
 	win32_distance.QuadPart = distance;
 	LARGE_INTEGER new_cursor;
-	const bool ok =
-		::SetFilePointerEx(m_handle, win32_distance, &new_cursor, win32_method);
+	const bool ok = ::SetFilePointerEx(m_handle, win32_distance, &new_cursor, win32_method);
 	EU_ASSERT(ok);
 
 	m_cursor = static_cast<usize>(new_cursor.QuadPart);
@@ -81,18 +86,20 @@ usize File::seek(Seek method, isize distance) {
 void File::set_eof() {
 	EU_ASSERT(
 		(m_flags & Flags::Write) == Flags::Write,
-		"Can only write to file that has been open with File::Flags::Read");
+		"Can only write to file that has been open with File::Flags::Read"
+	);
 	const bool ok = ::SetEndOfFile(m_handle);
 	EU_ASSERT(ok);
 }
 
 usize File::read(Slice<u8> buffer) {
-	EU_ASSERT((m_flags & Flags::Read) == Flags::Write,
-			  "Can only read a file that has been open with File::Flags::Read");
+	EU_ASSERT(
+		(m_flags & Flags::Read) == Flags::Write,
+		"Can only read a file that has been open with File::Flags::Read"
+	);
 
 	DWORD amount_read;
-	const bool ok = ::ReadFile(m_handle, buffer.begin(), (DWORD)buffer.len(),
-							   &amount_read, nullptr);
+	const bool ok = ::ReadFile(m_handle, buffer.begin(), (DWORD)buffer.len(), &amount_read, nullptr);
 	EU_ASSERT(ok);
 
 	m_cursor += amount_read;
@@ -103,10 +110,10 @@ usize File::read(Slice<u8> buffer) {
 void File::write(Slice<const u8> buffer) {
 	EU_ASSERT(
 		(m_flags & Flags::Write) == Flags::Write,
-		"Can only write to file that has been open with File::Flags::Read");
+		"Can only write to file that has been open with File::Flags::Read"
+	);
 
-	const bool ok = ::WriteFile(m_handle, buffer.cbegin(), (DWORD)buffer.len(),
-								nullptr, nullptr);
+	const bool ok = ::WriteFile(m_handle, buffer.cbegin(), (DWORD)buffer.len(), nullptr, nullptr);
 	EU_ASSERT(ok);
 
 	m_cursor += buffer.len();
@@ -120,8 +127,7 @@ File::~File() {
 	}
 }
 
-static void read_directory_impl(const StringView& path, bool recursive,
-								ReadDirFunction& function) {
+static void read_directory_impl(const StringView& path, bool recursive, ReadDirFunction& function) {
 	WString wpath;
 	wpath.reserve(path.len() + 16);
 	// TODO: Prepend this to allow paths past MAX_PATH
@@ -144,13 +150,9 @@ static void read_directory_impl(const StringView& path, bool recursive,
 
 	do {
 		// Check to see if cFileName is "." or ".."
-		bool invalid =
-			find_data.cFileName[0] == L'.' && find_data.cFileName[1] == 0;
-		invalid |= find_data.cFileName[0] == L'.' &&
-				   find_data.cFileName[1] == L'.' &&
-				   find_data.cFileName[2] == 0;
-		if (invalid)
-			continue;
+		bool invalid = find_data.cFileName[0] == L'.' && find_data.cFileName[1] == 0;
+		invalid |= find_data.cFileName[0] == L'.' && find_data.cFileName[1] == L'.' && find_data.cFileName[2] == 0;
+		if (invalid) continue;
 
 		while (wpath.len() < wpath_len) {
 			wpath.push(0);
@@ -160,26 +162,20 @@ static void read_directory_impl(const StringView& path, bool recursive,
 
 		// Convert all the FILETIME to u64
 		FILETIME creation_time = find_data.ftCreationTime;
-		item.meta.creation_time = (u64)creation_time.dwHighDateTime << 32 |
-								  creation_time.dwLowDateTime;
+		item.meta.creation_time = (u64)creation_time.dwHighDateTime << 32 | creation_time.dwLowDateTime;
 		FILETIME last_access_time = find_data.ftLastAccessTime;
-		item.meta.last_access_time = (u64)last_access_time.dwHighDateTime
-										 << 32 |
-									 last_access_time.dwLowDateTime;
+		item.meta.last_access_time = (u64)last_access_time.dwHighDateTime << 32 | last_access_time.dwLowDateTime;
 		FILETIME last_write_time = find_data.ftLastWriteTime;
-		item.meta.last_write_time = (u64)last_write_time.dwHighDateTime << 32 |
-									last_write_time.dwLowDateTime;
+		item.meta.last_write_time = (u64)last_write_time.dwHighDateTime << 32 | last_write_time.dwLowDateTime;
 
 		// Add a slash if one is not at the end
 		const wchar_t last = wpath[wpath.len() - 1];
-		if (last != L'\\' && last != L'/')
-			wpath.push("\\");
+		if (last != L'\\' && last != L'/') wpath.push("\\");
 
 		// Add the new filename to the end and convert to path
 		for (int i = 0; i < MAX_PATH; ++i) {
 			const WCHAR w = find_data.cFileName[i];
-			if (w == 0)
-				break;
+			if (w == 0) break;
 			wpath.push(w);
 		}
 		auto new_path = String::from(wpath);
@@ -187,33 +183,26 @@ static void read_directory_impl(const StringView& path, bool recursive,
 		if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 			item.type = DirectoryItem::Type::Directory;
 
-			if (recursive)
-				read_directory_impl(new_path, recursive, function);
+			if (recursive) read_directory_impl(new_path, recursive, function);
 
 			item.path = eu::move(new_path);
 		} else {
 			item.type = DirectoryItem::Type::File;
 			item.path = eu::move(new_path);
 
-			item.meta.read_only =
-				(find_data.dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0;
+			item.meta.read_only = (find_data.dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0;
 			item.meta.size = find_data.nFileSizeLow;
 		}
 
-		if (!function(item))
-			break;
+		if (!function(item)) break;
 	} while (FindNextFileW(find_handle, &find_data));
 
 	FindClose(find_handle);
 }
 
-void read_dir(const StringView& path, ReadDirFunction function) {
-	read_directory_impl(path, false, function);
-}
+void read_dir(const StringView& path, ReadDirFunction function) { read_directory_impl(path, false, function); }
 
-void read_dir_recursive(const StringView& path, ReadDirFunction function) {
-	read_directory_impl(path, true, function);
-}
+void read_dir_recursive(const StringView& path, ReadDirFunction function) { read_directory_impl(path, true, function); }
 
 String cwd() {
 	// Query the length of the path
@@ -239,8 +228,7 @@ Result<String, File::Error> read_to_string(const StringView& path) {
 
 	// Open the file to read
 	auto result = File::open(path, Flags::Read);
-	if (!result.is_ok())
-		return result.unwrap_err();
+	if (!result.is_ok()) return result.unwrap_err();
 	File file = result.unwrap();
 
 	// Allocate a buffer that is the size of the file

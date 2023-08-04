@@ -21,7 +21,9 @@ template <typename T>
 const Vec3<T> Vec3<T>::up = { 0, 0, 1 };
 
 template <typename T>
-EU_ALWAYS_INLINE constexpr Vec3<T>::Vec3(Vec2<T> xy, T z) : u(xy.x), v(xy.y), w(z) {}
+EU_ALWAYS_INLINE constexpr Vec3<T>::Vec3(Vec2<T> xy, T z) : u(xy.x)
+														  , v(xy.y)
+														  , w(z) {}
 
 template <typename T>
 EU_ALWAYS_INLINE Vec3<T> Vec3<T>::operator+(const Vec3<T>& rhs) const {

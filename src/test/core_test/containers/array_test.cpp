@@ -17,7 +17,7 @@ TEST_CASE("eu::core::Array") {
 		arr.push(15);
 
 		REQUIRE(arr.len() == 3); // We've added three elements
-		CHECK(arr[0] == 5); // The elements should be in the order we added them
+		CHECK(arr[0] == 5);		 // The elements should be in the order we added them
 		CHECK(arr[1] == 10);
 		CHECK(arr[2] == 15);
 	}
