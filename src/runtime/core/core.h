@@ -89,7 +89,9 @@
 #endif
 
 #ifdef _DEBUG
-	#define EU_BUILD_DEBUG
+	#define EU_BUILD_DEBUG 1
+#else
+	#define EU_BUILD_DEBUG 1
 #endif
 
 #define EU_THREAD_LOCAL __declspec(thread)

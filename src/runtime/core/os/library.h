@@ -13,14 +13,14 @@ public:
 	static Option<Library> open(const StringView& path);
 
 	template <typename F>
-	Option<F&> find(const StringView& path) {
+	F find(const StringView& path) {
 		static_assert(std::is_function_v<F> || std::is_pod_v<F>);
 		void* f = find_internal(path);
 		if (f != nullptr) {
-			F* casted = static_cast<F*>(f);
-			return *casted;
+			F casted = (F)(f);
+			return casted;
 		}
-		return eu::none;
+		return nullptr;
 	}
 
 	EU_ALWAYS_INLINE Library(Library&& move) noexcept :

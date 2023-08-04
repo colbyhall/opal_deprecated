@@ -1,17 +1,16 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "core/os/file_system.h"
+#include "core/core.h"
 
-EU_SUPPRESS_WARNINGS_STD_BEGIN
-#include <iostream>
-EU_SUPPRESS_WARNINGS_STD_END
+#include "gpu/context.h"
+
+using namespace eu;
 
 auto main(int argc, char** argv) -> int {
 	EU_UNUSED(argc);
 	EU_UNUSED(argv);
 
-	auto path = eu::cwd();
-	EU_UNUSED(path);
+	gpu::init();
 
 	return 0;
 }

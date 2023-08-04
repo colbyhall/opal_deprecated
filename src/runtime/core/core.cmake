@@ -3,17 +3,6 @@ set(CORE_ROOT ${RUNTIME_ROOT}/core)
 
 # Source files
 set(CORE_SRC_FILES
-        ${CORE_ROOT}/atomic.h
-        ${CORE_ROOT}/atomic.inl
-        ${CORE_ROOT}/core.cmake
-        ${CORE_ROOT}/core.cpp
-        ${CORE_ROOT}/core.h
-        ${CORE_ROOT}/core.natvis
-        ${CORE_ROOT}/hash.h
-        ${CORE_ROOT}/hash.cpp
-        ${CORE_ROOT}/initializer_list.h
-        ${CORE_ROOT}/non_copyable.h
-        ${CORE_ROOT}/type_traits.h
         ${CORE_ROOT}/containers/allocator.h
         ${CORE_ROOT}/containers/array.h
         ${CORE_ROOT}/containers/array.inl
@@ -38,12 +27,14 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/wstring.h
         ${CORE_ROOT}/containers/wstring.cpp
         ${CORE_ROOT}/containers/wstring_view.h
+
         ${CORE_ROOT}/math/math.h
         ${CORE_ROOT}/math/math.cpp
         ${CORE_ROOT}/math/vec2.h
         ${CORE_ROOT}/math/vec2.inl
         ${CORE_ROOT}/math/vec3.h
         ${CORE_ROOT}/math/vec3.inl
+
         ${CORE_ROOT}/os/file_system.h
         ${CORE_ROOT}/os/file_system.cpp
         ${CORE_ROOT}/os/library.h
@@ -51,6 +42,18 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/os/memory.h
         ${CORE_ROOT}/os/memory.cpp
         ${CORE_ROOT}/os/windows.h
+        
+        ${CORE_ROOT}/atomic.h
+        ${CORE_ROOT}/atomic.inl
+        ${CORE_ROOT}/core.cmake
+        ${CORE_ROOT}/core.cpp
+        ${CORE_ROOT}/core.h
+        ${CORE_ROOT}/core.natvis
+        ${CORE_ROOT}/hash.h
+        ${CORE_ROOT}/hash.cpp
+        ${CORE_ROOT}/initializer_list.h
+        ${CORE_ROOT}/non_copyable.h
+        ${CORE_ROOT}/type_traits.h
         )
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
