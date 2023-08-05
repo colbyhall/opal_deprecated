@@ -5,7 +5,7 @@
 
 #include "gpu/d3d12/d3d12_buffer.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 Buffer Buffer::make(Usage usage, Kind kind, usize len) {
 	auto& context = Context::the();
@@ -16,11 +16,11 @@ Buffer Buffer::make(Usage usage, Kind kind, usize len) {
 		interface = Shared<D3D12BufferImpl>::make(usage, kind, len);
 		break;
 	default:
-		EU_UNIMPLEMENTED;
+		GJ_UNIMPLEMENTED;
 		break;
 	}
 
 	return Buffer{ interface.unwrap() };
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

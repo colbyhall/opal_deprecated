@@ -6,11 +6,11 @@
 #include "gpu/context.h"
 #include "gpu/texture.h"
 
-using namespace eu;
+using namespace gj;
 
 auto main(int argc, char** argv) -> int {
-	EU_UNUSED(argc);
-	EU_UNUSED(argv);
+	GJ_UNUSED(argc);
+	GJ_UNUSED(argv);
 
 	gpu::init();
 

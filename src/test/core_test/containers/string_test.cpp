@@ -3,11 +3,11 @@
 #include "core/containers/string.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
-TEST_CASE("eu::core::String") {
+TEST_CASE("gj::core::String") {
 	String str;
 	str.push("Hello World!");
 
@@ -18,4 +18,4 @@ TEST_CASE("eu::core::String") {
 	REQUIRE(other == str);
 }
 
-EU_TEST_END
+GJ_TEST_END

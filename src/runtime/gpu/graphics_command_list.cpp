@@ -5,7 +5,7 @@
 #include "gpu/d3d12/d3d12_graphics_command_list.h"
 #include "gpu/texture.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 GraphicsCommandList GraphicsCommandList::record(FunctionRef<void(GraphicsCommandRecorder&)> callable) {
 	auto& context = Context::the();
@@ -73,4 +73,4 @@ RenderPassRecorder& RenderPassRecorder::draw_index(usize index_count, usize firs
 	return *this;
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

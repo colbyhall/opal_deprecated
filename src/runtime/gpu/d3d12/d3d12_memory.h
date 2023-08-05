@@ -7,7 +7,7 @@
 #include "core/atomic.h"
 #include "core/containers/vector.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 struct D3D12DescriptorHandle {
 	D3D12_CPU_DESCRIPTOR_HANDLE handle;
@@ -22,7 +22,7 @@ public:
 	D3D12DescriptorHandle alloc() const;
 	void free(const D3D12DescriptorHandle& handle) const;
 
-	EU_ALWAYS_INLINE ComPtr<ID3D12DescriptorHeap> the() const { return m_heap; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12DescriptorHeap> the() const { return m_heap; }
 
 private:
 	ComPtr<ID3D12DescriptorHeap> m_heap;
@@ -43,11 +43,11 @@ public:
 	D3D12RootSignatureImpl() = default;
 	void init(const D3D12ContextImpl& context);
 
-	EU_ALWAYS_INLINE ComPtr<ID3D12RootSignature> the() const { return m_root_signature; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12RootSignature> the() const { return m_root_signature; }
 
-	EU_ALWAYS_INLINE const D3D12DescriptorHeap& rtv_heap() const { return m_rtv_heap; }
-	EU_ALWAYS_INLINE const D3D12DescriptorHeap& dsv_heap() const { return m_dsv_heap; }
-	EU_ALWAYS_INLINE const D3D12DescriptorHeap& bt2dv_heap() const { return m_bt2dv_heap; }
+	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& rtv_heap() const { return m_rtv_heap; }
+	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& dsv_heap() const { return m_dsv_heap; }
+	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& bt2dv_heap() const { return m_bt2dv_heap; }
 
 private:
 	ComPtr<ID3D12RootSignature> m_root_signature;
@@ -59,4 +59,4 @@ private:
 	D3D12DescriptorHeap m_bt2dv_heap;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

@@ -3,7 +3,7 @@
 #include "core/containers/option.h"
 #include "gpu/d3d12/d3d12_context.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 static Option<Context> g_context = nullptr;
 
@@ -14,8 +14,8 @@ const Context& init() {
 	// on the backend. It'll probably be related to some engine config system or
 	// an environment variable
 	auto interface = Unique<D3D12ContextImpl>::make();
-	g_context = Context(eu::move(interface));
+	g_context = Context(gj::move(interface));
 	return g_context.as_ref().unwrap();
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

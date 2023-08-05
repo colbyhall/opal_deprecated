@@ -6,18 +6,18 @@
 #if defined(_WIN32) || defined(_WIN64)
 	#include <winapifamily.h>
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
-		#define EU_PLATFORM_WINDOWS_UWP
+		#define GJ_PLATFORM_WINDOWS_UWP
 	#endif
-	#define EU_PLATFORM_WINDOWS
+	#define GJ_PLATFORM_WINDOWS
 #else
 	#error Unsupported platform
 #endif
 
 // Determine compiler
 #if defined(__clang__)
-	#define EU_COMPILER_CLANG
+	#define GJ_COMPILER_CLANG
 #elif defined(_MSC_VER)
-	#define EU_COMPILER_MSVC
+	#define GJ_COMPILER_MSVC
 #else
 	#error Unsupported compiler
 #endif
@@ -25,11 +25,11 @@
 // Detect CPU architecture
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
 	// X86 CPU architecture
-	#define EU_CPU_X86
+	#define GJ_CPU_X86
 	#if defined(__x86_64__) || defined(_M_X64)
-		#define EU_CPU_ADDRESS_BITS 64
+		#define GJ_CPU_ADDRESS_BITS 64
 	#else
-		#define EU_CPU_ADDRESS_BITS 32
+		#define GJ_CPU_ADDRESS_BITS 32
 	#endif
 #else
 	#error Unsupported CPU architecture
@@ -37,165 +37,165 @@
 
 // Pragmas to store / restore the warning state and to disable individual
 // warnings
-#ifdef EU_COMPILER_CLANG
-	#define EU_PRAGMA(x)				 _Pragma(#x)
-	#define EU_SUPPRESS_WARNING_PUSH	 EU_PRAGMA(clang diagnostic push)
-	#define EU_SUPPRESS_WARNING_POP		 EU_PRAGMA(clang diagnostic pop)
-	#define EU_CLANG_SUPPRESS_WARNING(w) EU_PRAGMA(clang diagnostic ignored w)
+#ifdef GJ_COMPILER_CLANG
+	#define GJ_PRAGMA(x)				 _Pragma(#x)
+	#define GJ_SUPPRESS_WARNING_PUSH	 GJ_PRAGMA(clang diagnostic push)
+	#define GJ_SUPPRESS_WARNING_POP		 GJ_PRAGMA(clang diagnostic pop)
+	#define GJ_CLANG_SUPPRESS_WARNING(w) GJ_PRAGMA(clang diagnostic ignored w)
 #else
-	#define EU_CLANG_SUPPRESS_WARNING(w)
+	#define GJ_CLANG_SUPPRESS_WARNING(w)
 #endif
 
-#ifdef EU_COMPILER_MSVC
-	#define EU_PRAGMA(x)				__pragma(x)
-	#define EU_SUPPRESS_WARNING_PUSH	EU_PRAGMA(warning(push))
-	#define EU_SUPPRESS_WARNING_POP		EU_PRAGMA(warning(pop))
-	#define EU_MSVC_SUPPRESS_WARNING(w) EU_PRAGMA(warning(disable : w))
+#ifdef GJ_COMPILER_MSVC
+	#define GJ_PRAGMA(x)				__pragma(x)
+	#define GJ_SUPPRESS_WARNING_PUSH	GJ_PRAGMA(warning(push))
+	#define GJ_SUPPRESS_WARNING_POP		GJ_PRAGMA(warning(pop))
+	#define GJ_MSVC_SUPPRESS_WARNING(w) GJ_PRAGMA(warning(disable : w))
 #else
-	#define EU_MSVC_SUPPRESS_WARNING(w)
+	#define GJ_MSVC_SUPPRESS_WARNING(w)
 #endif
 
 // Define inline macro
-#if defined(EU_COMPILER_CLANG)
-	#define EU_ALWAYS_INLINE __inline__ __attribute__((always_inline))
-#elif defined(EU_COMPILER_MSVC)
-	#define EU_ALWAYS_INLINE __forceinline
+#if defined(GJ_COMPILER_CLANG)
+	#define GJ_ALWAYS_INLINE __inline__ __attribute__((always_inline))
+#elif defined(GJ_COMPILER_MSVC)
+	#define GJ_ALWAYS_INLINE __forceinline
 #else
 	#error Undefined inline
 #endif
 
-#define EU_NO_DISCARD [[nodiscard]]
+#define GJ_NO_DISCARD [[nodiscard]]
 
 // Cache line size (used for aligning to cache line)
-#ifndef EU_CACHE_LINE_SIZE
-	#define EU_CACHE_LINE_SIZE 64
+#ifndef GJ_CACHE_LINE_SIZE
+	#define GJ_CACHE_LINE_SIZE 64
 #endif
 
 // Define macro to get current function name
-#if defined(EU_COMPILER_CLANG) || defined(COMPILER_GCC)
-	#define EU_FUNCTION_NAME __PRETTY_FUNCTION__
-#elif defined(EU_COMPILER_MSVC)
-	#define EU_FUNCTION_NAME __FUNCTION__
+#if defined(GJ_COMPILER_CLANG) || defined(COMPILER_GCC)
+	#define GJ_FUNCTION_NAME __PRETTY_FUNCTION__
+#elif defined(GJ_COMPILER_MSVC)
+	#define GJ_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined
 #endif
 
 // OS-specific includes
-#if defined(EU_PLATFORM_WINDOWS)
-	#define EU_BREAKPOINT __debugbreak()
+#if defined(GJ_PLATFORM_WINDOWS)
+	#define GJ_BREAKPOINT __debugbreak()
 #else
 	#error Unknown platform
 #endif
 
 #ifdef _DEBUG
-	#define EU_BUILD_DEBUG 1
+	#define GJ_BUILD_DEBUG 1
 #else
-	#define EU_BUILD_DEBUG 1
+	#define GJ_BUILD_DEBUG 1
 #endif
 
-#define EU_THREAD_LOCAL __declspec(thread)
+#define GJ_THREAD_LOCAL __declspec(thread)
 
 // Macro to indicate that a parameter / variable is unused
-#define EU_UNUSED(x) (void)x
+#define GJ_UNUSED(x) (void)x
 
 // Crashes the application
-#define EU_CRASH                                                                                                       \
-	EU_SUPPRESS_WARNING_PUSH                                                                                           \
-	EU_MSVC_SUPPRESS_WARNING(6011)                                                                                     \
+#define GJ_CRASH                                                                                                       \
+	GJ_SUPPRESS_WARNING_PUSH                                                                                           \
+	GJ_MSVC_SUPPRESS_WARNING(6011)                                                                                     \
 	do {                                                                                                               \
 		int* _ptr = nullptr;                                                                                           \
 		*_ptr = 0;                                                                                                     \
-	} while (false) EU_SUPPRESS_WARNING_POP
+	} while (false) GJ_SUPPRESS_WARNING_POP
 
 // Suppress warnings generated by the standard template library
-#define EU_SUPPRESS_WARNINGS_STD_BEGIN                                                                                 \
-	EU_SUPPRESS_WARNING_PUSH                                                                                           \
-	EU_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5262)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5219)
+#define GJ_SUPPRESS_WARNINGS_STD_BEGIN                                                                                 \
+	GJ_SUPPRESS_WARNING_PUSH                                                                                           \
+	GJ_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5262)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5219)
 
-#define EU_SUPPRESS_WARNINGS_STD_END EU_SUPPRESS_WARNING_POP
+#define GJ_SUPPRESS_WARNINGS_STD_END GJ_SUPPRESS_WARNING_POP
 
 // Disable common warnings triggered by core when compiling with -Wall
-#define EU_SUPPRESS_WARNINGS                                                                                           \
-	EU_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                                                        \
-	EU_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                                               \
-	EU_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                                                         \
-	EU_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                                                                     \
-	EU_CLANG_SUPPRESS_WARNING("-Wold-style-cast")                                                                      \
-	EU_CLANG_SUPPRESS_WARNING("-Wgnu-anonymous-struct")                                                                \
-	EU_CLANG_SUPPRESS_WARNING("-Wnested-anon-types")                                                                   \
-	EU_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")                                                                 \
-	EU_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")                                                               \
-	EU_CLANG_SUPPRESS_WARNING("-Wnonportable-system-include-path")                                                     \
-	EU_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                                                            \
-	EU_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                                                                    \
-	EU_CLANG_SUPPRESS_WARNING("-Wformat-nonliteral")                                                                   \
-	EU_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")                                                              \
-	EU_CLANG_SUPPRESS_WARNING("-Wcast-align")                                                                          \
-	EU_CLANG_SUPPRESS_WARNING("-Winvalid-offsetof")                                                                    \
-	EU_CLANG_SUPPRESS_WARNING("-Wgnu-zero-variadic-macro-arguments")                                                   \
-	EU_CLANG_SUPPRESS_WARNING("-Wdocumentation-unknown-command")                                                       \
-	EU_CLANG_SUPPRESS_WARNING("-Wctad-maybe-unsupported")                                                              \
-	EU_CLANG_SUPPRESS_WARNING("-Wdeprecated-copy")                                                                     \
-	EU_CLANG_SUPPRESS_WARNING("-Wimplicit-int-float-conversion")                                                       \
+#define GJ_SUPPRESS_WARNINGS                                                                                           \
+	GJ_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                                                        \
+	GJ_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                                               \
+	GJ_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                                                         \
+	GJ_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                                                                     \
+	GJ_CLANG_SUPPRESS_WARNING("-Wold-style-cast")                                                                      \
+	GJ_CLANG_SUPPRESS_WARNING("-Wgnu-anonymous-struct")                                                                \
+	GJ_CLANG_SUPPRESS_WARNING("-Wnested-anon-types")                                                                   \
+	GJ_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")                                                                 \
+	GJ_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")                                                               \
+	GJ_CLANG_SUPPRESS_WARNING("-Wnonportable-system-include-path")                                                     \
+	GJ_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                                                            \
+	GJ_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                                                                    \
+	GJ_CLANG_SUPPRESS_WARNING("-Wformat-nonliteral")                                                                   \
+	GJ_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")                                                              \
+	GJ_CLANG_SUPPRESS_WARNING("-Wcast-align")                                                                          \
+	GJ_CLANG_SUPPRESS_WARNING("-Winvalid-offsetof")                                                                    \
+	GJ_CLANG_SUPPRESS_WARNING("-Wgnu-zero-variadic-macro-arguments")                                                   \
+	GJ_CLANG_SUPPRESS_WARNING("-Wdocumentation-unknown-command")                                                       \
+	GJ_CLANG_SUPPRESS_WARNING("-Wctad-maybe-unsupported")                                                              \
+	GJ_CLANG_SUPPRESS_WARNING("-Wdeprecated-copy")                                                                     \
+	GJ_CLANG_SUPPRESS_WARNING("-Wimplicit-int-float-conversion")                                                       \
                                                                                                                        \
-	EU_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4100)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4626)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5027)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4324)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4625)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5026)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4623)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4201)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4371)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5045)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4583)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4582)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5219)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4826)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
-	EU_MSVC_SUPPRESS_WARNING(4127)
+	GJ_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4100)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4626)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5027)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4324)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4625)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5026)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4623)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4201)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4371)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5045)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4583)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4582)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5219)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4826)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
+	GJ_MSVC_SUPPRESS_WARNING(4127)
 
-// Begin the eu namespace
-#define EU_NAMESPACE_BEGIN                                                                                             \
-	EU_SUPPRESS_WARNING_PUSH                                                                                           \
-	EU_SUPPRESS_WARNINGS                                                                                               \
-	namespace eu {
+// Begin the gj namespace
+#define GJ_NAMESPACE_BEGIN                                                                                             \
+	GJ_SUPPRESS_WARNING_PUSH                                                                                           \
+	GJ_SUPPRESS_WARNINGS                                                                                               \
+	namespace gj {
 
-// End the eu namespace
-#define EU_NAMESPACE_END                                                                                               \
+// End the gj namespace
+#define GJ_NAMESPACE_END                                                                                               \
 	}                                                                                                                  \
-	EU_SUPPRESS_WARNING_POP
+	GJ_SUPPRESS_WARNING_POP
 
-// Begin the eu::core namespace
-#define EU_CORE_NAMESPACE_BEGIN                                                                                        \
-	EU_NAMESPACE_BEGIN                                                                                                 \
+// Begin the gj::core namespace
+#define GJ_CORE_NAMESPACE_BEGIN                                                                                        \
+	GJ_NAMESPACE_BEGIN                                                                                                 \
 	namespace core {
 
-// End the eu::core namespace
-#define EU_CORE_NAMESPACE_END                                                                                          \
+// End the gj::core namespace
+#define GJ_CORE_NAMESPACE_END                                                                                          \
 	}                                                                                                                  \
-	EU_NAMESPACE_END
+	GJ_NAMESPACE_END
 
-#define EU_HIDDEN_NAMESPACE_BEGIN namespace hidden {
+#define GJ_HIDDEN_NAMESPACE_BEGIN namespace hidden {
 
-#define EU_HIDDEN_NAMESPACE_END }
+#define GJ_HIDDEN_NAMESPACE_END }
 
 // Declare primitive types under core namespace
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 using u8 = unsigned char;
 constexpr u8 U8_MIN = 0;
@@ -264,10 +264,10 @@ static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 using NullPtr = decltype(nullptr);
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
-// Export primitive types to eu namespace
-EU_NAMESPACE_BEGIN
+// Export primitive types to gj namespace
+GJ_NAMESPACE_BEGIN
 
 using core::f32;
 using core::f64;
@@ -287,14 +287,14 @@ using core::GB;
 using core::KB;
 using core::MB;
 
-EU_NAMESPACE_END
+GJ_NAMESPACE_END
 
 // Turn on asserts if compiled in debug
 #if defined(_DEBUG)
-	#define EU_ENABLE_ASSERTS
+	#define GJ_ENABLE_ASSERTS
 #endif
 
-#define EU_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
+#define GJ_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
 	inline Enum& operator|=(Enum& A, Enum B) {                                                                         \
 		return (Enum&)((__underlying_type(Enum)&)A |= (__underlying_type(Enum))B);                                     \
 	}                                                                                                                  \
@@ -309,17 +309,17 @@ EU_NAMESPACE_END
 	inline Enum operator^(Enum A, Enum B) { return (Enum)((__underlying_type(Enum))A ^ (__underlying_type(Enum))B); }  \
 	inline Enum operator~(Enum A) { return (Enum) ~(__underlying_type(Enum))A; }
 
-#ifdef EU_ENABLE_ASSERTS
+#ifdef GJ_ENABLE_ASSERTS
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 bool _assert_failed(bool must_crash, const char* expression, const char* message, const char* file, u32 line);
 
 struct AssertLastParam {};
-EU_ALWAYS_INLINE bool
+GJ_ALWAYS_INLINE bool
 _assert_failed_helper(bool must_crash, const char* expression, const char* file, u32 line, AssertLastParam) {
 	return _assert_failed(must_crash, expression, nullptr, file, line);
 }
-EU_ALWAYS_INLINE bool _assert_failed_helper(
+GJ_ALWAYS_INLINE bool _assert_failed_helper(
 	bool must_crash,
 	const char* expression,
 	const char* file,
@@ -329,50 +329,50 @@ EU_ALWAYS_INLINE bool _assert_failed_helper(
 ) {
 	return _assert_failed(must_crash, expression, message, file, line);
 }
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
 	// Crashes application if expression evaluates to false. Usage:
 	// ASSERT(condition) or ASSERT(condition, message)
-	#define EU_ASSERT(expression, ...)                                                                                 \
+	#define GJ_ASSERT(expression, ...)                                                                                 \
 		do {                                                                                                           \
-			if (!(expression) && eu::core::_assert_failed_helper(                                                      \
+			if (!(expression) && gj::core::_assert_failed_helper(                                                      \
 									 true,                                                                             \
 									 #expression,                                                                      \
 									 __FILE__,                                                                         \
-									 eu::u32(__LINE__),                                                                \
+									 gj::u32(__LINE__),                                                                \
 									 ##__VA_ARGS__,                                                                    \
-									 eu::core::AssertLastParam()                                                       \
+									 gj::core::AssertLastParam()                                                       \
 								 )) {                                                                                  \
-				EU_CRASH;                                                                                              \
+				GJ_CRASH;                                                                                              \
 			}                                                                                                          \
 		} while (false)
 
 	// Halts application if expression evaluates to false but can resume. Usage:
 	// ENSURE(condition) or ENSURE(condition, message)
-	#define EU_ENSURE(expression, ...)                                                                                 \
+	#define GJ_ENSURE(expression, ...)                                                                                 \
 		do {                                                                                                           \
-			if (!(expression) && eu::core::_assert_failed_helper(                                                      \
+			if (!(expression) && gj::core::_assert_failed_helper(                                                      \
 									 false,                                                                            \
 									 #expression,                                                                      \
 									 __FILE__,                                                                         \
-									 eu::u32(__LINE__),                                                                \
+									 gj::u32(__LINE__),                                                                \
 									 ##__VA_ARGS__,                                                                    \
-									 eu::core::AssertLastParam()                                                       \
+									 gj::core::AssertLastParam()                                                       \
 								 ))                                                                                    \
-				EU_BREAKPOINT;                                                                                         \
+				GJ_BREAKPOINT;                                                                                         \
 		} while (false)
 
 #else
-	#define EU_ASSERT(...) ((void)0)
-	#define EU_ENSURE(...) ((void)0)
-#endif // EU_ENABLE_ASSERTS
+	#define GJ_ASSERT(...) ((void)0)
+	#define GJ_ENSURE(...) ((void)0)
+#endif // GJ_ENABLE_ASSERTS
 
-#define EU_UNIMPLEMENTED	 EU_ASSERT(false, "Unimplemented!")
-#define EU_INVALID_CODE_PATH EU_ASSERT(false, "Invalid code path!")
+#define GJ_UNIMPLEMENTED	 GJ_ASSERT(false, "Unimplemented!")
+#define GJ_INVALID_CODE_PATH GJ_ASSERT(false, "Invalid code path!")
 
 #include <utility>
 
-EU_NAMESPACE_BEGIN
+GJ_NAMESPACE_BEGIN
 using std::forward;
 using std::move;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

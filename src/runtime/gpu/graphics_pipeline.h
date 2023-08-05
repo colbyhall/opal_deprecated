@@ -6,7 +6,7 @@
 #include "gpu/shader.h"
 #include "gpu/texture.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 enum class DrawMode : u8 { Fill, Line, Point };
 
@@ -61,7 +61,7 @@ public:
 		PixelShader pixel_shader;
 
 		Array<Format, 8> color_attachments;
-		Option<Format> depth_attachment = eu::none;
+		Option<Format> depth_attachment = gj::none;
 
 		DrawMode draw_mode = DrawMode::Fill;
 		f32 line_width = 1.f;
@@ -85,14 +85,14 @@ public:
 	static GraphicsPipeline make(Definition&& definition);
 
 	template <typename T = IGraphicsPipeline>
-	EU_ALWAYS_INLINE T const& interface() const {
+	GJ_ALWAYS_INLINE T const& interface() const {
 		static_assert(std::is_base_of_v<IGraphicsPipeline, T>, "T is not derived of IGraphicsPipeline");
 		return static_cast<const T&>(*m_interface);
 	}
 
 private:
-	EU_ALWAYS_INLINE explicit GraphicsPipeline(Shared<IGraphicsPipeline>&& interface)
-		: m_interface(eu::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit GraphicsPipeline(Shared<IGraphicsPipeline>&& interface)
+		: m_interface(gj::move(interface)) {}
 
 	Shared<IGraphicsPipeline> m_interface;
 };
@@ -103,4 +103,4 @@ public:
 	virtual ~IGraphicsPipeline() = default;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

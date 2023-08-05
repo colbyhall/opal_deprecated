@@ -5,7 +5,7 @@
 #include "gpu/d3d12/d3d12.h"
 #include "gpu/graphics_pipeline.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12GraphicsPipelineImpl final : public IGraphicsPipeline {
 public:
@@ -17,11 +17,11 @@ public:
 	const Definition& definition() const final { return m_definition; }
 	// ~IGraphicsPipeline
 
-	EU_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const { return m_pipeline; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const { return m_pipeline; }
 
 private:
 	Definition m_definition;
 	ComPtr<ID3D12PipelineState> m_pipeline;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

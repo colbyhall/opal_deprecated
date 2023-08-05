@@ -3,13 +3,13 @@
 #include "core/containers/vector.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-TEST_CASE("eu::core::Vector") {
-	using namespace eu;
-	eu::Vector<int> vec;
+TEST_CASE("gj::core::Vector") {
+	using namespace gj;
+	gj::Vector<int> vec;
 
-	CHECK(vec.len() == 0); // eu::Vector default initialization is to zero
+	CHECK(vec.len() == 0); // gj::Vector default initialization is to zero
 
 	SUBCASE("Adding elements") {
 		vec.push(5);
@@ -22,7 +22,7 @@ TEST_CASE("eu::core::Vector") {
 		CHECK(vec[2] == 15);
 
 		auto foo = vec;
-		EU_UNUSED(foo);
+		GJ_UNUSED(foo);
 	}
 
 	SUBCASE("Removing elements") {
@@ -59,4 +59,4 @@ TEST_CASE("eu::core::Vector") {
 	}
 }
 
-EU_TEST_END
+GJ_TEST_END

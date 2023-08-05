@@ -3,10 +3,10 @@
 #include "core/math/vec2.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-TEST_CASE("eu::core::Vec2") {
-	using namespace eu;
+TEST_CASE("gj::core::Vec2") {
+	using namespace gj;
 
 	SUBCASE("Constructors") {
 		const Vec2f64 default_constructed;
@@ -81,4 +81,4 @@ TEST_CASE("eu::core::Vec2") {
 	}
 }
 
-EU_TEST_END
+GJ_TEST_END

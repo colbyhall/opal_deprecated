@@ -3,15 +3,15 @@
 #include "core/containers/wstring_view.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
-TEST_CASE("eu::core::WStringView") {
+TEST_CASE("gj::core::WStringView") {
 	WStringView str = L"Hello World!";
 
 	REQUIRE(str.len() == 12);
 	REQUIRE(str[0] == 'H');
 }
 
-EU_TEST_END
+GJ_TEST_END

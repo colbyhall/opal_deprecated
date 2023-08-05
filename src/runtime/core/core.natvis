@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-    <Type Name="eu::core::Array&lt;*&gt;">
+    <Type Name="gj::core::Array&lt;*&gt;">
         <DisplayString>{{ len={m_len} }}</DisplayString>
         <Expand>
             <ArrayItems>
@@ -9,7 +9,7 @@
             </ArrayItems>
         </Expand>
     </Type>
-    <Type Name="eu::core::Vector&lt;*&gt;">
+    <Type Name="gj::core::Vector&lt;*&gt;">
         <DisplayString>{{ len={m_len}, cap={m_cap} }}</DisplayString>
         <Expand>
             <ArrayItems>
@@ -18,7 +18,7 @@
             </ArrayItems>
         </Expand>
     </Type>
-    <Type Name="eu::core::Slice&lt;*&gt;">
+    <Type Name="gj::core::Slice&lt;*&gt;">
         <DisplayString>{{ len={m_len} }}</DisplayString>
         <Expand>
             <ArrayItems>
@@ -27,7 +27,7 @@
             </ArrayItems>
         </Expand>
     </Type>
-    <Type Name="eu::core::Option&lt;*&gt;">
+    <Type Name="gj::core::Option&lt;*&gt;">
         <DisplayString Condition="!m_set">None</DisplayString>
 
         <Expand>

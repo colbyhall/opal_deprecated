@@ -6,7 +6,7 @@
 #include "core/containers/string.h"
 #include "gpu/gpu.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class IShader {
 public:
@@ -39,11 +39,11 @@ class VertexShader {
 public:
 	static VertexShader make(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters);
 
-	EU_ALWAYS_INLINE Slice<u8 const> binary() const { return m_interface->binary(); }
-	EU_ALWAYS_INLINE Slice<InputParameter const> input_parameters() const { return m_interface->input_parameters(); }
+	GJ_ALWAYS_INLINE Slice<u8 const> binary() const { return m_interface->binary(); }
+	GJ_ALWAYS_INLINE Slice<InputParameter const> input_parameters() const { return m_interface->input_parameters(); }
 
 private:
-	EU_ALWAYS_INLINE explicit VertexShader(Shared<IVertexShader>&& interface) : m_interface(eu::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit VertexShader(Shared<IVertexShader>&& interface) : m_interface(gj::move(interface)) {}
 
 	Shared<IVertexShader> m_interface;
 };
@@ -56,12 +56,12 @@ class PixelShader {
 public:
 	static PixelShader make(Vector<u8>&& binary);
 
-	EU_ALWAYS_INLINE Slice<u8 const> binary() const { return m_interface->binary(); }
+	GJ_ALWAYS_INLINE Slice<u8 const> binary() const { return m_interface->binary(); }
 
 private:
-	EU_ALWAYS_INLINE explicit PixelShader(Shared<IPixelShader>&& interface) : m_interface(eu::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit PixelShader(Shared<IPixelShader>&& interface) : m_interface(gj::move(interface)) {}
 
 	Shared<IPixelShader> m_interface;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

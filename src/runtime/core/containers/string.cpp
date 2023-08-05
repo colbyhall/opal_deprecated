@@ -3,11 +3,11 @@
 #include "core/containers/string.h"
 #include "core/containers/wstring_view.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 String String::from(Vector<char>&& bytes) {
 	String string;
-	string.m_bytes = eu::forward<Vector<char>>(bytes);
+	string.m_bytes = gj::forward<Vector<char>>(bytes);
 
 	// Add a null terminator if one is not found
 	if (!string.m_bytes.is_empty() && string.m_bytes[string.m_bytes.len() - 1] != 0) {
@@ -54,7 +54,7 @@ String& String::push(Char c) {
 	u8 local[4] = {};
 	u32 error;
 	const usize char_len = utf8_encode(c, local, &error);
-	EU_ASSERT(error != utf8_reject);
+	GJ_ASSERT(error != utf8_reject);
 
 	// Preallocate enough space to add the bytes
 	const usize slag = m_bytes.cap() - m_bytes.len();
@@ -95,4 +95,4 @@ String& String::push(StringView string) {
 	return *this;
 }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END

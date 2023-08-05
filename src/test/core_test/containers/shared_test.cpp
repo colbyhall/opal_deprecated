@@ -3,9 +3,9 @@
 #include "core/containers/shared.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
 class SharedFoo : public SharedFromThis<SharedFoo> {
 public:
@@ -19,7 +19,7 @@ public:
 	int get_value() const override { return 100; }
 };
 
-TEST_CASE("eu::core::Shared") {
+TEST_CASE("gj::core::Shared") {
 	Shared<SharedFoo> foo = Shared<SharedBar>::make();
 	CHECK(foo->get_value() == 100);
 	CHECK(foo.strong() == 1);
@@ -36,4 +36,4 @@ TEST_CASE("eu::core::Shared") {
 	CHECK(bar.weak() == 1);
 }
 
-EU_TEST_END
+GJ_TEST_END

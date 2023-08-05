@@ -5,7 +5,7 @@
 
 #include "gpu/d3d12/d3d12_texture.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 usize format_size_in_bytes(Format format) {
 	switch (format) {
@@ -21,7 +21,7 @@ usize format_size_in_bytes(Format format) {
 	case Format::D24S8_U32:
 		return 4;
 	case Format::Undefined:
-		EU_INVALID_CODE_PATH;
+		GJ_INVALID_CODE_PATH;
 		break;
 	}
 
@@ -37,11 +37,11 @@ Texture Texture::make(Usage usage, Format format, const Vec3u32& size) {
 		interface = Shared<D3D12TextureImpl>::make(usage, format, size);
 	} break;
 	default:
-		EU_UNIMPLEMENTED;
+		GJ_UNIMPLEMENTED;
 		break;
 	}
 
 	return Texture{ interface.unwrap() };
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

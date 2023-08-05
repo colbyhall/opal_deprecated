@@ -3,10 +3,10 @@
 #include "core/math/vec3.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-TEST_CASE("eu::core::Vec3") {
-	using namespace eu;
+TEST_CASE("gj::core::Vec3") {
+	using namespace gj;
 
 	SUBCASE("Constructors") {
 		const Vec3f64 default_constructed;
@@ -91,7 +91,7 @@ TEST_CASE("eu::core::Vec3") {
 	SUBCASE("Length") {
 		const Vec3f64 v = { 3.0, 4.0, 5.0 };
 		const auto len = v.len();
-		CHECK(len == doctest::Approx(eu::sqrt(9.0 + 16.0 + 25.0)));
+		CHECK(len == doctest::Approx(gj::sqrt(9.0 + 16.0 + 25.0)));
 	}
 
 	SUBCASE("Normalized") {
@@ -103,4 +103,4 @@ TEST_CASE("eu::core::Vec3") {
 	}
 }
 
-EU_TEST_END
+GJ_TEST_END

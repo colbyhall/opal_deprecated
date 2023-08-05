@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename Key, typename Value, typename Hasher>
 void Map<Key, Value, Hasher>::reserve(usize amount) {
@@ -10,7 +10,7 @@ void Map<Key, Value, Hasher>::reserve(usize amount) {
 
 template <typename Key, typename Value, typename Hasher>
 void Map<Key, Value, Hasher>::insert(const Key& key, Value&& value) {
-	m_buckets.push(Bucket{ key, eu::forward<Value>(value), -1 });
+	m_buckets.push(Bucket{ key, gj::forward<Value>(value), -1 });
 
 	refresh_layout();
 }
@@ -155,4 +155,4 @@ inline MapIterator<Key, Value, Hasher> Map<Key, Value, Hasher>::iter_mut() {
 	return MapIterator(*this);
 }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END

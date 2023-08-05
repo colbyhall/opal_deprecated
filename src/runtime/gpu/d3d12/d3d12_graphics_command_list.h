@@ -7,7 +7,7 @@
 #include "gpu/d3d12/d3d12.h"
 #include "gpu/graphics_command_list.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12GraphicsCommandRecorderImpl final : public IGraphicsCommandRecorder {
 public:
@@ -38,4 +38,4 @@ private:
 	Vector<Buffer> m_buffers_in_use;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

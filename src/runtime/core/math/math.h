@@ -4,11 +4,11 @@
 
 #include "core/core.h"
 
-EU_SUPPRESS_WARNINGS_STD_BEGIN
+GJ_SUPPRESS_WARNINGS_STD_BEGIN
 #include <limits>
-EU_SUPPRESS_WARNINGS_STD_END
+GJ_SUPPRESS_WARNINGS_STD_END
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 constexpr inline T min(T a, T b) {
@@ -61,51 +61,51 @@ inline constexpr T epsilon = std::numeric_limits<T>::epsilon();
 template <typename T>
 inline constexpr T nan = std::numeric_limits<T>::signaling_NaN();
 
-EU_NO_DISCARD f32 cos(f32 x);
-EU_NO_DISCARD f64 cos(f64 x);
+GJ_NO_DISCARD f32 cos(f32 x);
+GJ_NO_DISCARD f64 cos(f64 x);
 
-EU_NO_DISCARD f32 sin(f32 x);
-EU_NO_DISCARD f64 sin(f64 x);
+GJ_NO_DISCARD f32 sin(f32 x);
+GJ_NO_DISCARD f64 sin(f64 x);
 
-EU_NO_DISCARD f32 tan(f32 x);
-EU_NO_DISCARD f64 tan(f64 x);
+GJ_NO_DISCARD f32 tan(f32 x);
+GJ_NO_DISCARD f64 tan(f64 x);
 
-EU_NO_DISCARD f32 acos(f32 x);
-EU_NO_DISCARD f64 acos(f64 x);
+GJ_NO_DISCARD f32 acos(f32 x);
+GJ_NO_DISCARD f64 acos(f64 x);
 
-EU_NO_DISCARD f32 asin(f32 x);
-EU_NO_DISCARD f64 asin(f64 x);
+GJ_NO_DISCARD f32 asin(f32 x);
+GJ_NO_DISCARD f64 asin(f64 x);
 
-EU_NO_DISCARD f32 atan(f32 x);
-EU_NO_DISCARD f64 atan(f64 x);
+GJ_NO_DISCARD f32 atan(f32 x);
+GJ_NO_DISCARD f64 atan(f64 x);
 
-EU_NO_DISCARD f32 atan2(f32 y, f32 x);
-EU_NO_DISCARD f64 atan2(f64 y, f64 x);
+GJ_NO_DISCARD f32 atan2(f32 y, f32 x);
+GJ_NO_DISCARD f64 atan2(f64 y, f64 x);
 
-EU_NO_DISCARD f32 sqrt(f32 x);
-EU_NO_DISCARD f64 sqrt(f64 x);
+GJ_NO_DISCARD f32 sqrt(f32 x);
+GJ_NO_DISCARD f64 sqrt(f64 x);
 
-EU_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
-EU_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
+GJ_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
+GJ_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
 
 template <typename T>
-EU_ALWAYS_INLINE T abs(T x) {
+GJ_ALWAYS_INLINE T abs(T x) {
 	return x < 0 ? -x : x;
 }
 
 template <typename T>
-EU_ALWAYS_INLINE bool is_near_zero(T a) {
+GJ_ALWAYS_INLINE bool is_near_zero(T a) {
 	return abs(a) <= near_zero<T>;
 }
 
 template <typename T>
-EU_ALWAYS_INLINE T lerp(T a, T b, T t) {
+GJ_ALWAYS_INLINE T lerp(T a, T b, T t) {
 	return ((T)1 - t) * a + t * b;
 }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
-EU_NAMESPACE_BEGIN
+GJ_NAMESPACE_BEGIN
 using core::abs;
 using core::acos;
 using core::asin;
@@ -142,4 +142,4 @@ inline constexpr T epsilon = core::epsilon<T>;
 template <typename T>
 inline constexpr T nan = core::nan<T>;
 
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

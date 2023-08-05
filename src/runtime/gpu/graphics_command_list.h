@@ -5,7 +5,7 @@
 #include "core/containers/function.h"
 #include "gpu/gpu.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 enum class Layout : u8 {
 	Undefined,
@@ -55,8 +55,8 @@ public:
 	static GraphicsCommandList record(FunctionRef<void(GraphicsCommandRecorder&)> callable);
 
 private:
-	EU_ALWAYS_INLINE explicit GraphicsCommandList(Shared<IGraphicsCommandRecorder>&& interface)
-		: m_interface(eu::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit GraphicsCommandList(Shared<IGraphicsCommandRecorder>&& interface)
+		: m_interface(gj::move(interface)) {}
 
 	Shared<IGraphicsCommandRecorder> m_interface;
 };
@@ -93,4 +93,4 @@ private:
 	IGraphicsCommandRecorder& m_interface;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

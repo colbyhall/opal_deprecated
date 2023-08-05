@@ -8,7 +8,7 @@
 #include "core/non_copyable.h"
 #include "core/type_traits.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename Key, typename Value, typename Hasher>
 class Map;
@@ -16,15 +16,15 @@ class Map;
 template <typename Key, typename Value, typename Hasher>
 class MapIterator {
 public:
-	EU_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map) : m_map(map) {}
+	GJ_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map) : m_map(map) {}
 
-	EU_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
-	EU_ALWAYS_INLINE MapIterator& operator++() {
+	GJ_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
+	GJ_ALWAYS_INLINE MapIterator& operator++() {
 		m_index += 1;
 		return *this;
 	}
-	EU_ALWAYS_INLINE const Key& key() const { return m_map.m_buckets[m_index].key; }
-	EU_ALWAYS_INLINE Value& value() const { return m_map.m_buckets[m_index].value; }
+	GJ_ALWAYS_INLINE const Key& key() const { return m_map.m_buckets[m_index].key; }
+	GJ_ALWAYS_INLINE Value& value() const { return m_map.m_buckets[m_index].value; }
 
 private:
 	usize m_index = 0;
@@ -34,15 +34,15 @@ private:
 template <typename Key, typename Value, typename Hasher>
 class ConstMapIterator {
 public:
-	EU_ALWAYS_INLINE explicit ConstMapIterator(const Map<Key, Value, Hasher>& map) : m_map(map) {}
+	GJ_ALWAYS_INLINE explicit ConstMapIterator(const Map<Key, Value, Hasher>& map) : m_map(map) {}
 
-	EU_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
-	EU_ALWAYS_INLINE ConstMapIterator& operator++() {
+	GJ_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
+	GJ_ALWAYS_INLINE ConstMapIterator& operator++() {
 		m_index += 1;
 		return *this;
 	}
-	EU_ALWAYS_INLINE const Key& key() const { return m_map.m_buckets[m_index].key; }
-	EU_ALWAYS_INLINE const Value& value() const { return m_map.m_buckets[m_index].value; }
+	GJ_ALWAYS_INLINE const Key& key() const { return m_map.m_buckets[m_index].key; }
+	GJ_ALWAYS_INLINE const Value& value() const { return m_map.m_buckets[m_index].value; }
 
 private:
 	usize m_index = 0;
@@ -65,9 +65,9 @@ public:
 	using Iterator = MapIterator<Key, Value, Hasher>;
 
 	void reserve(usize amount);
-	EU_NO_DISCARD EU_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
-	EU_NO_DISCARD EU_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
-	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_empty() const { return m_buckets.is_empty(); }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_empty() const { return m_buckets.is_empty(); }
 
 	void insert(const Key& key, Value&& value);
 	void insert(const Key& key, const Value& value);
@@ -78,26 +78,26 @@ public:
 	Option<Value const&> find(const Key& key) const;
 	Option<Value&> find_mut(const Key& key);
 
-	EU_ALWAYS_INLINE ConstIterator iter() const;
-	EU_ALWAYS_INLINE Iterator iter_mut();
+	GJ_ALWAYS_INLINE ConstIterator iter() const;
+	GJ_ALWAYS_INLINE Iterator iter_mut();
 
 private:
 	friend class MapIterator<Key, Value, Hasher>;
 	friend class ConstMapIterator<Key, Value, Hasher>;
 
-	EU_ALWAYS_INLINE usize key_to_layout_index(const Key& key) const;
+	GJ_ALWAYS_INLINE usize key_to_layout_index(const Key& key) const;
 	void refresh_layout();
 
 	Vector<Bucket> m_buckets;
 	Vector<i32> m_layout;
 };
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/containers/map.inl"
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 using core::Map;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

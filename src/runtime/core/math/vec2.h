@@ -5,7 +5,7 @@
 #include "core/containers/option.h"
 #include "core/math/math.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 struct alignas(16) Vec2 {
@@ -22,11 +22,11 @@ struct alignas(16) Vec2 {
 		T xy[2];
 	};
 
-	EU_ALWAYS_INLINE constexpr Vec2() : x(0), y(0) {}
-	EU_ALWAYS_INLINE constexpr Vec2(T xy) : x(xy), y(xy) {}
-	EU_ALWAYS_INLINE constexpr Vec2(T x, T y) : u(x), v(y) {}
+	GJ_ALWAYS_INLINE constexpr Vec2() : x(0), y(0) {}
+	GJ_ALWAYS_INLINE constexpr Vec2(T xy) : x(xy), y(xy) {}
+	GJ_ALWAYS_INLINE constexpr Vec2(T x, T y) : u(x), v(y) {}
 
-	EU_ALWAYS_INLINE static Vec2<T> from_rad(T rad);
+	GJ_ALWAYS_INLINE static Vec2<T> from_rad(T rad);
 
 	static const Vec2<T> zero;
 	static const Vec2<T> one;
@@ -35,45 +35,45 @@ struct alignas(16) Vec2 {
 	static const Vec2<T> right;
 	static const Vec2<T> up;
 
-	EU_ALWAYS_INLINE Vec2 operator+(const Vec2& rhs) const;
-	EU_ALWAYS_INLINE Vec2 operator-(const Vec2& rhs) const;
-	EU_ALWAYS_INLINE Vec2 operator*(const Vec2& rhs) const;
-	EU_ALWAYS_INLINE Vec2 operator/(const Vec2& rhs) const;
-	EU_ALWAYS_INLINE void operator+=(const Vec2& rhs) { *this = *this + rhs; }
-	EU_ALWAYS_INLINE void operator-=(const Vec2& rhs) { *this = *this - rhs; }
-	EU_ALWAYS_INLINE void operator*=(const Vec2& rhs) { *this = *this * rhs; }
-	EU_ALWAYS_INLINE void operator/=(const Vec2& rhs) { *this = *this / rhs; }
-	EU_ALWAYS_INLINE Vec2 operator-() const { return { -x, -y }; }
+	GJ_ALWAYS_INLINE Vec2 operator+(const Vec2& rhs) const;
+	GJ_ALWAYS_INLINE Vec2 operator-(const Vec2& rhs) const;
+	GJ_ALWAYS_INLINE Vec2 operator*(const Vec2& rhs) const;
+	GJ_ALWAYS_INLINE Vec2 operator/(const Vec2& rhs) const;
+	GJ_ALWAYS_INLINE void operator+=(const Vec2& rhs) { *this = *this + rhs; }
+	GJ_ALWAYS_INLINE void operator-=(const Vec2& rhs) { *this = *this - rhs; }
+	GJ_ALWAYS_INLINE void operator*=(const Vec2& rhs) { *this = *this * rhs; }
+	GJ_ALWAYS_INLINE void operator/=(const Vec2& rhs) { *this = *this / rhs; }
+	GJ_ALWAYS_INLINE Vec2 operator-() const { return { -x, -y }; }
 
-	EU_ALWAYS_INLINE T dot(const Vec2<T>& rhs) const;
-	EU_ALWAYS_INLINE T cross(const Vec2<T>& rhs) const;
-	EU_ALWAYS_INLINE Vec2<T> perp() const;
-	EU_ALWAYS_INLINE T len_sq() const { return dot(*this); }
-	EU_ALWAYS_INLINE T len() const { return eu::sqrt(len_sq()); }
-	EU_ALWAYS_INLINE Option<Vec2<T>> normalized() const;
+	GJ_ALWAYS_INLINE T dot(const Vec2<T>& rhs) const;
+	GJ_ALWAYS_INLINE T cross(const Vec2<T>& rhs) const;
+	GJ_ALWAYS_INLINE Vec2<T> perp() const;
+	GJ_ALWAYS_INLINE T len_sq() const { return dot(*this); }
+	GJ_ALWAYS_INLINE T len() const { return gj::sqrt(len_sq()); }
+	GJ_ALWAYS_INLINE Option<Vec2<T>> normalized() const;
 
-	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_zero() const { return *this == zero; }
-	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_near_zero() const;
-	EU_NO_DISCARD EU_ALWAYS_INLINE bool has_nan() const;
-	EU_NO_DISCARD EU_ALWAYS_INLINE bool has_infinite() const;
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_zero() const { return *this == zero; }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_near_zero() const;
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool has_nan() const;
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool has_infinite() const;
 
 	template <typename D>
-	EU_NO_DISCARD EU_ALWAYS_INLINE Vec2<D> cast() const {
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE Vec2<D> cast() const {
 		return { static_cast<D>(x), static_cast<D>(y) };
 	}
 };
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/math/vec2.inl"
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 using Vec2f32 = core::Vec2<f32>;
 using Vec2f64 = core::Vec2<f64>;
 using Vec2i32 = core::Vec2<i32>;
 using Vec2i64 = core::Vec2<i64>;
 using Vec2u32 = core::Vec2<u32>;
 using Vec2u64 = core::Vec2<u64>;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

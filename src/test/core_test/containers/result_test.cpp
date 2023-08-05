@@ -3,13 +3,13 @@
 #include "core/containers/result.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
 enum class Error : u32 { Foo, Bar, Baz };
 
-TEST_CASE("eu::core::Result") {
+TEST_CASE("gj::core::Result") {
 	SUBCASE("Value") {
 		Result<u32, Error> result = 42;
 		REQUIRE(result.is_ok());
@@ -27,4 +27,4 @@ TEST_CASE("eu::core::Result") {
 	}
 }
 
-EU_TEST_END
+GJ_TEST_END

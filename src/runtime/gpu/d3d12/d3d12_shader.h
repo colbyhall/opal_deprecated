@@ -6,13 +6,13 @@
 #include "gpu/d3d12/d3d12.h"
 #include "gpu/shader.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12VertexShaderImpl final : public IVertexShader {
 public:
 	explicit D3D12VertexShaderImpl(Vector<u8>&& binary, Vector<gpu::InputParameter>&& input_parameters)
-		: m_binary(eu::move(binary))
-		, m_input_parameters(eu::move(input_parameters)) {}
+		: m_binary(gj::move(binary))
+		, m_input_parameters(gj::move(input_parameters)) {}
 
 	// IVertexShader
 	Slice<u8 const> binary() const final { return m_binary; }
@@ -26,7 +26,7 @@ private:
 
 class D3D12PixelShaderImpl : public IPixelShader {
 public:
-	explicit D3D12PixelShaderImpl(Vector<u8>&& binary) : m_binary(eu::move(binary)) {}
+	explicit D3D12PixelShaderImpl(Vector<u8>&& binary) : m_binary(gj::move(binary)) {}
 
 	// IPixelShader
 	Slice<u8 const> binary() const final { return m_binary; }
@@ -36,4 +36,4 @@ private:
 	Vector<u8> m_binary;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

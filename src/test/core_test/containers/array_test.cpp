@@ -3,13 +3,13 @@
 #include "core/containers/array.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-TEST_CASE("eu::core::Array") {
-	using namespace eu;
-	eu::Array<int, 128> arr;
+TEST_CASE("gj::core::Array") {
+	using namespace gj;
+	gj::Array<int, 128> arr;
 
-	CHECK(arr.len() == 0); // eu::Array default initialization is to zero
+	CHECK(arr.len() == 0); // gj::Array default initialization is to zero
 
 	SUBCASE("Adding elements") {
 		arr.push(5);
@@ -56,4 +56,4 @@ TEST_CASE("eu::core::Array") {
 	}
 }
 
-EU_TEST_END
+GJ_TEST_END

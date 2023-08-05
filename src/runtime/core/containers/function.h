@@ -5,7 +5,7 @@
 // Include the implementation early
 #include "core/containers/function.inl"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename F>
 class Function;
@@ -38,7 +38,7 @@ public:
 			hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>
 		>
 	>
-	FunctionRef(Functor&& f) : Super(eu::forward<Functor>(f)) {}
+	FunctionRef(Functor&& f) : Super(gj::forward<Functor>(f)) {}
 	//clang-format on
 
 	FunctionRef(const FunctionRef&) = default;
@@ -62,7 +62,7 @@ public:
 			hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>
 		>
 	>
-	Function(Functor&& f) : Super(eu::forward<Functor>(f)) {}
+	Function(Functor&& f) : Super(gj::forward<Functor>(f)) {}
 	// clang-format on
 
 	Function(Function&& move) noexcept = default;
@@ -70,10 +70,10 @@ public:
 	~Function() = default;
 };
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 using core::Function;
 using core::FunctionRef;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

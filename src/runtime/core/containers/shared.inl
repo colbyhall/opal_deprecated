@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename Base, SMode Mode>
 Shared<Base, Mode>::~Shared() {
@@ -63,4 +63,4 @@ Shared<T, Mode> SharedFromThis<T, Mode>::to_shared() const {
 	return m_this.as_ref().unwrap().upgrade().unwrap();
 }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END

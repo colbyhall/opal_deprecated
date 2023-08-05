@@ -29,7 +29,7 @@
 // - breaking into a debugger
 // - signal / SEH handling
 // - timer
-// - XmlWriter class - thanks to Phil Nash for allowing the direct reuse (AKA copy/paste)
+// - XmlWriter class - thanks to Phil Nash for allowing the direct rgjse (AKA copy/paste)
 //
 // The expression decomposing templates are taken from lest - https://github.com/martinmoene/lest
 // which uses the Boost Software License - Version 1.0

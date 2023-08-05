@@ -4,7 +4,7 @@
 #include "gpu/d3d12/d3d12_context.h"
 #include "gpu/d3d12/d3d12_texture.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 static D3D12_BLEND convert_blend_factor(BlendFactor factor) {
 	switch (factor) {
@@ -44,7 +44,7 @@ static D3D12_BLEND_OP convert_blend_op(BlendOp op) {
 	return D3D12_BLEND_OP_ADD;
 }
 
-D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : m_definition(eu::move(definition)) {
+D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : m_definition(gj::move(definition)) {
 	auto& context = Context::the().interface<D3D12ContextImpl>();
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
@@ -88,7 +88,7 @@ D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : 
 			size_in_bytes = 16;
 			break;
 		case Primitive::Mat4f32:
-			EU_INVALID_CODE_PATH;
+			GJ_INVALID_CODE_PATH;
 			break;
 		}
 		input.AlignedByteOffset = (UINT)offset;
@@ -193,4 +193,4 @@ D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : 
 	throw_if_failed(context.device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pipeline)));
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

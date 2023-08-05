@@ -4,12 +4,12 @@
 
 #include "core/containers/non_null.h"
 
-EU_SUPPRESS_WARNINGS_STD_BEGIN
+GJ_SUPPRESS_WARNINGS_STD_BEGIN
 #include <new>
-EU_SUPPRESS_WARNINGS_STD_END
+GJ_SUPPRESS_WARNINGS_STD_END
 
-EU_CORE_NAMESPACE_BEGIN
-EU_MSVC_SUPPRESS_WARNING(4268)
+GJ_CORE_NAMESPACE_BEGIN
+GJ_MSVC_SUPPRESS_WARNING(4268)
 
 struct Layout {
 	usize size;
@@ -27,9 +27,9 @@ struct Layout {
 NonNull<void> malloc(const Layout& layout);
 
 template <typename T>
-EU_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
+GJ_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
 	static_assert(std::is_trivial_v<T>, "Value must be a trivial type to malloc");
-	return eu::core::malloc(Layout::array<T>(len)).as<T>();
+	return gj::core::malloc(Layout::array<T>(len)).as<T>();
 }
 
 NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout);
@@ -39,4 +39,4 @@ NonNull<void> copy(NonNull<void> dst, NonNull<void const> src, usize count);
 NonNull<void> move(NonNull<void> dst, NonNull<void const> src, usize count);
 NonNull<void> set(NonNull<void> ptr, u8 value, usize count);
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END

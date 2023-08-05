@@ -4,14 +4,14 @@
 
 #include "core/core.h"
 
-EU_SUPPRESS_WARNINGS_STD_BEGIN
+GJ_SUPPRESS_WARNINGS_STD_BEGIN
 #include <initializer_list>
-EU_SUPPRESS_WARNINGS_STD_END
+GJ_SUPPRESS_WARNINGS_STD_END
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 
 template <typename T>
 using InitializerList = std::initializer_list<T>;
 
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

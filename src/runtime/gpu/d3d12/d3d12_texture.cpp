@@ -3,14 +3,14 @@
 #include "gpu/d3d12/d3d12_texture.h"
 #include "gpu/d3d12/d3d12_context.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 DXGI_FORMAT format_to_dxgi(Format format) {
 	DXGI_FORMAT dxgi_format = DXGI_FORMAT_UNKNOWN;
 
 	switch (format) {
 	case Format::Undefined:
-		EU_INVALID_CODE_PATH;
+		GJ_INVALID_CODE_PATH;
 		break;
 	case Format::R_U8:
 		dxgi_format = DXGI_FORMAT_R8_UNORM;
@@ -39,9 +39,9 @@ D3D12TextureImpl::D3D12TextureImpl(Usage usage, Format format, const Vec3u32& si
 	: m_usage(usage)
 	, m_format(format)
 	, m_size(size) {
-	EU_ASSERT(size.x > 0);
-	EU_ASSERT(size.y > 0);
-	EU_ASSERT(size.z > 0);
+	GJ_ASSERT(size.x > 0);
+	GJ_ASSERT(size.y > 0);
+	GJ_ASSERT(size.z > 0);
 
 	auto& context = Context::the().interface<D3D12ContextImpl>();
 
@@ -55,7 +55,7 @@ D3D12TextureImpl::D3D12TextureImpl(Usage usage, Format format, const Vec3u32& si
 			}
 		}
 	}
-	EU_ASSERT(dimension != D3D12_RESOURCE_DIMENSION_UNKNOWN);
+	GJ_ASSERT(dimension != D3D12_RESOURCE_DIMENSION_UNKNOWN);
 
 	const DXGI_FORMAT dxgi_format = format_to_dxgi(format);
 
@@ -144,4 +144,4 @@ D3D12TextureImpl::~D3D12TextureImpl() {
 	}
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

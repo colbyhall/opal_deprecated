@@ -3,11 +3,11 @@
 #include "core/containers/map.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
-TEST_CASE("eu::core::Map") {
+TEST_CASE("gj::core::Map") {
 	SUBCASE("Map::reserve") {
 		Map<int, int> map;
 		map.reserve(128);
@@ -70,4 +70,4 @@ TEST_CASE("eu::core::Map") {
 	}
 }
 
-EU_TEST_END
+GJ_TEST_END

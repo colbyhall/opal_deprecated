@@ -3,11 +3,11 @@
 #include "core/containers/string_view.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
-TEST_CASE("eu::core::StringView") {
+TEST_CASE("gj::core::StringView") {
 	const StringView str = "Hello World!";
 
 	REQUIRE(str.len() == 12);
@@ -17,4 +17,4 @@ TEST_CASE("eu::core::StringView") {
 	REQUIRE(other == str);
 }
 
-EU_TEST_END
+GJ_TEST_END

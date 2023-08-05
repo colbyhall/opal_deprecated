@@ -2,14 +2,14 @@
 
 #include "core/os/library.h"
 
-#ifdef EU_PLATFORM_WINDOWS
+#ifdef GJ_PLATFORM_WINDOWS
 	#include "core/containers/wstring.h"
 	#include "core/os/windows.h"
 #else
-	#error "eu::core::Library unimplemented on this platform"
+	#error "gj::core::Library unimplemented on this platform"
 #endif
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 Option<Library> Library::open(const StringView& path) {
 	WString wpath;
@@ -30,4 +30,4 @@ Library::~Library() {
 
 void* Library::find_internal(const StringView& name) { return (void*)GetProcAddress((HMODULE)m_handle, *name); }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END

@@ -2,7 +2,7 @@
 
 #include "d3d12_context.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 D3D12ContextImpl::D3D12ContextImpl() {
 	m_d3d12 = core::Library::open("d3d12.dll");
@@ -11,7 +11,7 @@ D3D12ContextImpl::D3D12ContextImpl() {
 	m_create_device = d3d12.find<FnCreateDevice>("D3D12CreateDevice");
 	m_serialize_root_signature = d3d12.find<FnSerializeRootSignature>("D3D12SerializeRootSignature");
 
-#if EU_GPU_DEBUG
+#if GJ_GPU_DEBUG
 	// Always enable the debug layer before doing anything DX12 related
 	// so all possible errors generated while creating DX12 objects
 	// are caught by the debug layer
@@ -26,7 +26,7 @@ D3D12ContextImpl::D3D12ContextImpl() {
 	ComPtr<IDXGIAdapter4> adapter;
 	{
 		UINT create_factory_flags = 0;
-#if EU_GPU_DEBUG
+#if GJ_GPU_DEBUG
 		create_factory_flags = DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
@@ -61,12 +61,12 @@ D3D12ContextImpl::D3D12ContextImpl() {
 		throw_if_failed(result);
 
 		// Enable debug messages in debug mode.
-#ifdef EU_GPU_DEBUG
-		ComPtr<ID3D12InfoQueue> pInfoQueue;
-		if (SUCCEEDED(device1.As(&pInfoQueue))) {
-			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+#ifdef GJ_GPU_DEBUG
+		ComPtr<ID3D12InfoQugje> pInfoQugje;
+		if (SUCCEEDED(device1.As(&pInfoQugje))) {
+			pInfoQugje->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+			pInfoQugje->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+			pInfoQugje->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
 
 			// Suppress whole categories of messages
 			// D3D12_MESSAGE_CATEGORY Categories[] = {};
@@ -88,7 +88,7 @@ D3D12ContextImpl::D3D12ContextImpl() {
 																			  // graphics debugging.
 			};
 
-			D3D12_INFO_QUEUE_FILTER NewFilter = {};
+			D3D12_INFO_QUgjE_FILTER NewFilter = {};
 			// NewFilter.DenyList.NumCategories = _countof(Categories);
 			// NewFilter.DenyList.pCategoryList = Categories;
 			NewFilter.DenyList.NumSeverities = _countof(Severities);
@@ -96,7 +96,7 @@ D3D12ContextImpl::D3D12ContextImpl() {
 			NewFilter.DenyList.NumIDs = _countof(DenyIds);
 			NewFilter.DenyList.pIDList = DenyIds;
 
-			throw_if_failed(pInfoQueue->PushStorageFilter(&NewFilter));
+			throw_if_failed(pInfoQugje->PushStorageFilter(&NewFilter));
 		}
 #endif
 
@@ -110,4 +110,4 @@ D3D12ContextImpl::D3D12ContextImpl() {
 	m_root_signature.init(*this);
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

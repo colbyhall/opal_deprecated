@@ -6,7 +6,7 @@
 #include "core/containers/result.h"
 #include "core/containers/string.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 class File final : NonCopyable {
 public:
@@ -14,23 +14,23 @@ public:
 	enum class Error : u32 { NotFound, InUse };
 	static Result<File, Error> open(const StringView& path, Flags flags);
 
-	EU_NO_DISCARD usize size() const;
-	EU_NO_DISCARD usize cursor() const { return m_cursor; }
+	GJ_NO_DISCARD usize size() const;
+	GJ_NO_DISCARD usize cursor() const { return m_cursor; }
 
 	enum class Seek : u32 { Begin, Current, End };
 	usize seek(Seek method, isize distance);
-	EU_ALWAYS_INLINE void rewind() { seek(Seek::Begin, 0); }
+	GJ_ALWAYS_INLINE void rewind() { seek(Seek::Begin, 0); }
 	void set_eof();
 
 	usize read(Slice<u8> buffer);
 	void write(Slice<const u8> buffer);
 
-	EU_ALWAYS_INLINE File(File&& move) noexcept : m_handle(move.m_handle), m_flags(move.m_flags), m_cursor(0) {
+	GJ_ALWAYS_INLINE File(File&& move) noexcept : m_handle(move.m_handle), m_flags(move.m_flags), m_cursor(0) {
 		move.m_handle = nullptr;
 	}
-	EU_ALWAYS_INLINE File& operator=(File&& move) noexcept {
-		auto to_destroy = eu::move(*this);
-		EU_UNUSED(to_destroy);
+	GJ_ALWAYS_INLINE File& operator=(File&& move) noexcept {
+		auto to_destroy = gj::move(*this);
+		GJ_UNUSED(to_destroy);
 
 		m_handle = move.m_handle;
 		m_flags = move.m_flags;
@@ -40,13 +40,13 @@ public:
 	~File();
 
 private:
-	EU_ALWAYS_INLINE File(void* handle, Flags flags) : m_handle(handle), m_flags(flags), m_cursor(0) {}
+	GJ_ALWAYS_INLINE File(void* handle, Flags flags) : m_handle(handle), m_flags(flags), m_cursor(0) {}
 
 	void* m_handle;
 	Flags m_flags;
 	usize m_cursor;
 };
-EU_ENUM_CLASS_BITFIELD(File::Flags)
+GJ_ENUM_CLASS_BITFIELD(File::Flags)
 
 Result<String, File::Error> read_to_string(const StringView& path);
 
@@ -73,10 +73,10 @@ void read_dir_recursive(StringView path, ReadDirFunction function);
 
 String cwd();
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 using core::File;
 using core::read_to_string;
 
@@ -84,4 +84,4 @@ using core::cwd;
 using core::DirectoryItem;
 using core::read_dir;
 using core::read_dir_recursive;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

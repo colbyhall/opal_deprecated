@@ -5,7 +5,7 @@
 #include "gpu/buffer.h"
 #include "gpu/d3d12/d3d12.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12BufferImpl final : public IBuffer {
 public:
@@ -21,7 +21,7 @@ public:
 	void map(FunctionRef<void(Slice<u8>)>& func) final;
 	// ~IBuffer
 
-	EU_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const { return m_resource; };
+	GJ_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const { return m_resource; };
 
 private:
 	Usage m_usage;
@@ -31,4 +31,4 @@ private:
 	ComPtr<ID3D12Resource> m_resource;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

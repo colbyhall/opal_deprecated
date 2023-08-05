@@ -3,7 +3,7 @@
 #include "gpu/d3d12/d3d12_buffer.h"
 #include "gpu/d3d12/d3d12_context.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 D3D12BufferImpl::D3D12BufferImpl(Usage usage, Kind kind, usize len) : m_usage(usage), m_kind(kind), m_len(len) {
 	auto& context = Context::the().interface<D3D12ContextImpl>();
@@ -54,4 +54,4 @@ void D3D12BufferImpl::map(FunctionRef<void(Slice<u8>)>& func) {
 	m_resource->Unmap(0, nullptr);
 }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

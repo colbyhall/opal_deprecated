@@ -3,11 +3,11 @@
 #include "core/containers/wstring.h"
 #include "doctest/doctest.h"
 
-EU_TEST_BEGIN
+GJ_TEST_BEGIN
 
-using namespace eu;
+using namespace gj;
 
-TEST_CASE("eu::core::WString") {
+TEST_CASE("gj::core::WString") {
 	WString str;
 	str.push(L"Hello World!");
 
@@ -15,4 +15,4 @@ TEST_CASE("eu::core::WString") {
 	REQUIRE(str[0] == 'H');
 }
 
-EU_TEST_END
+GJ_TEST_END

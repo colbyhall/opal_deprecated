@@ -5,7 +5,7 @@
 #include "core/math/vec3.h"
 #include "gpu/gpu.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class ITexture;
 
@@ -31,12 +31,12 @@ public:
 	}
 
 private:
-	EU_ALWAYS_INLINE explicit Texture(Shared<ITexture>&& interface) : m_interface(eu::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit Texture(Shared<ITexture>&& interface) : m_interface(gj::move(interface)) {}
 
 	Shared<ITexture> m_interface;
 };
 
-EU_ENUM_CLASS_BITFIELD(Texture::Usage)
+GJ_ENUM_CLASS_BITFIELD(Texture::Usage)
 
 class ITexture {
 public:
@@ -47,4 +47,4 @@ public:
 	virtual ~ITexture() = default;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

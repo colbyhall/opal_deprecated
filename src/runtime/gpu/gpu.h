@@ -5,18 +5,18 @@
 #include "core/containers/shared.h"
 
 // Begin the gpu namespace
-#define EU_GPU_NAMESPACE_BEGIN                                                                                         \
-	EU_NAMESPACE_BEGIN                                                                                                 \
+#define GJ_GPU_NAMESPACE_BEGIN                                                                                         \
+	GJ_NAMESPACE_BEGIN                                                                                                 \
 	namespace gpu {
 
 // End the gpu namespace
-#define EU_GPU_NAMESPACE_END                                                                                           \
+#define GJ_GPU_NAMESPACE_END                                                                                           \
 	}                                                                                                                  \
-	EU_NAMESPACE_END
+	GJ_NAMESPACE_END
 
-#define EU_GPU_DEBUG 1
+#define GJ_GPU_DEBUG 1
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 template <typename T>
 using Shared = AtomicShared<T>;
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

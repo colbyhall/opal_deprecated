@@ -2,7 +2,7 @@
 
 #include "core/containers/string_view.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 // clang-format off
 static const u8 utf8d[] = {
@@ -54,7 +54,7 @@ bool CharsIterator::should_continue() const {
 }
 
 void CharsIterator::next() {
-	EU_ASSERT(should_continue());
+	GJ_ASSERT(should_continue());
 
 	for (; m_index < m_string.len(); m_index += 1) {
 		const u8 c = m_string[m_index];
@@ -99,4 +99,4 @@ bool StringView::operator==(const StringView& right) const {
 
 bool StringView::operator!=(const StringView& right) const { return !(*this == right); }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END

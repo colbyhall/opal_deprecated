@@ -1,7 +1,7 @@
 # A lot of this was copied from the JoltPhysics library
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(euphoria CXX)
+project(gjphoria CXX)
 
 # When turning this option on, the library will be compiled with debug symbols
 option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
@@ -15,7 +15,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR "${CMAKE_CXX_COMPILER_ID}" STR
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Distribution")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # ASAN is https://clang.llvm.org/docs/AddressSanitizer.html
-    set(CMAKE_CONFIGURATION_TYPES "Debug;Release;ReleaseASAN;ReleaseUBSAN;ReleaseCoverage;Distribution")
+    set(CMAKE_CONFIGURATION_TYPES "Debug;Release;ReleaseASAN;ReleasgjBSAN;ReleaseCoverage;Distribution")
 endif ()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -56,7 +56,7 @@ if (("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUA
     set(CMAKE_CXX_FLAGS_RELEASE "/GS- /Gy /O2 /Oi /Ot")
     set(CMAKE_CXX_FLAGS_DISTRIBUTION "/GS- /Gy /O2 /Oi /Ot")
     set(CMAKE_CXX_FLAGS_RELEASEASAN "-fsanitize=address /Od")
-    set(CMAKE_CXX_FLAGS_RELEASEUBSAN "-fsanitize=undefined,implicit-conversion,float-divide-by-zero,local-bounds -fno-sanitize-recover=all")
+    set(CMAKE_CXX_FLAGS_RELEASgjBSAN "-fsanitize=undefined,implicit-conversion,float-divide-by-zero,local-bounds -fno-sanitize-recover=all")
     set(CMAKE_CXX_FLAGS_RELEASECOVERAGE "-fprofile-instr-generate -fcoverage-mapping")
 
     if (NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "ARM64") AND NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "ARM"))
@@ -81,7 +81,7 @@ if (("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUA
         set(CMAKE_CXX_FLAGS "-Qunused-arguments ${CMAKE_CXX_FLAGS}") # Clang emits warnings about unused arguments such as /MP and /GL
 
         set(CMAKE_EXE_LINKER_FLAGS_RELEASEASAN "/SUBSYSTEM:CONSOLE /LIBPATH:${CLANG_LIB_PATH} clang_rt.asan-x86_64.lib -wholearchive:clang_rt.asan-x86_64.lib clang_rt.asan_cxx-x86_64.lib -wholearchive:clang_rt.asan_cxx-x86_64.lib")
-        set(CMAKE_EXE_LINKER_FLAGS_RELEASEUBSAN "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LIBPATH:${CLANG_LIB_PATH}")
+        set(CMAKE_EXE_LINKER_FLAGS_RELEASgjBSAN "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LIBPATH:${CLANG_LIB_PATH}")
         set(CMAKE_EXE_LINKER_FLAGS_RELEASECOVERAGE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LIBPATH:${CLANG_LIB_PATH}")
     endif ()
 endif ()
@@ -90,9 +90,9 @@ endif ()
 set(CMAKE_EXE_LINKER_FLAGS_DISTRIBUTION "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
 
 # Set repository root
-set(EUPHORIA_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(GRAPEJUICE_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 enable_testing()
 
 # Include the source directory cmake file
-include(${EUPHORIA_REPO_ROOT}/src/src.cmake)
+include(${GRAPEJUICE_REPO_ROOT}/src/src.cmake)

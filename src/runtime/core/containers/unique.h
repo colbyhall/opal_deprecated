@@ -5,13 +5,13 @@
 #include "core/os/memory.h"
 #include "core/type_traits.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 template <typename Base>
 class Unique {
 public:
 	template <typename... Args>
-	static EU_ALWAYS_INLINE Unique make(Args&&... args) {
+	static GJ_ALWAYS_INLINE Unique make(Args&&... args) {
 		return Unique<Base>(Base(forward<Args>(args)...));
 	}
 
@@ -34,14 +34,14 @@ public:
 	}
 	~Unique();
 
-	EU_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
-	EU_ALWAYS_INLINE operator NonNull<Base const>() const;
-	EU_ALWAYS_INLINE operator Base*() { return m_ptr; }
-	EU_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
-	EU_ALWAYS_INLINE Base* operator->() { return m_ptr; }
-	EU_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
-	EU_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
-	EU_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
+	GJ_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
+	GJ_ALWAYS_INLINE operator NonNull<Base const>() const;
+	GJ_ALWAYS_INLINE operator Base*() { return m_ptr; }
+	GJ_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
+	GJ_ALWAYS_INLINE Base* operator->() { return m_ptr; }
+	GJ_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
+	GJ_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
+	GJ_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
 
 private:
 	Unique() = default;
@@ -49,20 +49,20 @@ private:
 	template <typename Derived>
 	friend class Unique;
 
-	EU_ALWAYS_INLINE explicit Unique(Base&& base) {
+	GJ_ALWAYS_INLINE explicit Unique(Base&& base) {
 		void* ptr = core::malloc(core::Layout::single<Base>);
-		m_ptr = new (ptr) Base(eu::forward<Base>(base));
+		m_ptr = new (ptr) Base(gj::forward<Base>(base));
 	}
 
 	Base* m_ptr;
 };
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/containers/unique.inl"
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 using core::Unique;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

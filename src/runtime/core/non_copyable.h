@@ -4,7 +4,7 @@
 
 #include "core/core.h"
 
-EU_CORE_NAMESPACE_BEGIN
+GJ_CORE_NAMESPACE_BEGIN
 
 /// Class that makes another class non-copyable.
 ///
@@ -18,9 +18,9 @@ public:
 	void operator=(NonCopyable&&) noexcept {}
 };
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 
-// Export to eu namespace
-EU_NAMESPACE_BEGIN
+// Export to gj namespace
+GJ_NAMESPACE_BEGIN
 using core::NonCopyable;
-EU_NAMESPACE_END
+GJ_NAMESPACE_END

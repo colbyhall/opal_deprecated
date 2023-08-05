@@ -3,13 +3,13 @@
 #include "core/os/memory.h"
 #include "doctest/doctest.h"
 
-using namespace eu;
+using namespace gj;
 
-EU_SUPPRESS_WARNING_PUSH
-EU_MSVC_SUPPRESS_WARNING(5045)
+GJ_SUPPRESS_WARNING_PUSH
+GJ_MSVC_SUPPRESS_WARNING(5045)
 
-TEST_CASE("eu::core::memory") {
-	SUBCASE("eu::core::malloc, eu::core::realloc, eu::core::free, eu::core::set") {
+TEST_CASE("gj::core::memory") {
+	SUBCASE("gj::core::malloc, gj::core::realloc, gj::core::free, gj::core::set") {
 		// All allocation functions require the use of the Layout struct. This
 		// stores size and alignment requirements
 		const auto count = 45;
@@ -54,7 +54,7 @@ TEST_CASE("eu::core::memory") {
 		core::free(reallocated);
 	}
 
-	SUBCASE("eu::core::copy") {
+	SUBCASE("gj::core::copy") {
 		const auto count = 8;
 		const auto layout = core::Layout::array<int>(count);
 		CHECK(layout.size == sizeof(int) * count);
@@ -80,7 +80,7 @@ TEST_CASE("eu::core::memory") {
 		core::free(a);
 	}
 
-	SUBCASE("eu::core::move") {
+	SUBCASE("gj::core::move") {
 		const auto count = 8;
 		const auto layout = core::Layout::array<int>(count);
 		CHECK(layout.size == sizeof(int) * count);
@@ -107,4 +107,4 @@ TEST_CASE("eu::core::memory") {
 	}
 }
 
-EU_SUPPRESS_WARNING_POP
+GJ_SUPPRESS_WARNING_POP

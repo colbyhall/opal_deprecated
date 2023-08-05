@@ -6,7 +6,7 @@
 #include "core/containers/slice.h"
 #include "gpu/gpu.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 class IBuffer;
 
@@ -28,12 +28,12 @@ public:
 	}
 
 private:
-	EU_ALWAYS_INLINE explicit Buffer(Shared<IBuffer>&& interface) : m_interface(eu::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit Buffer(Shared<IBuffer>&& interface) : m_interface(gj::move(interface)) {}
 
 	Shared<IBuffer> m_interface;
 };
 
-EU_ENUM_CLASS_BITFIELD(Buffer::Usage)
+GJ_ENUM_CLASS_BITFIELD(Buffer::Usage)
 
 class IBuffer {
 public:
@@ -44,4 +44,4 @@ public:
 	virtual ~IBuffer() = default;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

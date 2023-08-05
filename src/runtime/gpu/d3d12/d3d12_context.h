@@ -8,7 +8,7 @@
 #include "core/containers/option.h"
 #include "core/os/library.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 typedef HRESULT(__stdcall* PFN_D3D12_SERIALIZE_ROOT_SIGNATURE)(
 	const D3D12_ROOT_SIGNATURE_DESC* root_signature_desc,
@@ -28,18 +28,18 @@ public:
 	Backend backend() const final { return Backend::D3D12; }
 	// ~IContext
 
-	EU_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
+	GJ_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
 
-	EU_ALWAYS_INLINE ComPtr<ID3D12Device1> device() const { return m_device; }
-	EU_ALWAYS_INLINE ComPtr<ID3D12CommandAllocator> command_allocator() const { return m_command_allocator; }
-	EU_ALWAYS_INLINE const D3D12RootSignatureImpl& root_signature() const { return m_root_signature; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12Device1> device() const { return m_device; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12CommandAllocator> command_allocator() const { return m_command_allocator; }
+	GJ_ALWAYS_INLINE const D3D12RootSignatureImpl& root_signature() const { return m_root_signature; }
 
 private:
 	Option<core::Library> m_d3d12;
 	FnCreateDevice m_create_device;
 	FnSerializeRootSignature m_serialize_root_signature;
 
-#if EU_GPU_DEBUG
+#if GJ_GPU_DEBUG
 	using FnGetDebugInterface = PFN_D3D12_GET_DEBUG_INTERFACE;
 	FnGetDebugInterface m_get_debug_interface;
 	ComPtr<ID3D12Debug> m_debug_interface;
@@ -52,4 +52,4 @@ private:
 	D3D12RootSignatureImpl m_root_signature;
 };
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

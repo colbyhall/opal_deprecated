@@ -6,13 +6,13 @@
 #include "gpu/d3d12/d3d12_graphics_pipeline.h"
 #include "gpu/d3d12/d3d12_texture.h"
 
-EU_GPU_NAMESPACE_BEGIN
+GJ_GPU_NAMESPACE_BEGIN
 
 static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON;
 
-	EU_SUPPRESS_WARNING_PUSH
-	EU_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
+	GJ_SUPPRESS_WARNING_PUSH
+	GJ_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
 	switch (layout) {
 	case Layout::Undefined:
 		break;
@@ -29,10 +29,10 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 		state = D3D12_RESOURCE_STATE_PRESENT;
 		break;
 	default:
-		EU_UNIMPLEMENTED;
+		GJ_UNIMPLEMENTED;
 		break;
 	}
-	EU_SUPPRESS_WARNING_POP
+	GJ_SUPPRESS_WARNING_POP
 
 	return state;
 }
@@ -146,8 +146,8 @@ void D3D12GraphicsCommandRecorderImpl::set_pipeline(const GraphicsPipeline& pipe
 void D3D12GraphicsCommandRecorderImpl::set_vertices(const Buffer& buffer, u32 stride) {
 	auto& interface = buffer.interface<D3D12BufferImpl>();
 
-	EU_ASSERT(interface.len() % stride == 0);
-	EU_ASSERT((interface.usage() & Buffer::Usage::Vertex) == Buffer::Usage::Vertex);
+	GJ_ASSERT(interface.len() % stride == 0);
+	GJ_ASSERT((interface.usage() & Buffer::Usage::Vertex) == Buffer::Usage::Vertex);
 
 	D3D12_VERTEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)interface.resource()->GetGPUVirtualAddress();
@@ -160,8 +160,8 @@ void D3D12GraphicsCommandRecorderImpl::set_vertices(const Buffer& buffer, u32 st
 void D3D12GraphicsCommandRecorderImpl::set_indices(const Buffer& buffer) {
 	auto& interface = buffer.interface<D3D12BufferImpl>();
 
-	EU_ASSERT(interface.len() % sizeof(u32) == 0);
-	EU_ASSERT((interface.usage() & Buffer::Usage::Index) == Buffer::Usage::Index);
+	GJ_ASSERT(interface.len() % sizeof(u32) == 0);
+	GJ_ASSERT((interface.usage() & Buffer::Usage::Index) == Buffer::Usage::Index);
 
 	D3D12_INDEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)interface.resource()->GetGPUVirtualAddress();
@@ -195,4 +195,4 @@ void D3D12GraphicsCommandRecorderImpl::end_render_pass() {
 
 void D3D12GraphicsCommandRecorderImpl::end() { throw_if_failed(m_command_list->Close()); }
 
-EU_GPU_NAMESPACE_END
+GJ_GPU_NAMESPACE_END

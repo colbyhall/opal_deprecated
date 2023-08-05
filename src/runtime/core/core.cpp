@@ -2,25 +2,25 @@
 
 #include "core.h"
 
-#ifdef EU_PLATFORM_WINDOWS
-EU_SUPPRESS_WARNING_PUSH
-EU_MSVC_SUPPRESS_WARNING(5039) // 10.0.19041.0\um\winbase.h(7679)
-EU_MSVC_SUPPRESS_WARNING(4668)
+#ifdef GJ_PLATFORM_WINDOWS
+GJ_SUPPRESS_WARNING_PUSH
+GJ_MSVC_SUPPRESS_WARNING(5039) // 10.0.19041.0\um\winbase.h(7679)
+GJ_MSVC_SUPPRESS_WARNING(4668)
 	#define UNICODE
 	#define WIN32_MEAN_AND_LEAN
 	#include <Windows.h>
 
 	#undef min
 	#undef max
-EU_SUPPRESS_WARNING_POP
+GJ_SUPPRESS_WARNING_POP
 
-EU_SUPPRESS_WARNINGS_STD_BEGIN
+GJ_SUPPRESS_WARNINGS_STD_BEGIN
 	#include <any>
 	#include <cstdio>
-EU_SUPPRESS_WARNINGS_STD_END
+GJ_SUPPRESS_WARNINGS_STD_END
 
-	#ifdef EU_ENABLE_ASSERTS
-EU_CORE_NAMESPACE_BEGIN
+	#ifdef GJ_ENABLE_ASSERTS
+GJ_CORE_NAMESPACE_BEGIN
 
 auto _assert_failed(bool must_crash, const char* expression, const char* message, const char* file, u32 line) -> bool {
 	char buffer[1024];
@@ -54,7 +54,7 @@ auto _assert_failed(bool must_crash, const char* expression, const char* message
 	return result != IDNO;
 }
 
-EU_CORE_NAMESPACE_END
+GJ_CORE_NAMESPACE_END
 	#endif
 
 #else
