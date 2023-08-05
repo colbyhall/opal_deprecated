@@ -13,9 +13,6 @@ struct alignas(16) Vec3 {
 			T x, y, z;
 		};
 		struct {
-			T width, depth, height;
-		};
-		struct {
 			T u, v, w;
 		};
 		Vec2<T> xy;

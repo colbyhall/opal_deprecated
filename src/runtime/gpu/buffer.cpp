@@ -19,8 +19,8 @@ Buffer Buffer::make(Usage usage, Kind kind, usize len) {
 		EU_UNIMPLEMENTED;
 		break;
 	}
-	
-	return { interface.unwrap() };
+
+	return Buffer{ interface.unwrap() };
 }
 
 EU_GPU_NAMESPACE_END

@@ -1,2 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="eu::core::Array&lt;*&gt;">
+        <DisplayString>{{ len={m_len}, cap={m_cap} }}</DisplayString>
+        <Expand>
+            <ArrayItems>
+                <Size>m_len</Size>
+                <ValuePointer>m_allocation.ptr()</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+    <Type Name="eu::core::Slice&lt;*&gt;">
+        <DisplayString>{{ len={m_len} }}</DisplayString>
+        <Expand>
+            <ArrayItems>
+                <Size>m_len</Size>
+                <ValuePointer>m_ptr</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+    <Type Name="eu::core::Option&lt;*&gt;">
+        <DisplayString Condition="!m_set">None</DisplayString>
+
+        <Expand>
+            <ExpandedItem Condition="m_set">($T1*)(m_data)</ExpandedItem>
+        </Expand>
+    </Type>
 </AutoVisualizer>

@@ -5,21 +5,18 @@
 
 EU_GPU_NAMESPACE_BEGIN
 
-D3D12BufferImpl::D3D12BufferImpl(Buffer::Usage usage, Buffer::Kind kind, usize len)
-	: m_usage(usage)
-	, m_kind(kind)
-	, m_len(len) {
+D3D12BufferImpl::D3D12BufferImpl(Usage usage, Kind kind, usize len) : m_usage(usage), m_kind(kind), m_len(len) {
 	auto& context = Context::the().interface<D3D12ContextImpl>();
 
 	D3D12_HEAP_PROPERTIES heap = {};
 	switch (kind) {
-	case Buffer::Kind::Storage:
+	case Kind::Storage:
 		heap.Type = D3D12_HEAP_TYPE_DEFAULT;
 		break;
-	case Buffer::Kind::Upload:
+	case Kind::Upload:
 		heap.Type = D3D12_HEAP_TYPE_UPLOAD;
 		break;
-	case Buffer::Kind::Download:
+	case Kind::Download:
 		heap.Type = D3D12_HEAP_TYPE_READBACK;
 		break;
 	}
@@ -52,7 +49,7 @@ void D3D12BufferImpl::map(FunctionRef<void(Slice<u8>)>& func) {
 	D3D12_RANGE range = {};
 	void* ptr;
 	throw_if_failed(m_resource->Map(0, &range, &ptr));
-	auto slice = Slice{ reinterpret_cast<u8*>(ptr), m_len * m_stride };
+	auto slice = Slice{ reinterpret_cast<u8*>(ptr), m_len };
 	func(slice);
 	m_resource->Unmap(0, nullptr);
 }

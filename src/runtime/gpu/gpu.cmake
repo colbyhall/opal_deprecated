@@ -8,6 +8,10 @@ set(GPU_SRC_FILES
         ${GPU_ROOT}/d3d12/d3d12_buffer.cpp
         ${GPU_ROOT}/d3d12/d3d12_context.h
         ${GPU_ROOT}/d3d12/d3d12_context.cpp
+        ${GPU_ROOT}/d3d12/d3d12_memory.h
+        ${GPU_ROOT}/d3d12/d3d12_memory.cpp
+        ${GPU_ROOT}/d3d12/d3d12_texture.h
+        ${GPU_ROOT}/d3d12/d3d12_texture.cpp
 
         ${GPU_ROOT}/buffer.h
         ${GPU_ROOT}/buffer.cpp
@@ -15,6 +19,8 @@ set(GPU_SRC_FILES
         ${GPU_ROOT}/context.cpp
         ${GPU_ROOT}/gpu.cmake
         ${GPU_ROOT}/gpu.h
+        ${GPU_ROOT}/texture.h
+        ${GPU_ROOT}/texture.cpp
         )
 
 # Group source files

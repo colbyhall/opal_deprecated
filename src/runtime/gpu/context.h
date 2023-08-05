@@ -25,7 +25,7 @@ public:
 
 	template <typename T = IContext>
 	T const& interface() const {
-		static_assert(std::is_base_of_v<IContext, T>, "T is not derived of ContextInterface");
+		static_assert(std::is_base_of_v<IContext, T>, "T is not derived of IContext");
 		return static_cast<const T&>(*m_interface);
 	}
 

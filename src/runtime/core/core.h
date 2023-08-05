@@ -367,7 +367,8 @@ EU_CORE_NAMESPACE_END
 	#define EU_ENSURE(...) ((void)0)
 #endif // EU_ENABLE_ASSERTS
 
-#define EU_UNIMPLEMENTED EU_ASSERT(false, "Unimplemented!")
+#define EU_UNIMPLEMENTED	 EU_ASSERT(false, "Unimplemented!")
+#define EU_INVALID_CODE_PATH EU_ASSERT(false, "Invalid code path!")
 
 #include <utility>
 

@@ -4,7 +4,7 @@ EU_CORE_NAMESPACE_BEGIN
 
 template <typename Base, SMode Mode>
 Shared<Base, Mode>::~Shared() {
-	if (m_ptr) {
+	if (m_counter) {
 		auto& c = counter();
 
 		// Decrement the strong count
@@ -17,10 +17,10 @@ Shared<Base, Mode>::~Shared() {
 
 			// Free the memory if we have no weak references
 			if (weak_count == 0) {
-				core::free(m_ptr);
+				core::free(m_counter);
 			}
 
-			m_ptr = nullptr;
+			m_counter = nullptr;
 		}
 	}
 }
@@ -29,29 +29,27 @@ template <typename Base, SMode Mode>
 Weak<Base, Mode> Shared<Base, Mode>::downgrade() const {
 	auto& c = counter();
 	c.add_weak();
-	return Weak<Base, Mode>(m_ptr);
+	return Weak<Base, Mode>(m_counter);
 }
 
 template <typename Base, SMode Mode>
 Shared<Base, Mode> Shared<Base, Mode>::clone() const {
 	auto& c = counter();
 	c.add_strong();
-	return Shared<Base, Mode>(m_ptr);
+	return Shared<Base, Mode>(m_counter);
 }
 
 template <typename Base, SMode Mode>
 Weak<Base, Mode>::~Weak() {
-	if (m_ptr) {
+	if (m_counter) {
 		auto& c = counter();
 
-		// Decrement the weak count
 		const auto strong_count = c.strong();
 		const auto weak_count = c.remove_weak();
 
-		// If there are no strong and weak references free the memory
 		if (strong_count == 0 && weak_count == 0) {
-			core::free(m_ptr);
-			m_ptr = nullptr;
+			core::free(m_counter);
+			m_counter = nullptr;
 		}
 	}
 }
@@ -62,7 +60,7 @@ Option<Shared<Base, Mode>> Weak<Base, Mode>::upgrade() const {
 	const auto strong_count = c.strong();
 	if (strong_count > 0) {
 		c.add_strong();
-		return Shared<Base, Mode>(m_ptr);
+		return Shared<Base, Mode>(m_counter, m_base);
 	}
 	return nullptr;
 }
@@ -71,7 +69,7 @@ template <typename Base, SMode Mode>
 Weak<Base, Mode> Weak<Base, Mode>::clone() const {
 	auto& c = counter();
 	c.add_weak();
-	return Weak<Base, Mode>(m_ptr);
+	return Weak<Base, Mode>(m_counter);
 }
 
 template <typename T, SMode Mode>

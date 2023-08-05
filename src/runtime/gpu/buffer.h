@@ -14,17 +14,22 @@ class Buffer {
 public:
 	enum class Kind : u8 { Storage, Upload, Download };
 	enum class Usage : u8 {
-		TransferSrc = (1 << 0),
-		TransferDst = (1 << 1),
-		Vertex = (1 << 1),
+		Vertex = (1 << 0),
 		Index = (1 << 1),
-		Constant = (1 << 1),
+		Constant = (1 << 2),
 	};
 
 	static Buffer make(Usage usage, Kind kind, usize len);
 
+	template <typename T = IBuffer>
+	T const& interface() const {
+		static_assert(std::is_base_of_v<IBuffer, T>, "T is not derived of IBuffer");
+		return static_cast<const T&>(*m_interface);
+	}
+
 private:
-	EU_ALWAYS_INLINE Buffer(Shared<IBuffer>&& interface) : m_interface(eu::move(interface)) {}
+	EU_ALWAYS_INLINE explicit Buffer(Shared<IBuffer>&& interface) : m_interface(eu::move(interface)) {}
+
 	Shared<IBuffer> m_interface;
 };
 
