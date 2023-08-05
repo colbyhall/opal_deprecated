@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "core/containers/array.h"
 #include "core/containers/string_view.h"
+#include "core/containers/vector.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
@@ -12,7 +12,7 @@ class WStringView;
 class String {
 public:
 	String() = default;
-	static String from(Array<char>&& bytes);
+	static String from(Vector<char>&& bytes);
 	static String from(const StringView& view);
 	static String from(const WStringView& view);
 
@@ -39,7 +39,7 @@ public:
 	String& push(StringView string);
 
 private:
-	Array<char> m_bytes;
+	Vector<char> m_bytes;
 };
 
 EU_CORE_NAMESPACE_END

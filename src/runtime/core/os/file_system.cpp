@@ -233,7 +233,7 @@ Result<String, File::Error> read_to_string(const StringView& path) {
 
 	// Allocate a buffer that is the size of the file
 	const auto size = file.size();
-	Array<char> bytes;
+	Vector<char> bytes;
 	bytes.reserve(size + 1);
 
 	// Fill out the array with zeroed data to read into

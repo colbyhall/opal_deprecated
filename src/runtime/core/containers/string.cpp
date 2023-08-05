@@ -5,9 +5,9 @@
 
 EU_CORE_NAMESPACE_BEGIN
 
-String String::from(Array<char>&& bytes) {
+String String::from(Vector<char>&& bytes) {
 	String string;
-	string.m_bytes = eu::forward<Array<char>>(bytes);
+	string.m_bytes = eu::forward<Vector<char>>(bytes);
 
 	// Add a null terminator if one is not found
 	if (!string.m_bytes.is_empty() && string.m_bytes[string.m_bytes.len() - 1] != 0) {

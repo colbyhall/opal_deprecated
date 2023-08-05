@@ -2,28 +2,28 @@
 
 EU_CORE_NAMESPACE_BEGIN
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-void Map<Key, Value, Allocator, Hasher>::reserve(usize amount) {
+template <typename Key, typename Value, typename Hasher>
+void Map<Key, Value, Hasher>::reserve(usize amount) {
 	m_buckets.reserve(amount);
 	m_layout.reserve(amount);
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-void Map<Key, Value, Allocator, Hasher>::insert(const Key& key, Value&& value) {
+template <typename Key, typename Value, typename Hasher>
+void Map<Key, Value, Hasher>::insert(const Key& key, Value&& value) {
 	m_buckets.push(Bucket{ key, eu::forward<Value>(value), -1 });
 
 	refresh_layout();
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-void Map<Key, Value, Allocator, Hasher>::insert(const Key& key, const Value& value) {
+template <typename Key, typename Value, typename Hasher>
+void Map<Key, Value, Hasher>::insert(const Key& key, const Value& value) {
 	m_buckets.push(Bucket{ key, value, -1 });
 
 	refresh_layout();
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-Option<Value> Map<Key, Value, Allocator, Hasher>::remove(const Key& key) {
+template <typename Key, typename Value, typename Hasher>
+Option<Value> Map<Key, Value, Hasher>::remove(const Key& key) {
 	if (m_buckets.is_empty()) {
 		return nullptr;
 	}
@@ -48,8 +48,8 @@ Option<Value> Map<Key, Value, Allocator, Hasher>::remove(const Key& key) {
 	return result.value;
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-void Map<Key, Value, Allocator, Hasher>::retain(FunctionRef<bool(const Key&, const Value&)> keep) {
+template <typename Key, typename Value, typename Hasher>
+void Map<Key, Value, Hasher>::retain(FunctionRef<bool(const Key&, const Value&)> keep) {
 	// Reverse iterate to remove to prevent shifting entire array
 	i32 index = static_cast<i32>(m_buckets.len()) - 1;
 	for (; index >= 0; index--) {
@@ -61,8 +61,8 @@ void Map<Key, Value, Allocator, Hasher>::retain(FunctionRef<bool(const Key&, con
 	refresh_layout();
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-Option<Value&> Map<Key, Value, Allocator, Hasher>::find_mut(const Key& key) {
+template <typename Key, typename Value, typename Hasher>
+Option<Value&> Map<Key, Value, Hasher>::find_mut(const Key& key) {
 	if (m_buckets.is_empty()) {
 		return nullptr;
 	}
@@ -83,8 +83,8 @@ Option<Value&> Map<Key, Value, Allocator, Hasher>::find_mut(const Key& key) {
 	return nullptr;
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-Option<Value const&> Map<Key, Value, Allocator, Hasher>::find(const Key& key) const {
+template <typename Key, typename Value, typename Hasher>
+Option<Value const&> Map<Key, Value, Hasher>::find(const Key& key) const {
 	if (m_buckets.is_empty()) {
 		return nullptr;
 	}
@@ -105,16 +105,16 @@ Option<Value const&> Map<Key, Value, Allocator, Hasher>::find(const Key& key) co
 	return nullptr;
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-inline usize Map<Key, Value, Allocator, Hasher>::key_to_layout_index(const Key& key) const {
+template <typename Key, typename Value, typename Hasher>
+inline usize Map<Key, Value, Hasher>::key_to_layout_index(const Key& key) const {
 	Hasher hasher = {};
 	hash(hasher, key);
 	const u64 the_hash = hasher.finish();
 	return the_hash % m_buckets.len();
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-void Map<Key, Value, Allocator, Hasher>::refresh_layout() {
+template <typename Key, typename Value, typename Hasher>
+void Map<Key, Value, Hasher>::refresh_layout() {
 	// Reset the layout array to all be invalid
 	m_layout.reset();
 	for (usize i = 0; i < m_buckets.len(); ++i) {
@@ -145,13 +145,13 @@ void Map<Key, Value, Allocator, Hasher>::refresh_layout() {
 	}
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-inline ConstMapIterator<Key, Value, Allocator, Hasher> Map<Key, Value, Allocator, Hasher>::iter() const {
+template <typename Key, typename Value, typename Hasher>
+inline ConstMapIterator<Key, Value, Hasher> Map<Key, Value, Hasher>::iter() const {
 	return ConstMapIterator(*this);
 }
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
-inline MapIterator<Key, Value, Allocator, Hasher> Map<Key, Value, Allocator, Hasher>::iter_mut() {
+template <typename Key, typename Value, typename Hasher>
+inline MapIterator<Key, Value, Hasher> Map<Key, Value, Hasher>::iter_mut() {
 	return MapIterator(*this);
 }
 

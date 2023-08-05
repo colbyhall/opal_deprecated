@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "core/containers/array.h"
+#include "core/containers/vector.h"
 #include "core/containers/wstring_view.h"
 
 EU_CORE_NAMESPACE_BEGIN
@@ -40,7 +40,7 @@ public:
 	WString& push(StringView string);
 
 private:
-	Array<WChar> m_chars;
+	Vector<WChar> m_chars;
 };
 
 EU_CORE_NAMESPACE_END

@@ -2,27 +2,24 @@
 
 #pragma once
 
-#include "core/containers/allocator.h"
 #include "core/containers/option.h"
 #include "core/containers/slice.h"
-#include "core/non_copyable.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
-template <typename Element, typename Allocator = MallocAllocator>
+template <typename Element, usize Count>
 class Array {
 public:
-	static_assert(core::is_allocator<Allocator>, "Allocator is not valid. See \"core/containers/allocator.h\"");
-
-	using Allocation = typename Allocator::template Allocation<Element>;
+	static_assert(Count > 0, "Must have a Count greater than zero for this to be useful");
 
 	Array() = default;
-	EU_ALWAYS_INLINE Array(Array&& move) noexcept;
-	EU_ALWAYS_INLINE Array& operator=(Array&& move) noexcept;
+	Array(const Array& copy) noexcept;
+	Array& operator=(const Array& copy) noexcept;
+	Array(Array&& move) noexcept;
+	Array& operator=(Array&& move) noexcept;
 	~Array();
 
 	EU_NO_DISCARD EU_ALWAYS_INLINE usize len() const { return m_len; }
-	EU_NO_DISCARD EU_ALWAYS_INLINE usize cap() const { return m_cap; }
 
 	EU_NO_DISCARD EU_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
 	EU_NO_DISCARD EU_ALWAYS_INLINE operator bool() const { return !is_empty(); }
@@ -31,8 +28,8 @@ public:
 	EU_ALWAYS_INLINE operator Slice<Element>();
 	EU_ALWAYS_INLINE operator Slice<Element const>() const;
 
-	EU_ALWAYS_INLINE Element* begin() { return m_allocation.ptr(); }
-	EU_ALWAYS_INLINE Element* end() { return m_allocation.ptr() + m_len; }
+	EU_ALWAYS_INLINE Element* begin() { return reinterpret_cast<Element*>(m_bytes); }
+	EU_ALWAYS_INLINE Element* end() { return begin() + m_len; }
 
 	EU_ALWAYS_INLINE const Element* cbegin() const;
 	EU_ALWAYS_INLINE const Element* cend() const;
@@ -43,27 +40,62 @@ public:
 	EU_NO_DISCARD EU_ALWAYS_INLINE Option<Element&> last();
 	EU_NO_DISCARD EU_ALWAYS_INLINE Option<Element const&> last() const;
 
-	EU_ALWAYS_INLINE void reserve(usize amount);
-
+	/**
+	 * Inserts item into array by moving item into the index given
+	 *
+	 * @param index - index to move the element into. can be the length of the array to insert at end
+	 * @param item - element moved into array
+	 */
 	void insert(usize index, Element&& item);
+
+	/**
+	 * Inserts item into array by copying item into the index given
+	 *
+	 * @param index - index to copy the element into. can be the length of the array to insert at end
+	 * @param item - element copied into array
+	 */
 	EU_ALWAYS_INLINE void insert(usize index, const Element& item_to_copy);
+
+	/**
+	 * Adds item to the end of array by moving it
+	 *
+	 * @param item - element moved into array
+	 * @return index that the element was inserted at
+	 */
 	EU_ALWAYS_INLINE usize push(Element&& item);
+
+	/**
+	 * Adds item to the end of array by copying it
+	 *
+	 * @param item - element copied into array
+	 * @return index that the element was inserted at
+	 */
 	EU_ALWAYS_INLINE usize push(const Element& item);
 
-	/// Removes the item at index from the array.
-	/// Throws assertion if index is not valid
+	/**
+	 * Removes an item from the array by moving it out and then shifting moving all elements after over
+	 *
+	 * @param index - points to which item to remove. will crash if invalid
+	 * @return removed element
+	 */
 	Element remove(usize index);
 
-	/// Removes the last item in the array and returns it.
+	/**
+	 * If the array is not empty remove the last item by moving it out and decrementing len
+	 *
+	 * @return removed element if there was one to remove
+	 */
+
 	EU_ALWAYS_INLINE Option<Element> pop();
 
-	/// Removes all items from array
+	/**
+	 * Frees all elements in the array
+	 */
 	void reset();
 
 private:
-	Allocation m_allocation{};
+	alignas(Element[Count]) u8 m_bytes[sizeof(Element[Count])];
 	usize m_len = 0;
-	usize m_cap = 0;
 };
 
 EU_CORE_NAMESPACE_END

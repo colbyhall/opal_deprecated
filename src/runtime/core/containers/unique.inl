@@ -3,6 +3,25 @@
 EU_CORE_NAMESPACE_BEGIN
 
 template <typename Base>
+Unique<Base>::Unique(const Unique<Base>& copy) noexcept {
+	static_assert(!std::is_abstract_v<Base>, "Can ony perform copy with a concrete class");
+	void* ptr = core::malloc(core::Layout::single<Base>);
+	m_ptr = new (ptr) Base(*copy);
+}
+
+template <typename Base>
+Unique<Base>& Unique<Base>::operator=(const Unique<Base>& copy) noexcept {
+	static_assert(!std::is_abstract_v<Base>, "Can ony perform copy with a concrete class");
+	Unique<Base> to_destroy = core::move(*this);
+	EU_UNUSED(to_destroy);
+
+	void* ptr = core::malloc(core::Layout::single<Base>);
+	m_ptr = new (ptr) Base(*copy);
+
+	return *this;
+}
+
+template <typename Base>
 EU_ALWAYS_INLINE Unique<Base>::operator NonNull<Base const>() const {
 	return m_ptr;
 }

@@ -2,29 +2,21 @@
 
 #pragma once
 
-#include "core/non_copyable.h"
 #include "core/os/memory.h"
 #include "core/type_traits.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
 template <typename Base>
-class Unique : private NonCopyable {
+class Unique {
 public:
 	template <typename... Args>
 	static EU_ALWAYS_INLINE Unique make(Args&&... args) {
-		return Unique<Base>(eu::move(Base(forward<Args>(args)...)));
+		return Unique<Base>(Base(forward<Args>(args)...));
 	}
 
-	EU_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
-	EU_ALWAYS_INLINE operator NonNull<Base const>() const;
-	EU_ALWAYS_INLINE operator Base*() { return m_ptr; }
-	EU_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
-	EU_ALWAYS_INLINE Base* operator->() { return m_ptr; }
-	EU_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
-	EU_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
-	EU_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
-
+	Unique(const Unique<Base>& copy) noexcept;
+	Unique& operator=(const Unique<Base>& copy) noexcept;
 	template <typename Derived = Base>
 	Unique(Unique<Derived>&& move) noexcept : m_ptr(move.m_ptr) {
 		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
@@ -41,6 +33,15 @@ public:
 		return *this;
 	}
 	~Unique();
+
+	EU_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
+	EU_ALWAYS_INLINE operator NonNull<Base const>() const;
+	EU_ALWAYS_INLINE operator Base*() { return m_ptr; }
+	EU_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
+	EU_ALWAYS_INLINE Base* operator->() { return m_ptr; }
+	EU_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
+	EU_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
+	EU_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
 
 private:
 	Unique() = default;

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "core/containers/option.h"
-#include "core/non_copyable.h"
 
 EU_SUPPRESS_WARNINGS_STD_BEGIN
 #include <atomic>
@@ -14,7 +13,7 @@ EU_CORE_NAMESPACE_BEGIN
 enum class Order : u8 { Relaxed, Release, Acquire, AcqRel, SeqCst };
 
 template <typename T>
-class Atomic final : private NonCopyable {
+class Atomic {
 public:
 	Atomic() noexcept = default;
 	constexpr Atomic(T desired) noexcept : m_atomic(desired) {}

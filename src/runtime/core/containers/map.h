@@ -2,21 +2,21 @@
 
 #pragma once
 
-#include "core/containers/array.h"
 #include "core/containers/function.h"
+#include "core/containers/vector.h"
 #include "core/hash.h"
 #include "core/non_copyable.h"
 #include "core/type_traits.h"
 
 EU_CORE_NAMESPACE_BEGIN
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
+template <typename Key, typename Value, typename Hasher>
 class Map;
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
+template <typename Key, typename Value, typename Hasher>
 class MapIterator {
 public:
-	EU_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Allocator, Hasher>& map) : m_map(map) {}
+	EU_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map) : m_map(map) {}
 
 	EU_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
 	EU_ALWAYS_INLINE MapIterator& operator++() {
@@ -28,13 +28,13 @@ public:
 
 private:
 	usize m_index = 0;
-	Map<Key, Value, Allocator, Hasher>& m_map;
+	Map<Key, Value, Hasher>& m_map;
 };
 
-template <typename Key, typename Value, typename Allocator, typename Hasher>
+template <typename Key, typename Value, typename Hasher>
 class ConstMapIterator {
 public:
-	EU_ALWAYS_INLINE explicit ConstMapIterator(const Map<Key, Value, Allocator, Hasher>& map) : m_map(map) {}
+	EU_ALWAYS_INLINE explicit ConstMapIterator(const Map<Key, Value, Hasher>& map) : m_map(map) {}
 
 	EU_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
 	EU_ALWAYS_INLINE ConstMapIterator& operator++() {
@@ -46,10 +46,10 @@ public:
 
 private:
 	usize m_index = 0;
-	const Map<Key, Value, Allocator, Hasher>& m_map;
+	const Map<Key, Value, Hasher>& m_map;
 };
 
-template <typename Key, typename Value, typename Allocator = MallocAllocator, typename Hasher = FNV1Hasher>
+template <typename Key, typename Value, typename Hasher = FNV1Hasher>
 class Map {
 	struct Bucket {
 		Key key;
@@ -61,8 +61,8 @@ class Map {
 public:
 	constexpr Map() = default;
 
-	using ConstIterator = ConstMapIterator<Key, Value, Allocator, Hasher>;
-	using Iterator = MapIterator<Key, Value, Allocator, Hasher>;
+	using ConstIterator = ConstMapIterator<Key, Value, Hasher>;
+	using Iterator = MapIterator<Key, Value, Hasher>;
 
 	void reserve(usize amount);
 	EU_NO_DISCARD EU_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
@@ -82,14 +82,14 @@ public:
 	EU_ALWAYS_INLINE Iterator iter_mut();
 
 private:
-	friend class MapIterator<Key, Value, Allocator, Hasher>;
-	friend class ConstMapIterator<Key, Value, Allocator, Hasher>;
+	friend class MapIterator<Key, Value, Hasher>;
+	friend class ConstMapIterator<Key, Value, Hasher>;
 
 	EU_ALWAYS_INLINE usize key_to_layout_index(const Key& key) const;
 	void refresh_layout();
 
-	Array<Bucket, Allocator> m_buckets;
-	Array<i32, Allocator> m_layout;
+	Vector<Bucket> m_buckets;
+	Vector<i32> m_layout;
 };
 
 EU_CORE_NAMESPACE_END

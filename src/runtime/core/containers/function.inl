@@ -1,6 +1,5 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "core/non_copyable.h"
 #include "core/os/memory.h"
 
 EU_CORE_NAMESPACE_BEGIN
@@ -23,7 +22,7 @@ template <typename S, typename F>
 class FunctionBase;
 
 template <typename S, typename R, typename... Param>
-class FunctionBase<S, R(Param...)> : private NonCopyable {
+class FunctionBase<S, R(Param...)> {
 	template <typename OtherS, typename OtherF>
 	friend class FunctionBase;
 
@@ -73,7 +72,7 @@ private:
 	S m_storage;
 };
 
-struct RefStorage final : NonCopyable {
+struct RefStorage {
 	RefStorage() = default;
 	RefStorage(RefStorage&& s) noexcept : m_ptr(s.m_ptr) { s.m_ptr = nullptr; }
 	RefStorage& operator=(RefStorage&& s) noexcept {
@@ -110,7 +109,7 @@ struct FunctionWrapper : public FunctionWrapperInterface {
 	T t;
 };
 
-struct UniqueStorage : NonCopyable {
+struct UniqueStorage {
 	UniqueStorage() = default;
 	UniqueStorage(UniqueStorage&& s) noexcept : m_ptr(s.m_ptr) { s.m_ptr = nullptr; }
 	UniqueStorage& operator=(UniqueStorage&& s) noexcept {

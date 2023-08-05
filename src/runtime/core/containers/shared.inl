@@ -29,14 +29,7 @@ template <typename Base, SMode Mode>
 Weak<Base, Mode> Shared<Base, Mode>::downgrade() const {
 	auto& c = counter();
 	c.add_weak();
-	return Weak<Base, Mode>(m_counter);
-}
-
-template <typename Base, SMode Mode>
-Shared<Base, Mode> Shared<Base, Mode>::clone() const {
-	auto& c = counter();
-	c.add_strong();
-	return Shared<Base, Mode>(m_counter);
+	return Weak<Base, Mode>(m_counter, m_base);
 }
 
 template <typename Base, SMode Mode>
@@ -63,13 +56,6 @@ Option<Shared<Base, Mode>> Weak<Base, Mode>::upgrade() const {
 		return Shared<Base, Mode>(m_counter, m_base);
 	}
 	return nullptr;
-}
-
-template <typename Base, SMode Mode>
-Weak<Base, Mode> Weak<Base, Mode>::clone() const {
-	auto& c = counter();
-	c.add_weak();
-	return Weak<Base, Mode>(m_counter);
 }
 
 template <typename T, SMode Mode>

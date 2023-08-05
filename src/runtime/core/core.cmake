@@ -3,7 +3,6 @@ set(CORE_ROOT ${RUNTIME_ROOT}/core)
 
 # Source files
 set(CORE_SRC_FILES
-        ${CORE_ROOT}/containers/allocator.h
         ${CORE_ROOT}/containers/array.h
         ${CORE_ROOT}/containers/array.inl
         ${CORE_ROOT}/containers/function.h
@@ -24,6 +23,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/tuple.h
         ${CORE_ROOT}/containers/unique.h
         ${CORE_ROOT}/containers/unique.inl
+        ${CORE_ROOT}/containers/vector.h
+        ${CORE_ROOT}/containers/vector.inl
         ${CORE_ROOT}/containers/wstring.h
         ${CORE_ROOT}/containers/wstring.cpp
         ${CORE_ROOT}/containers/wstring_view.h

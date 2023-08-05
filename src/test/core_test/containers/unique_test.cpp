@@ -18,8 +18,11 @@ public:
 };
 
 TEST_CASE("eu::core::Unique") {
-	eu::Unique<Foo> foo = eu::Unique<Bar>::make();
+	auto foo = eu::Unique<Bar>::make();
 	CHECK(foo->get_value() == 100);
+
+	auto bar = foo;
+	CHECK(bar->get_value() == 100);
 }
 
 EU_TEST_END

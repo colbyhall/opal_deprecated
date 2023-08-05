@@ -18,5 +18,5 @@
 
 EU_GPU_NAMESPACE_BEGIN
 template <typename T>
-using Shared = eu::core::Shared<T, SMode::Atomic>;
+using Shared = AtomicShared<T>;
 EU_GPU_NAMESPACE_END

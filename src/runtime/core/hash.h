@@ -14,7 +14,7 @@ public:
 	virtual ~IHasher() = default;
 };
 
-class FNV1Hasher : public IHasher {
+class FNV1Hasher final : public IHasher {
 public:
 	constexpr FNV1Hasher() = default;
 
@@ -22,9 +22,9 @@ public:
 	static const u64 prime;
 
 	// IHasher
-	u64 finish() override;
-	void write(Slice<u8 const> bytes) override;
-	// IHasherr
+	u64 finish() final;
+	void write(Slice<u8 const> bytes) final;
+	// ~IHasher
 
 private:
 	u64 m_result = 0;

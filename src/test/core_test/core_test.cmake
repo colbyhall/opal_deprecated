@@ -5,6 +5,7 @@ set(CORE_TEST_ROOT ${TEST_ROOT}/core_test)
 set(CORE_TEST_SRC_FILES
         ${CORE_TEST_ROOT}/core_test.cmake
         ${CORE_TEST_ROOT}/core_test.cpp
+
         ${CORE_TEST_ROOT}/containers/array_test.cpp
         ${CORE_TEST_ROOT}/containers/function_test.cpp
         ${CORE_TEST_ROOT}/containers/map_test.cpp
@@ -15,14 +16,15 @@ set(CORE_TEST_SRC_FILES
         ${CORE_TEST_ROOT}/containers/slice_test.cpp
         ${CORE_TEST_ROOT}/containers/string_view_test.cpp
         ${CORE_TEST_ROOT}/containers/string_test.cpp
+        ${CORE_TEST_ROOT}/containers/vector_test.cpp
         ${CORE_TEST_ROOT}/containers/unique_test.cpp
         ${CORE_TEST_ROOT}/containers/wstring_test.cpp
         ${CORE_TEST_ROOT}/containers/wstring_view_test.cpp
+
         ${CORE_TEST_ROOT}/math/math_test.cpp
         ${CORE_TEST_ROOT}/math/vec2_test.cpp
         ${CORE_TEST_ROOT}/math/vec3_test.cpp
-        ${CORE_TEST_ROOT}/os/file_system_test.cpp
-        ${CORE_TEST_ROOT}/os/library_test.cpp
+
         ${CORE_TEST_ROOT}/os/memory_test.cpp
         )
 

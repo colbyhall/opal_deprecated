@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
     <Type Name="eu::core::Array&lt;*&gt;">
+        <DisplayString>{{ len={m_len} }}</DisplayString>
+        <Expand>
+            <ArrayItems>
+                <Size>m_len</Size>
+                <ValuePointer>begin()</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+    <Type Name="eu::core::Vector&lt;*&gt;">
         <DisplayString>{{ len={m_len}, cap={m_cap} }}</DisplayString>
         <Expand>
             <ArrayItems>
                 <Size>m_len</Size>
-                <ValuePointer>m_allocation.ptr()</ValuePointer>
+                <ValuePointer>begin()</ValuePointer>
             </ArrayItems>
         </Expand>
     </Type>
