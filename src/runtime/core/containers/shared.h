@@ -17,6 +17,8 @@ class SharedCounter;
 template <typename Base, SMode Mode>
 class Weak;
 
+class SharedFromThisBase;
+
 template <typename T, SMode Mode>
 class SharedFromThis;
 

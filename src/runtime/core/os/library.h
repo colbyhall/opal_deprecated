@@ -14,7 +14,7 @@ public:
 
 	template <typename F>
 	F find(const StringView& path) {
-		static_assert(std::is_function_v<F> || std::is_pod_v<F>);
+		static_assert(std::is_function_v<F> || std::is_trivial_v<F>);
 		void* f = find_internal(path);
 		if (f != nullptr) {
 			F casted = (F)(f);
