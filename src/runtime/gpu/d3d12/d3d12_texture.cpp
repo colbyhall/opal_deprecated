@@ -114,16 +114,16 @@ D3D12TextureImpl::D3D12TextureImpl(Usage usage, Format format, const Vec3u32& si
 	}
 
 	if (color_attachment) {
-		m_rtv_handle = context.rtv_heap().alloc();
+		m_rtv_handle = context.root_signature().rtv_heap().alloc();
 		context.device()->CreateRenderTargetView(m_resource.Get(), nullptr, m_rtv_handle.handle);
 	}
 	if (depth_attachment) {
-		m_dsv_handle = context.dsv_heap().alloc();
+		m_dsv_handle = context.root_signature().dsv_heap().alloc();
 		context.device()->CreateDepthStencilView(m_resource.Get(), nullptr, m_dsv_handle.handle);
 	}
 	if (sampled) {
-		m_btv_handle = context.btv_heap().alloc();
-		context.device()->CreateShaderResourceView(m_resource.Get(), nullptr, m_btv_handle.handle);
+		m_bt2dv_handle = context.root_signature().bt2dv_heap().alloc();
+		context.device()->CreateShaderResourceView(m_resource.Get(), nullptr, m_bt2dv_handle.handle);
 	}
 }
 
@@ -131,16 +131,16 @@ D3D12TextureImpl::~D3D12TextureImpl() {
 	auto& context = Context::the().interface<D3D12ContextImpl>();
 
 	if (m_rtv_handle.handle.ptr) {
-		context.rtv_heap().free(m_rtv_handle);
+		context.root_signature().rtv_heap().free(m_rtv_handle);
 		m_rtv_handle = {};
 	}
 	if (m_dsv_handle.handle.ptr) {
-		context.dsv_heap().free(m_dsv_handle);
+		context.root_signature().dsv_heap().free(m_dsv_handle);
 		m_dsv_handle = {};
 	}
-	if (m_btv_handle.handle.ptr) {
-		context.btv_heap().free(m_btv_handle);
-		m_btv_handle = {};
+	if (m_bt2dv_handle.handle.ptr) {
+		context.root_signature().bt2dv_heap().free(m_bt2dv_handle);
+		m_bt2dv_handle = {};
 	}
 }
 

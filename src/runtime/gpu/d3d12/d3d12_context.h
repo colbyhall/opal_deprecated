@@ -19,24 +19,24 @@ typedef HRESULT(__stdcall* PFN_D3D12_SERIALIZE_ROOT_SIGNATURE)(
 
 class D3D12ContextImpl final : public IContext {
 public:
+	using FnSerializeRootSignature = PFN_D3D12_SERIALIZE_ROOT_SIGNATURE;
+	using FnCreateDevice = PFN_D3D12_CREATE_DEVICE;
+
 	explicit D3D12ContextImpl();
 
 	// IContext
 	Backend backend() const final { return Backend::D3D12; }
 	// ~IContext
 
+	EU_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
+
 	EU_ALWAYS_INLINE ComPtr<ID3D12Device1> device() const { return m_device; }
-	EU_ALWAYS_INLINE const D3D12DescriptorHeap& rtv_heap() const { return m_rtv_heap; }
-	EU_ALWAYS_INLINE const D3D12DescriptorHeap& dsv_heap() const { return m_dsv_heap; }
-	EU_ALWAYS_INLINE const D3D12DescriptorHeap& btv_heap() const { return m_btv_heap; }
+	EU_ALWAYS_INLINE ComPtr<ID3D12CommandAllocator> command_allocator() const { return m_command_allocator; }
+	EU_ALWAYS_INLINE const D3D12RootSignatureImpl& root_signature() const { return m_root_signature; }
 
 private:
 	Option<core::Library> m_d3d12;
-
-	using FnCreateDevice = PFN_D3D12_CREATE_DEVICE;
 	FnCreateDevice m_create_device;
-
-	using FnSerializeRootSignature = PFN_D3D12_SERIALIZE_ROOT_SIGNATURE;
 	FnSerializeRootSignature m_serialize_root_signature;
 
 #if EU_GPU_DEBUG
@@ -47,17 +47,9 @@ private:
 
 	ComPtr<IDXGIFactory4> m_factory;
 	ComPtr<ID3D12Device1> m_device;
+	ComPtr<ID3D12CommandAllocator> m_command_allocator;
 
-	ComPtr<ID3D12RootSignature> m_root_signature;
-
-	// Render Target View heap
-	D3D12DescriptorHeap m_rtv_heap;
-
-	// Depth Stencil View heap
-	D3D12DescriptorHeap m_dsv_heap;
-
-	// Bindless Texture View heap
-	D3D12DescriptorHeap m_btv_heap;
+	D3D12RootSignatureImpl m_root_signature;
 };
 
 EU_GPU_NAMESPACE_END

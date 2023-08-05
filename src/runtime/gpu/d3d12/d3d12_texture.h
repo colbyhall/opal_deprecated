@@ -24,9 +24,15 @@ public:
 	Usage usage() const final { return m_usage; }
 	Format format() const final { return m_format; }
 	Vec3u32 size() const final { return m_size; }
-	u32 bindless() const final { return m_btv_handle.index; }
+	u32 bindless() const final { return m_bt2dv_handle.index; }
 	~D3D12TextureImpl() final;
 	// ~ITexture
+
+	EU_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const { return m_resource; };
+
+	EU_ALWAYS_INLINE const D3D12DescriptorHandle& rtv_handle() const { return m_rtv_handle; }
+	EU_ALWAYS_INLINE const D3D12DescriptorHandle& dsv_handle() const { return m_dsv_handle; }
+	EU_ALWAYS_INLINE const D3D12DescriptorHandle& bt2dv_handle() const { return m_bt2dv_handle; }
 
 private:
 	ComPtr<ID3D12Resource> m_resource;
@@ -36,7 +42,7 @@ private:
 
 	D3D12DescriptorHandle m_rtv_handle = {};
 	D3D12DescriptorHandle m_dsv_handle = {};
-	D3D12DescriptorHandle m_btv_handle = {};
+	D3D12DescriptorHandle m_bt2dv_handle = {};
 };
 
 EU_GPU_NAMESPACE_END

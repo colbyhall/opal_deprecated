@@ -11,6 +11,8 @@ class ITexture;
 
 enum class Format : u16 { Undefined, R_U8, RGBA_U8, RGBA_U8_SRGB, RGBA_F16, RGBA_F32, D24S8_U32 };
 
+usize format_size_in_bytes(Format format);
+
 class Texture {
 public:
 	enum class Usage : u8 {

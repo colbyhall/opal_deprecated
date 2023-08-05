@@ -21,6 +21,8 @@ public:
 	void map(FunctionRef<void(Slice<u8>)>& func) final;
 	// ~IBuffer
 
+	EU_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const { return m_resource; };
+
 private:
 	Usage m_usage;
 	Kind m_kind;

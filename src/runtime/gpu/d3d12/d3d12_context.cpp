@@ -103,68 +103,11 @@ D3D12ContextImpl::D3D12ContextImpl() {
 		m_device = device1;
 	}
 
-	// Resource Descriptors
-	{
-		constexpr u32 rtv_heap_size = 2048;
-		constexpr u32 dsv_heap_size = 2048;
-		constexpr u32 btv_heap_size = 2048;
+	// Create the command allocator
+	throw_if_failed(m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_command_allocator))
+	);
 
-		D3D12_ROOT_PARAMETER push_constants = {};
-		push_constants.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
-		push_constants.Constants.Num32BitValues = 16;
-
-		D3D12_DESCRIPTOR_RANGE texture2d_range = {};
-		texture2d_range.BaseShaderRegister = 0;
-		texture2d_range.NumDescriptors = btv_heap_size;
-		texture2d_range.OffsetInDescriptorsFromTableStart = 0;
-		texture2d_range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-		texture2d_range.RegisterSpace = 0;
-
-		D3D12_ROOT_PARAMETER texture2d_table = {};
-		texture2d_table.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		texture2d_table.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-		texture2d_table.DescriptorTable.NumDescriptorRanges = 1;
-		texture2d_table.DescriptorTable.pDescriptorRanges = &texture2d_range;
-
-		D3D12_ROOT_PARAMETER root_params[] = { push_constants, texture2d_table };
-
-		D3D12_ROOT_SIGNATURE_DESC desc = {};
-		desc.pParameters = root_params;
-		desc.NumParameters = 2;
-		desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-		D3D12_STATIC_SAMPLER_DESC sampler = {};
-		sampler.Filter = D3D12_FILTER_ANISOTROPIC;
-		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-		sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-		sampler.MipLODBias = 0;
-		sampler.MaxAnisotropy = 0;
-		sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-		sampler.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-		sampler.MinLOD = 0.0f;
-		sampler.MaxLOD = D3D12_FLOAT32_MAX;
-		sampler.ShaderRegister = 0;
-		sampler.RegisterSpace = 0;
-		sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-		desc.pStaticSamplers = &sampler;
-		desc.NumStaticSamplers = 1;
-
-		ComPtr<ID3DBlob> signature;
-		ComPtr<ID3DBlob> error;
-		throw_if_failed((m_serialize_root_signature)(&desc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
-		throw_if_failed(m_device->CreateRootSignature(
-			0,
-			signature->GetBufferPointer(),
-			signature->GetBufferSize(),
-			IID_PPV_ARGS(&m_root_signature)
-		));
-
-		m_rtv_heap.init(m_device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtv_heap_size, false);
-		m_dsv_heap.init(m_device, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, dsv_heap_size, false);
-		m_btv_heap.init(m_device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, btv_heap_size, true);
-	}
+	m_root_signature.init(*this);
 }
 
 EU_GPU_NAMESPACE_END

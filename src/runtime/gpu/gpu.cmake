@@ -10,6 +10,11 @@ set(GPU_SRC_FILES
         ${GPU_ROOT}/d3d12/d3d12_context.cpp
         ${GPU_ROOT}/d3d12/d3d12_memory.h
         ${GPU_ROOT}/d3d12/d3d12_memory.cpp
+        ${GPU_ROOT}/d3d12/d3d12_graphics_command_list.h
+        ${GPU_ROOT}/d3d12/d3d12_graphics_command_list.cpp
+        ${GPU_ROOT}/d3d12/d3d12_graphics_pipeline.h
+        ${GPU_ROOT}/d3d12/d3d12_graphics_pipeline.cpp
+        ${GPU_ROOT}/d3d12/d3d12_shader.h
         ${GPU_ROOT}/d3d12/d3d12_texture.h
         ${GPU_ROOT}/d3d12/d3d12_texture.cpp
 
@@ -19,6 +24,12 @@ set(GPU_SRC_FILES
         ${GPU_ROOT}/context.cpp
         ${GPU_ROOT}/gpu.cmake
         ${GPU_ROOT}/gpu.h
+        ${GPU_ROOT}/graphics_command_list.h
+        ${GPU_ROOT}/graphics_command_list.cpp
+        ${GPU_ROOT}/graphics_pipeline.h
+        ${GPU_ROOT}/graphics_pipeline.cpp
+        ${GPU_ROOT}/shader.h
+        ${GPU_ROOT}/shader.cpp
         ${GPU_ROOT}/texture.h
         ${GPU_ROOT}/texture.cpp
         )
