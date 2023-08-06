@@ -33,6 +33,8 @@ public:
 private:
 	GJ_ALWAYS_INLINE explicit Texture(Shared<ITexture>&& interface) : m_interface(gj::move(interface)) {}
 
+	friend class D3D12SwapchainImpl;
+
 	Shared<ITexture> m_interface;
 };
 

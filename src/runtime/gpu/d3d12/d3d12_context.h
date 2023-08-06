@@ -4,6 +4,7 @@
 
 #include "gpu/context.h"
 #include "gpu/d3d12/d3d12_memory.h"
+#include "gpu/graphics_command_list.h"
 
 #include "core/containers/option.h"
 #include "core/os/library.h"
@@ -22,15 +23,23 @@ public:
 	using FnSerializeRootSignature = PFN_D3D12_SERIALIZE_ROOT_SIGNATURE;
 	using FnCreateDevice = PFN_D3D12_CREATE_DEVICE;
 
+	struct QueuedWork {
+		ComPtr<ID3D12Fence> fence;
+		GraphicsCommandList command_list;
+	};
+
 	explicit D3D12ContextImpl();
 
 	// IContext
 	Backend backend() const final { return Backend::D3D12; }
 	// ~IContext
 
-	GJ_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
+	void flush_queue() const;
 
+	GJ_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
+	GJ_ALWAYS_INLINE ComPtr<IDXGIFactory4> factory() const { return m_factory; }
 	GJ_ALWAYS_INLINE ComPtr<ID3D12Device1> device() const { return m_device; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12CommandQueue> queue() const { return m_queue; }
 	GJ_ALWAYS_INLINE ComPtr<ID3D12CommandAllocator> command_allocator() const { return m_command_allocator; }
 	GJ_ALWAYS_INLINE const D3D12RootSignatureImpl& root_signature() const { return m_root_signature; }
 
@@ -47,9 +56,13 @@ private:
 
 	ComPtr<IDXGIFactory4> m_factory;
 	ComPtr<ID3D12Device1> m_device;
+
+	ComPtr<ID3D12CommandQueue> m_queue;
 	ComPtr<ID3D12CommandAllocator> m_command_allocator;
 
 	D3D12RootSignatureImpl m_root_signature;
+
+	mutable Vector<QueuedWork> m_queued_work;
 };
 
 GJ_GPU_NAMESPACE_END

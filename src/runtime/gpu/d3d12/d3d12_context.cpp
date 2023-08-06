@@ -62,11 +62,11 @@ D3D12ContextImpl::D3D12ContextImpl() {
 
 		// Enable debug messages in debug mode.
 #ifdef GJ_GPU_DEBUG
-		ComPtr<ID3D12InfoQugje> pInfoQugje;
-		if (SUCCEEDED(device1.As(&pInfoQugje))) {
-			pInfoQugje->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-			pInfoQugje->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-			pInfoQugje->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+		ComPtr<ID3D12InfoQueue> pInfoQueue;
+		if (SUCCEEDED(device1.As(&pInfoQueue))) {
+			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
 
 			// Suppress whole categories of messages
 			// D3D12_MESSAGE_CATEGORY Categories[] = {};
@@ -88,7 +88,7 @@ D3D12ContextImpl::D3D12ContextImpl() {
 																			  // graphics debugging.
 			};
 
-			D3D12_INFO_QUgjE_FILTER NewFilter = {};
+			D3D12_INFO_QUEUE_FILTER NewFilter = {};
 			// NewFilter.DenyList.NumCategories = _countof(Categories);
 			// NewFilter.DenyList.pCategoryList = Categories;
 			NewFilter.DenyList.NumSeverities = _countof(Severities);
@@ -96,11 +96,22 @@ D3D12ContextImpl::D3D12ContextImpl() {
 			NewFilter.DenyList.NumIDs = _countof(DenyIds);
 			NewFilter.DenyList.pIDList = DenyIds;
 
-			throw_if_failed(pInfoQugje->PushStorageFilter(&NewFilter));
+			throw_if_failed(pInfoQueue->PushStorageFilter(&NewFilter));
 		}
 #endif
 
 		m_device = device1;
+	}
+
+	// Create the direct command queue
+	{
+		D3D12_COMMAND_QUEUE_DESC desc = {};
+		desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+		desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+		desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+		desc.NodeMask = 0;
+
+		throw_if_failed(m_device->CreateCommandQueue(&desc, IID_PPV_ARGS(&m_queue)));
 	}
 
 	// Create the command allocator
@@ -108,6 +119,16 @@ D3D12ContextImpl::D3D12ContextImpl() {
 	);
 
 	m_root_signature.init(*this);
+}
+
+void D3D12ContextImpl::flush_queue() const {
+	for (i32 i = static_cast<i32>(m_queued_work.len()) - 1; i >= 0; --i) {
+		const auto value = m_queued_work[i].fence->GetCompletedValue();
+
+		if (value > 0) {
+			m_queued_work.remove(i);
+		}
+	}
 }
 
 GJ_GPU_NAMESPACE_END
