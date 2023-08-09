@@ -49,7 +49,9 @@ Option<Value> Map<Key, Value, Hasher>::remove(const Key& key) {
 }
 
 template <typename Key, typename Value, typename Hasher>
-void Map<Key, Value, Hasher>::retain(FunctionRef<bool(const Key&, const Value&)> keep) {
+void Map<Key, Value, Hasher>::retain(
+	FunctionRef<bool(const Key&, const Value&)> keep
+) {
 	// Reverse iterate to remove to prevent shifting entire array
 	i32 index = static_cast<i32>(m_buckets.len()) - 1;
 	for (; index >= 0; index--) {
@@ -106,7 +108,8 @@ Option<Value const&> Map<Key, Value, Hasher>::find(const Key& key) const {
 }
 
 template <typename Key, typename Value, typename Hasher>
-inline usize Map<Key, Value, Hasher>::key_to_layout_index(const Key& key) const {
+inline usize Map<Key, Value, Hasher>::key_to_layout_index(const Key& key
+) const {
 	Hasher hasher = {};
 	hash(hasher, key);
 	const u64 the_hash = hasher.finish();
@@ -121,7 +124,8 @@ void Map<Key, Value, Hasher>::refresh_layout() {
 		m_layout.push(-1);
 	}
 
-	// Layout buckets by hash(key) & buckets.len() and build tree if collision detected
+	// Layout buckets by hash(key) & buckets.len() and build tree if collision
+	// detected
 	for (usize i = 0; i < m_buckets.len(); ++i) {
 		auto& bucket = m_buckets[i];
 
@@ -135,7 +139,8 @@ void Map<Key, Value, Hasher>::refresh_layout() {
 		if (found == -1) {
 			m_layout[layout_index] = (i32)i;
 		} else {
-			// If its valid then descend the bucket tree until an empty spot is found
+			// If its valid then descend the bucket tree until an empty spot is
+			// found
 			auto* other = &m_buckets[found];
 			while (other->next != -1) {
 				other = &m_buckets[(usize)other->next];
@@ -146,7 +151,8 @@ void Map<Key, Value, Hasher>::refresh_layout() {
 }
 
 template <typename Key, typename Value, typename Hasher>
-inline ConstMapIterator<Key, Value, Hasher> Map<Key, Value, Hasher>::iter() const {
+inline ConstMapIterator<Key, Value, Hasher>
+Map<Key, Value, Hasher>::iter() const {
 	return ConstMapIterator(*this);
 }
 

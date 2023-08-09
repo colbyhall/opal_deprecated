@@ -15,7 +15,10 @@ const Context& init() {
 	// an environment variable
 	auto interface = Unique<D3D12ContextImpl>::make();
 	g_context = Context(gj::move(interface));
-	return g_context.as_ref().unwrap();
+	auto& result = g_context.as_mut().unwrap();
+	result.m_interface->post_init();
+
+	return result;
 }
 
 GJ_GPU_NAMESPACE_END

@@ -28,11 +28,19 @@ public:
 	~D3D12TextureImpl() final;
 	// ~ITexture
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const { return m_resource; };
+	GJ_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const {
+		return m_resource;
+	};
 
-	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& rtv_handle() const { return m_rtv_handle; }
-	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& dsv_handle() const { return m_dsv_handle; }
-	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& bt2dv_handle() const { return m_bt2dv_handle; }
+	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& rtv_handle() const {
+		return m_rtv_handle;
+	}
+	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& dsv_handle() const {
+		return m_dsv_handle;
+	}
+	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& bt2dv_handle() const {
+		return m_bt2dv_handle;
+	}
 
 private:
 	ComPtr<ID3D12Resource> m_resource;

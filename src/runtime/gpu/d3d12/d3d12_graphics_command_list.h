@@ -16,8 +16,13 @@ public:
 	// IGraphicsCommandRecorder
 	void begin() override;
 	void copy_buffer_to_texture(const Texture& dst, const Buffer& src) override;
-	void texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout) override;
-	void begin_render_pass(const Texture& color, Option<const Texture&> depth) override;
+	void texture_barrier(
+		const Texture& texture,
+		Layout old_layout,
+		Layout new_layout
+	) override;
+	void begin_render_pass(const Texture& color, Option<const Texture&> depth)
+		override;
 	void set_pipeline(const GraphicsPipeline& pipeline) override;
 	void set_vertices(const Buffer& buffer, u32 stride) override;
 	void set_indices(const Buffer& buffer) override;
@@ -27,6 +32,10 @@ public:
 	void end_render_pass() override;
 	void end() override;
 	// ~IGraphicsCommandRecorder
+
+	GJ_ALWAYS_INLINE ComPtr<ID3D12GraphicsCommandList> command_list() const {
+		return m_command_list;
+	}
 
 private:
 	ComPtr<ID3D12GraphicsCommandList> m_command_list;

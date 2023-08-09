@@ -3,13 +3,12 @@
 #include "core/os/memory.h"
 #include "doctest/doctest.h"
 
-using namespace gj;
-
-GJ_SUPPRESS_WARNING_PUSH
+GJ_TEST_BEGIN
 GJ_MSVC_SUPPRESS_WARNING(5045)
 
 TEST_CASE("gj::core::memory") {
-	SUBCASE("gj::core::malloc, gj::core::realloc, gj::core::free, gj::core::set") {
+	SUBCASE("gj::core::malloc, gj::core::realloc, gj::core::free, gj::core::set"
+	) {
 		// All allocation functions require the use of the Layout struct. This
 		// stores size and alignment requirements
 		const auto count = 45;
@@ -107,4 +106,4 @@ TEST_CASE("gj::core::memory") {
 	}
 }
 
-GJ_SUPPRESS_WARNING_POP
+GJ_TEST_END

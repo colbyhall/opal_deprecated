@@ -1,7 +1,7 @@
 # A lot of this was copied from the JoltPhysics library
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(gjphoria CXX)
+project(grapejuice CXX)
 
 # When turning this option on, the library will be compiled with debug symbols
 option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)

@@ -11,10 +11,13 @@ template <typename Element>
 class Vector {
 public:
 	Vector() = default;
+	static Vector from(Slice<const Element> slice);
+
 	Vector(const Vector& copy) noexcept;
 	Vector& operator=(const Vector& copy) noexcept;
 	Vector(Vector&& move) noexcept;
 	Vector& operator=(Vector&& move) noexcept;
+
 	~Vector();
 
 	GJ_ALWAYS_INLINE usize len() const { return m_len; }

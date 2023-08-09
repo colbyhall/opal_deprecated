@@ -56,13 +56,18 @@ class StringView {
 public:
 	GJ_ALWAYS_INLINE constexpr StringView() = default;
 	GJ_ALWAYS_INLINE StringView(Slice<char const> bytes) : m_bytes(bytes) {}
-	GJ_ALWAYS_INLINE constexpr StringView(const char* ptr) : m_bytes(ptr, constexpr_strlen(ptr)) {}
+	GJ_ALWAYS_INLINE constexpr StringView(const char* ptr)
+		: m_bytes(ptr, constexpr_strlen(ptr)) {}
+	GJ_ALWAYS_INLINE constexpr explicit StringView(const char* ptr, usize size)
+		: m_bytes(ptr, size) {}
 
 	GJ_ALWAYS_INLINE operator Slice<char const>() const { return m_bytes; }
 	GJ_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
 
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE CharsIterator chars() const { return CharsIterator(m_bytes); }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE CharsIterator chars() const {
+		return CharsIterator(m_bytes);
+	}
 	bool operator==(const StringView& right) const;
 	bool operator!=(const StringView& right) const;
 

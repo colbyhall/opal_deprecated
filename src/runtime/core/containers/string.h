@@ -21,8 +21,12 @@ public:
 	GJ_ALWAYS_INLINE char* operator*() { return &m_bytes[0]; }
 	GJ_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE CharsIterator chars() const { return CharsIterator(m_bytes); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_bytes.len() > 0 ? m_bytes.len() - 1 : 0; }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE CharsIterator chars() const {
+		return CharsIterator(m_bytes);
+	}
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const {
+		return m_bytes.len() > 0 ? m_bytes.len() - 1 : 0;
+	}
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize cap() const { return m_bytes.cap(); }
 
 	GJ_ALWAYS_INLINE bool operator==(StringView rhs) const {

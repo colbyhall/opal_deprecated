@@ -5,10 +5,24 @@
 GJ_CORE_NAMESPACE_BEGIN
 
 template <typename Element>
+Vector<Element> Vector<Element>::from(Slice<const Element> slice) {
+	Vector<Element> result;
+
+	result.m_len = slice.len();
+	result.reserve(result.len());
+
+	for (usize i = 0; i < slice.len(); ++i) {
+		new (result.begin() + i) Element(slice[i]);
+	}
+
+	return result;
+}
+
+template <typename Element>
 Vector<Element>::Vector(const Vector& copy) noexcept : m_len(copy.m_len) {
 	reserve(m_cap);
 	for (usize i = 0; i < m_len; ++i) {
-		new (m_ptr) Element(copy[i]);
+		new (m_ptr + i) Element(copy[i]);
 	}
 }
 
@@ -20,16 +34,17 @@ Vector<Element>& Vector<Element>::operator=(const Vector& copy) noexcept {
 	m_len = copy.m_len;
 	reserve(copy.m_cap);
 	for (usize i = 0; i < m_len; ++i) {
-		new (m_ptr) Element(copy[i]);
+		new (m_ptr + i) Element(copy[i]);
 	}
 
 	return *this;
 }
 
 template <typename Element>
-Vector<Element>::Vector(Vector&& move) noexcept : m_ptr(move.m_ptr)
-												, m_len(move.m_len)
-												, m_cap(move.m_cap) {
+Vector<Element>::Vector(Vector&& move) noexcept
+	: m_ptr(move.m_ptr)
+	, m_len(move.m_len)
+	, m_cap(move.m_cap) {
 	move.m_ptr = nullptr;
 	move.m_len = 0;
 	move.m_cap = 0;
@@ -130,7 +145,11 @@ GJ_ALWAYS_INLINE void Vector<Element>::reserve(usize amount) {
 		void* ptr = core::malloc(core::Layout::array<Element>(m_cap));
 		m_ptr = static_cast<Element*>(ptr);
 	} else {
-		void* ptr = core::realloc(m_ptr, core::Layout::array<Element>(old_cap), core::Layout::array<Element>(m_cap));
+		void* ptr = core::realloc(
+			m_ptr,
+			core::Layout::array<Element>(old_cap),
+			core::Layout::array<Element>(m_cap)
+		);
 		m_ptr = static_cast<Element*>(ptr);
 	}
 }
@@ -151,7 +170,8 @@ void Vector<Element>::insert(usize index, Element&& item) {
 }
 
 template <typename Element>
-GJ_ALWAYS_INLINE void Vector<Element>::insert(usize index, const Element& item) {
+GJ_ALWAYS_INLINE void
+Vector<Element>::insert(usize index, const Element& item) {
 	Element copy = item;
 	insert(index, gj::move(copy));
 }

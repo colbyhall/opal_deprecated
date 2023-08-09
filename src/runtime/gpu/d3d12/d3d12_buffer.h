@@ -21,7 +21,9 @@ public:
 	void map(FunctionRef<void(Slice<u8>)>& func) final;
 	// ~IBuffer
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const { return m_resource; };
+	GJ_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const {
+		return m_resource;
+	};
 
 private:
 	Usage m_usage;

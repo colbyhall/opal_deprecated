@@ -6,7 +6,6 @@
 GJ_TEST_BEGIN
 
 TEST_CASE("gj::core::NonNull") {
-	using namespace gj;
 	int x = 42;
 
 	// NonNull's behave as references but are easier to work with

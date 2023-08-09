@@ -6,8 +6,6 @@
 GJ_TEST_BEGIN
 
 TEST_CASE("gj::core::Vec2") {
-	using namespace gj;
-
 	SUBCASE("Constructors") {
 		const Vec2f64 default_constructed;
 		CHECK(default_constructed.x == doctest::Approx(0.0));

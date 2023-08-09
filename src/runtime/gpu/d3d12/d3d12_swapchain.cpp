@@ -6,12 +6,15 @@
 GJ_GPU_NAMESPACE_BEGIN
 
 D3D12SwapchainImpl::D3D12SwapchainImpl(void* window_handle) {
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+	GJ_ASSERT(window_handle != nullptr);
+
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 	m_hwnd = (HWND)window_handle;
 
 	RECT rect;
 	GetClientRect(m_hwnd, &rect);
-	const Vec2u32 size = { (u32)(rect.right - rect.left), (u32)(rect.bottom - rect.top) };
+	const Vec2u32 size = { (u32)(rect.right - rect.left),
+						   (u32)(rect.bottom - rect.top) };
 
 	DXGI_SWAP_CHAIN_DESC1 desc = {};
 	desc.BufferCount = D3D12SwapchainImpl::frame_count;
@@ -23,17 +26,28 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(void* window_handle) {
 	desc.SampleDesc.Count = 1;
 
 	ComPtr<IDXGISwapChain1> swapchain1;
-	throw_if_failed(
-		context.factory()
-			->CreateSwapChainForHwnd(context.queue().Get(), (HWND)window_handle, &desc, nullptr, nullptr, &swapchain1)
-	);
+	throw_if_failed(context.factory()->CreateSwapChainForHwnd(
+		context.queue().Get(),
+		(HWND)window_handle,
+		&desc,
+		nullptr,
+		nullptr,
+		&swapchain1
+	));
 
-	throw_if_failed(context.factory()->MakeWindowAssociation((HWND)window_handle, DXGI_MWA_NO_ALT_ENTER));
+	throw_if_failed(context.factory()->MakeWindowAssociation(
+		(HWND)window_handle,
+		DXGI_MWA_NO_ALT_ENTER
+	));
 
 	throw_if_failed(swapchain1.As(&m_swapchain));
 	m_current = (u8)m_swapchain->GetCurrentBackBufferIndex();
 
-	throw_if_failed(context.device()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence)));
+	throw_if_failed(context.device()->CreateFence(
+		0,
+		D3D12_FENCE_FLAG_NONE,
+		IID_PPV_ARGS(&m_fence)
+	));
 	m_fence_event = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 	GJ_ASSERT(m_fence_event);
 	m_fence_value = 1;
@@ -56,26 +70,31 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(void* window_handle) {
 	wait_for_previous();
 }
 
-const Texture& D3D12SwapchainImpl::backbuffer() const { return m_backbuffers[m_current]; }
+const Texture& D3D12SwapchainImpl::backbuffer() const {
+	return m_backbuffers[m_current];
+}
 
 void D3D12SwapchainImpl::present() {
 	throw_if_failed(m_swapchain->Present(1, 0));
 	wait_for_previous();
 
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 	throw_if_failed(context.command_allocator()->Reset());
 }
 
 void D3D12SwapchainImpl::wait_for_previous() {
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 
 	const auto fence_value = m_fence_value;
 	throw_if_failed(context.queue()->Signal(m_fence.Get(), fence_value));
 	m_fence_value += 1;
 
-	// Wait until the previous frame is finished and then flush the work from the graphics queue
+	// Wait until the previous frame is finished and then flush the work from
+	// the graphics queue
 	if (m_fence->GetCompletedValue() < fence_value) {
-		throw_if_failed(m_fence->SetEventOnCompletion(fence_value, m_fence_event));
+		throw_if_failed(
+			m_fence->SetEventOnCompletion(fence_value, m_fence_event)
+		);
 		WaitForSingleObject(m_fence_event, INFINITE);
 	}
 	context.flush_queue();
@@ -90,9 +109,13 @@ void D3D12SwapchainImpl::resize() {
 
 	RECT rect;
 	GetClientRect(m_hwnd, &rect);
-	const Vec2u32 size = { (u32)(rect.right - rect.left), (u32)(rect.bottom - rect.top) };
+	const Vec2u32 size = { (u32)(rect.right - rect.left),
+						   (u32)(rect.bottom - rect.top) };
 
-	throw_if_failed(m_swapchain->ResizeBuffers(0, size.width, size.height, DXGI_FORMAT_UNKNOWN, 0));
+	throw_if_failed(
+		m_swapchain
+			->ResizeBuffers(0, size.width, size.height, DXGI_FORMAT_UNKNOWN, 0)
+	);
 
 	for (int i = 0; i < D3D12SwapchainImpl::frame_count; ++i) {
 		ComPtr<ID3D12Resource> resource;

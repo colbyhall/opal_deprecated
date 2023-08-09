@@ -20,7 +20,10 @@ public:
 		new (p) Error(gj::forward<Error>(e));
 	}
 
-	Result(Result&& other) noexcept : m_set(other.m_set), m_ok(other.m_ok), m_data(other.m_data) {
+	Result(Result&& other) noexcept
+		: m_set(other.m_set)
+		, m_ok(other.m_ok)
+		, m_data(other.m_data) {
 		other.m_set = false;
 		other.m_ok = false;
 		other.m_data = {};

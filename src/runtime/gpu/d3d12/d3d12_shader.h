@@ -10,13 +10,18 @@ GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12VertexShaderImpl final : public IVertexShader {
 public:
-	explicit D3D12VertexShaderImpl(Vector<u8>&& binary, Vector<gpu::InputParameter>&& input_parameters)
+	explicit D3D12VertexShaderImpl(
+		Vector<u8>&& binary,
+		Vector<gpu::InputParameter>&& input_parameters
+	)
 		: m_binary(gj::move(binary))
 		, m_input_parameters(gj::move(input_parameters)) {}
 
 	// IVertexShader
 	Slice<u8 const> binary() const final { return m_binary; }
-	Slice<gpu::InputParameter const> input_parameters() const final { return m_input_parameters; }
+	Slice<gpu::InputParameter const> input_parameters() const final {
+		return m_input_parameters;
+	}
 	// ~IVertexShader
 
 private:
@@ -26,7 +31,8 @@ private:
 
 class D3D12PixelShaderImpl : public IPixelShader {
 public:
-	explicit D3D12PixelShaderImpl(Vector<u8>&& binary) : m_binary(gj::move(binary)) {}
+	explicit D3D12PixelShaderImpl(Vector<u8>&& binary)
+		: m_binary(gj::move(binary)) {}
 
 	// IPixelShader
 	Slice<u8 const> binary() const final { return m_binary; }

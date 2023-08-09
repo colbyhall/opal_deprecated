@@ -5,8 +5,6 @@
 
 GJ_TEST_BEGIN
 
-using namespace gj;
-
 enum class Error : u32 { Foo, Bar, Baz };
 
 TEST_CASE("gj::core::Result") {

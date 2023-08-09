@@ -85,13 +85,17 @@ public:
 	static GraphicsPipeline make(Definition&& definition);
 
 	template <typename T = IGraphicsPipeline>
-	GJ_ALWAYS_INLINE T const& interface() const {
-		static_assert(std::is_base_of_v<IGraphicsPipeline, T>, "T is not derived of IGraphicsPipeline");
+	GJ_ALWAYS_INLINE T const& cast() const {
+		static_assert(
+			std::is_base_of_v<IGraphicsPipeline, T>,
+			"T is not derived of IGraphicsPipeline"
+		);
 		return static_cast<const T&>(*m_interface);
 	}
 
 private:
-	GJ_ALWAYS_INLINE explicit GraphicsPipeline(Shared<IGraphicsPipeline>&& interface)
+	GJ_ALWAYS_INLINE explicit GraphicsPipeline(Shared<IGraphicsPipeline>&&
+												   interface)
 		: m_interface(gj::move(interface)) {}
 
 	Shared<IGraphicsPipeline> m_interface;

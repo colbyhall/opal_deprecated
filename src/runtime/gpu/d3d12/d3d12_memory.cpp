@@ -33,14 +33,18 @@ void D3D12DescriptorHeap::init(
 }
 
 D3D12DescriptorHandle D3D12DescriptorHeap::alloc() const {
-	GJ_ASSERT(m_cap > 0, "Heap needs to be initialized with D3D12DescriptorHeap::init");
+	GJ_ASSERT(
+		m_cap > 0,
+		"Heap needs to be initialized with D3D12DescriptorHeap::init"
+	);
 
 	while (true) {
 		for (usize i = 0; i < m_cap; ++i) {
 			const auto slot = m_free_slots[i].load();
 			if (!slot) {
 				if (m_free_slots[i].compare_exchange_weak(false, true)) {
-					D3D12_CPU_DESCRIPTOR_HANDLE handle = m_heap->GetCPUDescriptorHandleForHeapStart();
+					D3D12_CPU_DESCRIPTOR_HANDLE handle =
+						m_heap->GetCPUDescriptorHandleForHeapStart();
 					handle.ptr += static_cast<SIZE_T>(i * m_size);
 					return { handle, static_cast<u32>(i) };
 				}
@@ -50,8 +54,14 @@ D3D12DescriptorHandle D3D12DescriptorHeap::alloc() const {
 }
 
 void D3D12DescriptorHeap::free(const D3D12DescriptorHandle& handle) const {
-	GJ_ASSERT(m_cap > 0, "Heap needs to be initialized with D3D12DescriptorHeap::init");
-	GJ_ASSERT(m_free_slots[handle.index].load(), "Attempting to free a freed slot");
+	GJ_ASSERT(
+		m_cap > 0,
+		"Heap needs to be initialized with D3D12DescriptorHeap::init"
+	);
+	GJ_ASSERT(
+		m_free_slots[handle.index].load(),
+		"Attempting to free a freed slot"
+	);
 
 	m_free_slots[handle.index].store(false);
 }
@@ -101,7 +111,12 @@ void D3D12RootSignatureImpl::init(const D3D12ContextImpl& context) {
 
 	ComPtr<ID3DBlob> signature;
 	ComPtr<ID3DBlob> error;
-	throw_if_failed((context.serialize_root_signature())(&desc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
+	throw_if_failed((context.serialize_root_signature())(
+		&desc,
+		D3D_ROOT_SIGNATURE_VERSION_1,
+		&signature,
+		&error
+	));
 	throw_if_failed(context.device()->CreateRootSignature(
 		0,
 		signature->GetBufferPointer(),
@@ -109,9 +124,24 @@ void D3D12RootSignatureImpl::init(const D3D12ContextImpl& context) {
 		IID_PPV_ARGS(&m_root_signature)
 	));
 
-	m_rtv_heap.init(context.device(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtv_heap_size, false);
-	m_dsv_heap.init(context.device(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, dsv_heap_size, false);
-	m_bt2dv_heap.init(context.device(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, bt2dv_heap_size, true);
+	m_rtv_heap.init(
+		context.device(),
+		D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
+		rtv_heap_size,
+		false
+	);
+	m_dsv_heap.init(
+		context.device(),
+		D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
+		dsv_heap_size,
+		false
+	);
+	m_bt2dv_heap.init(
+		context.device(),
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+		bt2dv_heap_size,
+		true
+	);
 }
 
 GJ_GPU_NAMESPACE_END

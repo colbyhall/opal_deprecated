@@ -10,12 +10,16 @@ struct FunctionRefCaller;
 
 template <typename Functor, typename R, typename... P>
 struct FunctionRefCaller<Functor, R(P...)> {
-	static R call(void* obj, P&... params) { return std::invoke(*(Functor*)obj, gj::move(params)...); }
+	static R call(void* obj, P&... params) {
+		return std::invoke(*(Functor*)obj, gj::forward<P>(params)...);
+	}
 };
 
 template <typename Functor, typename... P>
 struct FunctionRefCaller<Functor, void(P...)> {
-	static void call(void* obj, P&... params) { std::invoke(*(Functor*)obj, gj::move(params)...); }
+	static void call(void* obj, P&... params) {
+		std::invoke(*(Functor*)obj, gj::forward<P>(params)...);
+	}
 };
 
 template <typename S, typename F>
@@ -31,23 +35,21 @@ public:
 
 	FunctionBase() = delete;
 
-	// clang-format off
 	template <
-	    typename F,
-		typename = std::enable_if_t<
-		    !std::is_same_v<FunctionBase, std::decay_t<F>>
-		>
-	>
+		typename F,
+		typename =
+			std::enable_if_t<!std::is_same_v<FunctionBase, std::decay_t<F>>>>
 	FunctionBase(F&& f) {
 		if (auto* binding = m_storage.bind(gj::forward<F>(f))) {
 			GJ_UNUSED(binding);
-			using DecayedFunctorType = std::remove_pointer_t<decltype(binding)>;
-			m_callable = &FunctionRefCaller<DecayedFunctorType, R(Param...)>::call;
+			using DecayedFunctor = std::remove_pointer_t<decltype(binding)>;
+			m_callable = &FunctionRefCaller<DecayedFunctor, R(Param...)>::call;
 		}
 	}
-	// clang-format on
 
-	FunctionBase(FunctionBase&& other) noexcept : m_callable(other.m_callable), m_storage(gj::move(other.m_storage)) {
+	FunctionBase(FunctionBase&& other) noexcept
+		: m_callable(other.m_callable)
+		, m_storage(gj::move(other.m_storage)) {
 		if (m_callable) {
 			other.m_callable = nullptr;
 		}
@@ -80,26 +82,26 @@ struct RefStorage {
 		s.m_ptr = nullptr;
 	}
 
-	// ~Begin Storage Interface
+	// IStorage
 	template <typename F>
 	std::remove_reference_t<F>* bind(F&& f) {
 		m_ptr = (void*)&f;
 		return &f;
 	}
 	void* ptr() const { return m_ptr; }
-	// ~End Storage Interface
+	// ~IStorage
 
 private:
 	void* m_ptr = nullptr;
 };
 
-struct FunctionWrapperInterface {
+struct IFunctionWrapper {
 	virtual void* ptr() = 0;
-	virtual ~FunctionWrapperInterface() = default;
+	virtual ~IFunctionWrapper() = default;
 };
 
 template <typename T>
-struct FunctionWrapper : public FunctionWrapperInterface {
+struct FunctionWrapper : public IFunctionWrapper {
 	template <typename... A>
 	explicit FunctionWrapper(A&&... args) : t(gj::forward<A>(args)...) {}
 	~FunctionWrapper() override = default;
@@ -111,21 +113,23 @@ struct FunctionWrapper : public FunctionWrapperInterface {
 
 struct UniqueStorage {
 	UniqueStorage() = default;
-	UniqueStorage(UniqueStorage&& s) noexcept : m_ptr(s.m_ptr) { s.m_ptr = nullptr; }
+	UniqueStorage(UniqueStorage&& s) noexcept : m_ptr(s.m_ptr) {
+		s.m_ptr = nullptr;
+	}
 	UniqueStorage& operator=(UniqueStorage&& s) noexcept {
 		m_ptr = s.m_ptr;
 		s.m_ptr = nullptr;
 	}
 	~UniqueStorage() {
 		if (m_ptr) {
-			auto* f = static_cast<FunctionWrapperInterface*>(m_ptr);
-			f->~FunctionWrapperInterface();
+			auto* f = static_cast<IFunctionWrapper*>(m_ptr);
+			f->~IFunctionWrapper();
 			core::free(m_ptr);
 			m_ptr = nullptr;
 		}
 	}
 
-	// ~Begin Storage Interface
+	// ~IStorage
 	template <typename F>
 	std::remove_reference_t<F>* bind(F&& f) {
 		void* memory = core::malloc(core::Layout::single<FunctionWrapper<F>>);
@@ -135,10 +139,10 @@ struct UniqueStorage {
 		return (std::remove_reference_t<F>*)result->ptr();
 	}
 	void* ptr() const {
-		auto* f = (FunctionWrapperInterface*)m_ptr;
+		auto* f = (IFunctionWrapper*)m_ptr;
 		return f->ptr();
 	}
-	// ~End Storage Interface
+	// ~IStorage
 
 private:
 	void* m_ptr = nullptr;
@@ -151,24 +155,42 @@ template <typename F, typename R, typename... P>
 inline constexpr bool functor_return_type_is_compatible =
 	std::is_constructible_v<R, decltype(declval<F>()(declval<P>()...))>;
 template <typename MR, typename Class, typename R, typename... P>
-inline constexpr bool functor_return_type_is_compatible<MR Class::*, R, P...> = std::is_constructible_v<R, MR>;
-template <typename MR, typename Class, typename R, typename... P>
-inline constexpr bool functor_return_type_is_compatible<MR Class::*const, R, P...> = std::is_constructible_v<R, MR>;
-template <typename MR, typename Class, typename... MP, typename R, typename... P>
-inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...), R, P...> = std::is_constructible_v<R, MR>;
-template <typename MR, typename Class, typename... MP, typename R, typename... P>
-inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...) const, R, P...> =
+inline constexpr bool functor_return_type_is_compatible<MR Class::*, R, P...> =
 	std::is_constructible_v<R, MR>;
+template <typename MR, typename Class, typename R, typename... P>
+inline constexpr bool
+	functor_return_type_is_compatible<MR Class::*const, R, P...> =
+		std::is_constructible_v<R, MR>;
+template <
+	typename MR,
+	typename Class,
+	typename... MP,
+	typename R,
+	typename... P>
+inline constexpr bool
+	functor_return_type_is_compatible<MR (Class::*)(MP...), R, P...> =
+		std::is_constructible_v<R, MR>;
+template <
+	typename MR,
+	typename Class,
+	typename... MP,
+	typename R,
+	typename... P>
+inline constexpr bool
+	functor_return_type_is_compatible<MR (Class::*)(MP...) const, R, P...> =
+		std::is_constructible_v<R, MR>;
 
 template <typename A, typename B>
 inline constexpr bool func_can_bind_to_functor = false;
 
 template <typename F, typename R, typename... P>
 inline constexpr bool func_can_bind_to_functor<R(P...), F> =
-	std::is_invocable_v<F, P...> && functor_return_type_is_compatible<F, R, P...>;
+	std::is_invocable_v<F, P...> &&
+	functor_return_type_is_compatible<F, R, P...>;
 
 template <typename F, typename... P>
-inline constexpr bool func_can_bind_to_functor<void(P...), F> = std::is_invocable_v<F, P...>;
+inline constexpr bool func_can_bind_to_functor<void(P...), F> =
+	std::is_invocable_v<F, P...>;
 
 GJ_HIDDEN_NAMESPACE_END
 GJ_CORE_NAMESPACE_END

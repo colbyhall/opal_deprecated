@@ -7,7 +7,9 @@
 
 GJ_GPU_NAMESPACE_BEGIN
 
-GraphicsCommandList GraphicsCommandList::record(FunctionRef<void(GraphicsCommandRecorder&)> callable) {
+GraphicsCommandList
+GraphicsCommandList::record(FunctionRef<void(GraphicsCommandRecorder&)> callable
+) {
 	auto& context = Context::the();
 
 	Option<Shared<IGraphicsCommandRecorder>> interface = nullptr;
@@ -25,13 +27,35 @@ GraphicsCommandList GraphicsCommandList::record(FunctionRef<void(GraphicsCommand
 	return result;
 }
 
-GraphicsCommandRecorder& GraphicsCommandRecorder::copy_buffer_to_texture(const Texture& dst, const Buffer& src) {
+GraphicsCommandRecorder& GraphicsCommandRecorder::copy_buffer_to_texture(
+	const Texture& dst,
+	const Buffer& src
+) {
+	GJ_ASSERT(
+		(dst.usage() & Texture::Usage::TransferDst) ==
+		Texture::Usage::TransferDst
+	);
+	GJ_ASSERT(
+		(src.usage() & Buffer::Usage::TransferSrc) == Buffer::Usage::TransferSrc
+	);
+
 	m_interface.copy_buffer_to_texture(dst, src);
 	return *this;
 }
 
-GraphicsCommandRecorder&
-GraphicsCommandRecorder::texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout) {
+GraphicsCommandRecorder& GraphicsCommandRecorder::texture_barrier(
+	const Texture& texture,
+	Layout old_layout,
+	Layout new_layout
+) {
+	using Usage = Texture::Usage;
+
+#ifdef GJ_ENABLE_ASSERTS
+	if (new_layout == Layout::TransferDst) {
+		GJ_ASSERT((texture.usage() & Usage::TransferDst) == Usage::TransferDst);
+	}
+#endif
+
 	m_interface.texture_barrier(texture, old_layout, new_layout);
 	return *this;
 }
@@ -48,7 +72,14 @@ GraphicsCommandRecorder& GraphicsCommandRecorder::render_pass(
 	return *this;
 }
 
-RenderPassRecorder& RenderPassRecorder::set_vertices(const Buffer& buffer, u32 stride) {
+RenderPassRecorder&
+RenderPassRecorder::set_pipeline(const GraphicsPipeline& pipeline) {
+	m_interface.set_pipeline(pipeline);
+	return *this;
+}
+
+RenderPassRecorder&
+RenderPassRecorder::set_vertices(const Buffer& buffer, u32 stride) {
 	m_interface.set_vertices(buffer, stride);
 	return *this;
 }
@@ -63,12 +94,14 @@ RenderPassRecorder& RenderPassRecorder::push_constants(const void* ptr) {
 	return *this;
 }
 
-RenderPassRecorder& RenderPassRecorder::draw(usize vertex_count, usize first_vertex) {
+RenderPassRecorder&
+RenderPassRecorder::draw(usize vertex_count, usize first_vertex) {
 	m_interface.draw(vertex_count, first_vertex);
 	return *this;
 }
 
-RenderPassRecorder& RenderPassRecorder::draw_index(usize index_count, usize first_index) {
+RenderPassRecorder&
+RenderPassRecorder::draw_index(usize index_count, usize first_index) {
 	m_interface.draw_indexed(index_count, first_index);
 	return *this;
 }

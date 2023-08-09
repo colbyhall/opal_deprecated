@@ -16,15 +16,22 @@ class Map;
 template <typename Key, typename Value, typename Hasher>
 class MapIterator {
 public:
-	GJ_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map) : m_map(map) {}
+	GJ_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map)
+		: m_map(map) {}
 
-	GJ_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
+	GJ_ALWAYS_INLINE operator bool() const {
+		return m_index < m_map.m_buckets.len();
+	}
 	GJ_ALWAYS_INLINE MapIterator& operator++() {
 		m_index += 1;
 		return *this;
 	}
-	GJ_ALWAYS_INLINE const Key& key() const { return m_map.m_buckets[m_index].key; }
-	GJ_ALWAYS_INLINE Value& value() const { return m_map.m_buckets[m_index].value; }
+	GJ_ALWAYS_INLINE const Key& key() const {
+		return m_map.m_buckets[m_index].key;
+	}
+	GJ_ALWAYS_INLINE Value& value() const {
+		return m_map.m_buckets[m_index].value;
+	}
 
 private:
 	usize m_index = 0;
@@ -34,15 +41,24 @@ private:
 template <typename Key, typename Value, typename Hasher>
 class ConstMapIterator {
 public:
-	GJ_ALWAYS_INLINE explicit ConstMapIterator(const Map<Key, Value, Hasher>& map) : m_map(map) {}
+	GJ_ALWAYS_INLINE explicit ConstMapIterator(
+		const Map<Key, Value, Hasher>& map
+	)
+		: m_map(map) {}
 
-	GJ_ALWAYS_INLINE operator bool() const { return m_index < m_map.m_buckets.len(); }
+	GJ_ALWAYS_INLINE operator bool() const {
+		return m_index < m_map.m_buckets.len();
+	}
 	GJ_ALWAYS_INLINE ConstMapIterator& operator++() {
 		m_index += 1;
 		return *this;
 	}
-	GJ_ALWAYS_INLINE const Key& key() const { return m_map.m_buckets[m_index].key; }
-	GJ_ALWAYS_INLINE const Value& value() const { return m_map.m_buckets[m_index].value; }
+	GJ_ALWAYS_INLINE const Key& key() const {
+		return m_map.m_buckets[m_index].key;
+	}
+	GJ_ALWAYS_INLINE const Value& value() const {
+		return m_map.m_buckets[m_index].value;
+	}
 
 private:
 	usize m_index = 0;
@@ -56,7 +72,10 @@ class Map {
 		Value value;
 		i32 next;
 	};
-	static_assert(std::is_base_of_v<core::IHasher, Hasher>, "IHasher must be a valid IHasher");
+	static_assert(
+		std::is_base_of_v<core::IHasher, Hasher>,
+		"IHasher must be a valid IHasher"
+	);
 
 public:
 	constexpr Map() = default;
@@ -67,7 +86,9 @@ public:
 	void reserve(usize amount);
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_empty() const { return m_buckets.is_empty(); }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_empty() const {
+		return m_buckets.is_empty();
+	}
 
 	void insert(const Key& key, Value&& value);
 	void insert(const Key& key, const Value& value);

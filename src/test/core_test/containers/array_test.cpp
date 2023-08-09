@@ -6,8 +6,7 @@
 GJ_TEST_BEGIN
 
 TEST_CASE("gj::core::Array") {
-	using namespace gj;
-	gj::Array<int, 128> arr;
+	Array<int, 128> arr;
 
 	CHECK(arr.len() == 0); // gj::Array default initialization is to zero
 
@@ -17,7 +16,7 @@ TEST_CASE("gj::core::Array") {
 		arr.push(15);
 
 		REQUIRE(arr.len() == 3); // We've added three elements
-		CHECK(arr[0] == 5);		 // The elements should be in the order we added them
+		CHECK(arr[0] == 5); // The elements should be in the order we added them
 		CHECK(arr[1] == 10);
 		CHECK(arr[2] == 15);
 	}

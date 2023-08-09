@@ -6,8 +6,7 @@
 GJ_TEST_BEGIN
 
 TEST_CASE("gj::core::Vector") {
-	using namespace gj;
-	gj::Vector<int> vec;
+	Vector<int> vec;
 
 	CHECK(vec.len() == 0); // gj::Vector default initialization is to zero
 
@@ -17,7 +16,7 @@ TEST_CASE("gj::core::Vector") {
 		vec.push(15);
 
 		REQUIRE(vec.len() == 3); // We've added three elements
-		CHECK(vec[0] == 5);		 // The elements should be in the order we added them
+		CHECK(vec[0] == 5); // The elements should be in the order we added them
 		CHECK(vec[1] == 10);
 		CHECK(vec[2] == 15);
 

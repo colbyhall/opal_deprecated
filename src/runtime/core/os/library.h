@@ -23,7 +23,10 @@ public:
 		return nullptr;
 	}
 
-	GJ_ALWAYS_INLINE Library(Library&& move) noexcept : m_handle(move.m_handle) { move.m_handle = nullptr; }
+	GJ_ALWAYS_INLINE Library(Library&& move) noexcept
+		: m_handle(move.m_handle) {
+		move.m_handle = nullptr;
+	}
 	GJ_ALWAYS_INLINE Library& operator=(Library&& move) noexcept {
 		auto to_destroy = gj::move(*this);
 		GJ_UNUSED(to_destroy);

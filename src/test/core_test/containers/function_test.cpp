@@ -6,7 +6,6 @@
 GJ_TEST_BEGIN
 
 TEST_CASE("gj::core::Function, gj::core::FunctionRef") {
-	using namespace gj;
 	FunctionRef<bool()> foo = []() { return false; };
 	const auto a = foo();
 	CHECK(a == false);
@@ -15,6 +14,12 @@ TEST_CASE("gj::core::Function, gj::core::FunctionRef") {
 	auto baz = gj::move(bar);
 	const auto b = baz();
 	CHECK(b == true);
+
+	int c = 0;
+	int d = 12;
+	FunctionRef<void(int& d)> car = [&c](auto& d) { d += c; };
+	car(d);
+	CHECK(c == d);
 }
 
 GJ_TEST_END

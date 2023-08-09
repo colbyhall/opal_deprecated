@@ -17,7 +17,9 @@ public:
 	const Definition& definition() const final { return m_definition; }
 	// ~IGraphicsPipeline
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const { return m_pipeline; }
+	GJ_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const {
+		return m_pipeline;
+	}
 
 private:
 	Definition m_definition;

@@ -7,6 +7,8 @@ set(IMGUI_SRC_FILES
         ${IMGUI_ROOT}/imgui.h
         ${IMGUI_ROOT}/imgui.cpp
         ${IMGUI_ROOT}/imgui_draw.cpp
+		${IMGUI_ROOT}/imgui_impl_win32.h
+		${IMGUI_ROOT}/imgui_impl_win32.cpp
         ${IMGUI_ROOT}/imgui_internal.h
         ${IMGUI_ROOT}/imgui_tables.cpp
         ${IMGUI_ROOT}/imgui_widgets.cpp

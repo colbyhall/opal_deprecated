@@ -162,7 +162,9 @@ public:
 	GJ_ALWAYS_INLINE constexpr Option(NullPtr) : m_ptr(nullptr) {}
 	GJ_ALWAYS_INLINE constexpr Option(T& t) : m_ptr(&t) {}
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_set() const {
+		return m_ptr != nullptr;
+	}
 	GJ_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	GJ_ALWAYS_INLINE T& unwrap() {

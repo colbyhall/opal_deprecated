@@ -23,19 +23,27 @@ class Swapchain {
 public:
 	static Swapchain make(void* window_handle);
 
-	GJ_ALWAYS_INLINE const Texture& backbuffer() const { return m_interface->backbuffer(); }
+	GJ_ALWAYS_INLINE const Texture& backbuffer() const {
+		return m_interface->backbuffer();
+	}
 	GJ_ALWAYS_INLINE void present() { m_interface->present(); }
-	GJ_ALWAYS_INLINE void wait_for_previous() { m_interface->wait_for_previous(); }
+	GJ_ALWAYS_INLINE void wait_for_previous() {
+		m_interface->wait_for_previous();
+	}
 	GJ_ALWAYS_INLINE void resize() { m_interface->resize(); }
 
 	template <typename T = ISwapchain>
-	T const& interface() const {
-		static_assert(std::is_base_of_v<ISwapchain, T>, "T is not derived of ISwapchain");
+	GJ_ALWAYS_INLINE T const& cast() const {
+		static_assert(
+			std::is_base_of_v<ISwapchain, T>,
+			"T is not derived of ISwapchain"
+		);
 		return static_cast<const T&>(*m_interface);
 	}
 
 private:
-	GJ_ALWAYS_INLINE explicit Swapchain(Unique<ISwapchain>&& interface) : m_interface(gj::move(interface)) {}
+	GJ_ALWAYS_INLINE explicit Swapchain(Unique<ISwapchain>&& interface)
+		: m_interface(gj::move(interface)) {}
 
 	Unique<ISwapchain> m_interface;
 };

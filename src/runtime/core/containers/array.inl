@@ -7,18 +7,19 @@ GJ_CORE_NAMESPACE_BEGIN
 template <typename Element, usize Count>
 Array<Element, Count>::Array(const Array& copy) noexcept : m_len(copy.m_len) {
 	for (usize i = 0; i < m_len; ++i) {
-		new (&begin()[i]) Element(copy[i]);
+		new (begin() + i) Element(copy[i]);
 	}
 }
 
 template <typename Element, usize Count>
-Array<Element, Count>& Array<Element, Count>::operator=(const Array& copy) noexcept {
+Array<Element, Count>& Array<Element, Count>::operator=(const Array& copy
+) noexcept {
 	auto to_destroy = gj::move(*this);
 	GJ_UNUSED(to_destroy);
 
 	m_len = copy.m_len;
 	for (usize i = 0; i < m_len; ++i) {
-		new (&begin()[i]) Element(copy[i]);
+		new (begin() + i) Element(copy[i]);
 	}
 
 	return *this;
@@ -27,7 +28,7 @@ Array<Element, Count>& Array<Element, Count>::operator=(const Array& copy) noexc
 template <typename Element, usize Count>
 Array<Element, Count>::Array(Array&& move) noexcept : m_len(move.m_len) {
 	for (usize i = 0; i < m_len; ++i) {
-		new (&begin()[i]) Element(gj::move(move[i]));
+		new (begin() + i) Element(gj::move(move[i]));
 	}
 
 	move.m_len = 0;
@@ -40,7 +41,7 @@ Array<Element, Count>& Array<Element, Count>::operator=(Array&& move) noexcept {
 
 	m_len = move.m_len;
 	for (usize i = 0; i < m_len; ++i) {
-		new (&begin()[i]) Element(gj::move(move[i]));
+		new (begin() + i) Element(gj::move(move[i]));
 	}
 
 	move.m_len = 0;
@@ -88,7 +89,8 @@ GJ_ALWAYS_INLINE Element& Array<Element, Count>::operator[](usize index) {
 }
 
 template <typename Element, usize Count>
-GJ_ALWAYS_INLINE const Element& Array<Element, Count>::operator[](usize index) const {
+GJ_ALWAYS_INLINE const Element& Array<Element, Count>::operator[](usize index
+) const {
 	GJ_ASSERT(is_valid_index(index), "Index out of bounds");
 	return cbegin()[index];
 }
@@ -121,7 +123,8 @@ void Array<Element, Count>::insert(usize index, Element&& item) {
 }
 
 template <typename Element, usize Count>
-GJ_ALWAYS_INLINE void Array<Element, Count>::insert(usize index, const Element& item) {
+GJ_ALWAYS_INLINE void
+Array<Element, Count>::insert(usize index, const Element& item) {
 	Element copy = item;
 	insert(index, gj::move(copy));
 }

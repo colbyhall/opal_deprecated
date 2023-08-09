@@ -5,8 +5,11 @@
 
 GJ_GPU_NAMESPACE_BEGIN
 
-D3D12BufferImpl::D3D12BufferImpl(Usage usage, Kind kind, usize len) : m_usage(usage), m_kind(kind), m_len(len) {
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+D3D12BufferImpl::D3D12BufferImpl(Usage usage, Kind kind, usize len)
+	: m_usage(usage)
+	, m_kind(kind)
+	, m_len(len) {
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 
 	D3D12_HEAP_PROPERTIES heap = {};
 	switch (kind) {
@@ -33,7 +36,8 @@ D3D12BufferImpl::D3D12BufferImpl(Usage usage, Kind kind, usize len) : m_usage(us
 	desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	desc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-	const D3D12_RESOURCE_STATES initial_state = D3D12_RESOURCE_STATE_GENERIC_READ;
+	const D3D12_RESOURCE_STATES initial_state =
+		D3D12_RESOURCE_STATE_GENERIC_READ;
 
 	throw_if_failed(context.device()->CreateCommittedResource(
 		&heap,

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "core/containers/unique.h"
-#include "gpu/gpu.h"
+#include "gpu/graphics_command_list.h"
 
 GJ_GPU_NAMESPACE_BEGIN
 
@@ -14,6 +14,8 @@ enum class Backend {
 class IContext {
 public:
 	virtual Backend backend() const = 0;
+	virtual void post_init() = 0;
+	virtual void submit(const GraphicsCommandList& command_list) const = 0;
 	virtual ~IContext() = default;
 };
 
@@ -21,11 +23,18 @@ class Context {
 public:
 	static const Context& the();
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE Backend backend() const { return m_interface->backend(); }
+	GJ_ALWAYS_INLINE Backend backend() const { return m_interface->backend(); }
+	GJ_ALWAYS_INLINE void submit(const GraphicsCommandList& command_list
+	) const {
+		return m_interface->submit(command_list);
+	}
 
 	template <typename T = IContext>
-	T const& interface() const {
-		static_assert(std::is_base_of_v<IContext, T>, "T is not derived of IContext");
+	GJ_ALWAYS_INLINE T const& cast() const {
+		static_assert(
+			std::is_base_of_v<IContext, T>,
+			"T is not derived of IContext"
+		);
 		return static_cast<const T&>(*m_interface);
 	}
 

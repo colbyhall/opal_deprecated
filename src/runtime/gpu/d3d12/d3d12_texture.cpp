@@ -35,7 +35,12 @@ DXGI_FORMAT format_to_dxgi(Format format) {
 	return dxgi_format;
 }
 
-D3D12TextureImpl::D3D12TextureImpl(Usage usage, Format format, const Vec3u32& size, ComPtr<ID3D12Resource> resource)
+D3D12TextureImpl::D3D12TextureImpl(
+	Usage usage,
+	Format format,
+	const Vec3u32& size,
+	ComPtr<ID3D12Resource> resource
+)
 	: m_usage(usage)
 	, m_format(format)
 	, m_size(size) {
@@ -43,7 +48,7 @@ D3D12TextureImpl::D3D12TextureImpl(Usage usage, Format format, const Vec3u32& si
 	GJ_ASSERT(size.y > 0);
 	GJ_ASSERT(size.z > 0);
 
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 
 	D3D12_RESOURCE_DIMENSION dimension = D3D12_RESOURCE_DIMENSION_UNKNOWN;
 	if (size.x > 1) {
@@ -115,20 +120,32 @@ D3D12TextureImpl::D3D12TextureImpl(Usage usage, Format format, const Vec3u32& si
 
 	if (color_attachment) {
 		m_rtv_handle = context.root_signature().rtv_heap().alloc();
-		context.device()->CreateRenderTargetView(m_resource.Get(), nullptr, m_rtv_handle.handle);
+		context.device()->CreateRenderTargetView(
+			m_resource.Get(),
+			nullptr,
+			m_rtv_handle.handle
+		);
 	}
 	if (depth_attachment) {
 		m_dsv_handle = context.root_signature().dsv_heap().alloc();
-		context.device()->CreateDepthStencilView(m_resource.Get(), nullptr, m_dsv_handle.handle);
+		context.device()->CreateDepthStencilView(
+			m_resource.Get(),
+			nullptr,
+			m_dsv_handle.handle
+		);
 	}
 	if (sampled) {
 		m_bt2dv_handle = context.root_signature().bt2dv_heap().alloc();
-		context.device()->CreateShaderResourceView(m_resource.Get(), nullptr, m_bt2dv_handle.handle);
+		context.device()->CreateShaderResourceView(
+			m_resource.Get(),
+			nullptr,
+			m_bt2dv_handle.handle
+		);
 	}
 }
 
 D3D12TextureImpl::~D3D12TextureImpl() {
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 
 	if (m_rtv_handle.handle.ptr) {
 		context.root_signature().rtv_heap().free(m_rtv_handle);

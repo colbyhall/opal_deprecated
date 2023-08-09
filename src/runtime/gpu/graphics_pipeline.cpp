@@ -11,7 +11,8 @@ GraphicsPipeline GraphicsPipeline::make(Definition&& definition) {
 	Option<Shared<IGraphicsPipeline>> interface;
 	switch (context.backend()) {
 	case Backend::D3D12:
-		interface = Shared<D3D12GraphicsPipelineImpl>::make(gj::move(definition));
+		interface =
+			Shared<D3D12GraphicsPipelineImpl>::make(gj::move(definition));
 		break;
 	}
 

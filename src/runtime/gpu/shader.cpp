@@ -6,13 +6,19 @@
 
 GJ_GPU_NAMESPACE_BEGIN
 
-VertexShader VertexShader::make(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) {
+VertexShader VertexShader::make(
+	Vector<u8>&& binary,
+	Vector<InputParameter>&& input_parameters
+) {
 	auto& context = Context::the();
 
 	Option<Shared<IVertexShader>> interface;
 	switch (context.backend()) {
 	case Backend::D3D12:
-		interface = Shared<D3D12VertexShaderImpl>::make(gj::move(binary), gj::move(input_parameters));
+		interface = Shared<D3D12VertexShaderImpl>::make(
+			gj::move(binary),
+			gj::move(input_parameters)
+		);
 		break;
 	}
 

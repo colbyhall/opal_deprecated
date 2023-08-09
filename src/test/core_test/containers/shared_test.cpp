@@ -5,8 +5,6 @@
 
 GJ_TEST_BEGIN
 
-using namespace gj;
-
 class SharedFoo : public SharedFromThis<SharedFoo> {
 public:
 	virtual int get_value() const { return -1; }

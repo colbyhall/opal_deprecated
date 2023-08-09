@@ -19,13 +19,19 @@ public:
 	Unique& operator=(const Unique<Base>& copy) noexcept;
 	template <typename Derived = Base>
 	Unique(Unique<Derived>&& move) noexcept : m_ptr(move.m_ptr) {
-		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
+		static_assert(
+			std::is_base_of_v<Base, Derived>,
+			"Base is not a base of Derived"
+		);
 
 		move.m_ptr = nullptr;
 	}
 	template <typename Derived = Base>
 	Unique& operator=(Unique<Derived>&& m) noexcept {
-		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
+		static_assert(
+			std::is_base_of_v<Base, Derived>,
+			"Base is not a base of Derived"
+		);
 
 		Unique<Base> to_destroy = core::move(*this);
 		m_ptr = m.m_ptr;

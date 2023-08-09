@@ -26,11 +26,17 @@ class IGraphicsCommandRecorder {
 public:
 	virtual void begin() = 0;
 
-	virtual void copy_buffer_to_texture(const Texture& dst, const Buffer& src) = 0;
+	virtual void
+	copy_buffer_to_texture(const Texture& dst, const Buffer& src) = 0;
 
-	virtual void texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout) = 0;
+	virtual void texture_barrier(
+		const Texture& texture,
+		Layout old_layout,
+		Layout new_layout
+	) = 0;
 
-	virtual void begin_render_pass(const Texture& color, Option<Texture const&> depth) = 0;
+	virtual void
+	begin_render_pass(const Texture& color, Option<Texture const&> depth) = 0;
 
 	virtual void set_pipeline(const GraphicsPipeline& pipeline) = 0;
 	virtual void set_vertices(const Buffer& buffer, u32 stride) = 0;
@@ -52,10 +58,22 @@ class RenderPassRecorder;
 
 class GraphicsCommandList {
 public:
-	static GraphicsCommandList record(FunctionRef<void(GraphicsCommandRecorder&)> callable);
+	static GraphicsCommandList
+	record(FunctionRef<void(GraphicsCommandRecorder&)> callable);
+
+	template <typename T = IGraphicsCommandRecorder>
+	GJ_ALWAYS_INLINE T const& cast() const {
+		static_assert(
+			std::is_base_of_v<IGraphicsCommandRecorder, T>,
+			"T is not derived of IGraphicsCommandRecorder"
+		);
+		return static_cast<const T&>(*m_interface);
+	}
 
 private:
-	GJ_ALWAYS_INLINE explicit GraphicsCommandList(Shared<IGraphicsCommandRecorder>&& interface)
+	GJ_ALWAYS_INLINE explicit GraphicsCommandList(Shared<
+												  IGraphicsCommandRecorder>&&
+													  interface)
 		: m_interface(gj::move(interface)) {}
 
 	Shared<IGraphicsCommandRecorder> m_interface;
@@ -63,14 +81,23 @@ private:
 
 class GraphicsCommandRecorder {
 public:
-	GraphicsCommandRecorder& copy_buffer_to_texture(const Texture& dst, const Buffer& src);
-	GraphicsCommandRecorder& texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout);
-
 	GraphicsCommandRecorder&
-	render_pass(const Texture& color, Option<const Texture&> depth, FunctionRef<void(RenderPassRecorder&)> callable);
+	copy_buffer_to_texture(const Texture& dst, const Buffer& src);
+	GraphicsCommandRecorder& texture_barrier(
+		const Texture& texture,
+		Layout old_layout,
+		Layout new_layout
+	);
+
+	GraphicsCommandRecorder& render_pass(
+		const Texture& color,
+		Option<const Texture&> depth,
+		FunctionRef<void(RenderPassRecorder&)> callable
+	);
 
 private:
-	inline GraphicsCommandRecorder(IGraphicsCommandRecorder& interface) : m_interface(interface) {}
+	inline GraphicsCommandRecorder(IGraphicsCommandRecorder& interface)
+		: m_interface(interface) {}
 	friend class GraphicsCommandList;
 
 	IGraphicsCommandRecorder& m_interface;
@@ -87,7 +114,8 @@ public:
 	RenderPassRecorder& draw_index(usize index_count, usize first_index = 0);
 
 private:
-	inline RenderPassRecorder(IGraphicsCommandRecorder& interface) : m_interface(interface) {}
+	inline RenderPassRecorder(IGraphicsCommandRecorder& interface)
+		: m_interface(interface) {}
 	friend class GraphicsCommandRecorder;
 
 	IGraphicsCommandRecorder& m_interface;

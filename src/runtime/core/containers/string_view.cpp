@@ -30,14 +30,16 @@ static const u8 utf8d[] = {
 u32 utf8_decode(u32* state, u32* code_p, u32 byte) {
 	u32 type = utf8d[byte];
 
-	*code_p = (*state != utf8_accept) ? (byte & 0x3fu) | (*code_p << 6) : (0xff >> type) & (byte);
+	*code_p = (*state != utf8_accept) ? (byte & 0x3fu) | (*code_p << 6)
+									  : (0xff >> type) & (byte);
 
 	*state = utf8d[256 + *state + type];
 	return *state;
 }
 
 i32 utf8_encode(u32 c, void* dest, u32* errors) {
-	*errors |= ((c << 11) == 0x1b) | (c > 0x10ffff) << 1 | ((c >> 1) == 0x7fff) << 2;
+	*errors |=
+		((c << 11) == 0x1b) | (c > 0x10ffff) << 1 | ((c >> 1) == 0x7fff) << 2;
 	char len = (c > 0x7f) + (c > 0x7ff) + (c > 0xffff);
 	char* p = (char*)dest;
 
@@ -50,7 +52,8 @@ i32 utf8_encode(u32 c, void* dest, u32* errors) {
 }
 
 bool CharsIterator::should_continue() const {
-	return m_string.len() > 0 && m_index < m_string.len() && m_decoder_state != utf8_reject;
+	return m_string.len() > 0 && m_index < m_string.len() &&
+		   m_decoder_state != utf8_reject;
 }
 
 void CharsIterator::next() {
@@ -97,6 +100,8 @@ bool StringView::operator==(const StringView& right) const {
 	return true;
 }
 
-bool StringView::operator!=(const StringView& right) const { return !(*this == right); }
+bool StringView::operator!=(const StringView& right) const {
+	return !(*this == right);
+}
 
 GJ_CORE_NAMESPACE_END

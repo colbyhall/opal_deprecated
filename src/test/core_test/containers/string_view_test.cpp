@@ -5,8 +5,6 @@
 
 GJ_TEST_BEGIN
 
-using namespace gj;
-
 TEST_CASE("gj::core::StringView") {
 	const StringView str = "Hello World!";
 

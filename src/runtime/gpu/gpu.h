@@ -5,13 +5,13 @@
 #include "core/containers/shared.h"
 
 // Begin the gpu namespace
-#define GJ_GPU_NAMESPACE_BEGIN                                                                                         \
-	GJ_NAMESPACE_BEGIN                                                                                                 \
+#define GJ_GPU_NAMESPACE_BEGIN                                                 \
+	GJ_NAMESPACE_BEGIN                                                         \
 	namespace gpu {
 
 // End the gpu namespace
-#define GJ_GPU_NAMESPACE_END                                                                                           \
-	}                                                                                                                  \
+#define GJ_GPU_NAMESPACE_END                                                   \
+	}                                                                          \
 	GJ_NAMESPACE_END
 
 #define GJ_GPU_DEBUG 1

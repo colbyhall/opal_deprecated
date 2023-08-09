@@ -48,7 +48,9 @@ struct alignas(16) Vec3 {
 	GJ_ALWAYS_INLINE T len() const { return gj::sqrt(len_sq()); }
 	GJ_ALWAYS_INLINE Option<Vec3<T>> normalized() const;
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_zero() const { return *this == zero; }
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_zero() const {
+		return *this == zero;
+	}
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_near_zero() const;
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool has_nan() const;
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool has_infinite() const;

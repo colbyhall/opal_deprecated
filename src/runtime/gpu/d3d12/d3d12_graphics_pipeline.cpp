@@ -44,8 +44,9 @@ static D3D12_BLEND_OP convert_blend_op(BlendOp op) {
 	return D3D12_BLEND_OP_ADD;
 }
 
-D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : m_definition(gj::move(definition)) {
-	auto& context = Context::the().interface<D3D12ContextImpl>();
+D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition)
+	: m_definition(gj::move(definition)) {
+	auto& context = Context::the().cast<D3D12ContextImpl>();
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
 	desc.pRootSignature = context.root_signature().the().Get();
@@ -125,11 +126,15 @@ D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : 
 		D3D12_RENDER_TARGET_BLEND_DESC def = {};
 		def.BlendEnable = m_definition.blend_enabled;
 		// def.LogicOpEnable = m_config.blend_enabled;
-		def.SrcBlend = convert_blend_factor(m_definition.src_color_blend_factor);
-		def.DestBlend = convert_blend_factor(m_definition.dst_color_blend_factor);
+		def.SrcBlend =
+			convert_blend_factor(m_definition.src_color_blend_factor);
+		def.DestBlend =
+			convert_blend_factor(m_definition.dst_color_blend_factor);
 		def.BlendOp = convert_blend_op(m_definition.color_blend_op);
-		def.SrcBlendAlpha = convert_blend_factor(m_definition.src_alpha_blend_factor);
-		def.DestBlendAlpha = convert_blend_factor(m_definition.dst_alpha_blend_factor);
+		def.SrcBlendAlpha =
+			convert_blend_factor(m_definition.src_alpha_blend_factor);
+		def.DestBlendAlpha =
+			convert_blend_factor(m_definition.dst_alpha_blend_factor);
 		def.BlendOpAlpha = convert_blend_op(m_definition.alpha_blend_op);
 		def.LogicOp = D3D12_LOGIC_OP_NOOP;
 		def.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
@@ -160,12 +165,14 @@ D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : 
 		rasterizer_state.FrontCounterClockwise = FALSE;
 		rasterizer_state.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
 		rasterizer_state.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-		rasterizer_state.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		rasterizer_state.SlopeScaledDepthBias =
+			D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 		rasterizer_state.DepthClipEnable = TRUE;
 		rasterizer_state.MultisampleEnable = FALSE;
 		rasterizer_state.AntialiasedLineEnable = FALSE;
 		rasterizer_state.ForcedSampleCount = 0;
-		rasterizer_state.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		rasterizer_state.ConservativeRaster =
+			D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 		desc.RasterizerState = rasterizer_state;
 	}
 
@@ -190,7 +197,10 @@ D3D12GraphicsPipelineImpl::D3D12GraphicsPipelineImpl(Definition&& definition) : 
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	desc.SampleDesc.Count = 1;
 
-	throw_if_failed(context.device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pipeline)));
+	throw_if_failed(context.device()->CreateGraphicsPipelineState(
+		&desc,
+		IID_PPV_ARGS(&m_pipeline)
+	));
 }
 
 GJ_GPU_NAMESPACE_END

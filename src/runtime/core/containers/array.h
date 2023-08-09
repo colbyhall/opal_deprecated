@@ -10,13 +10,18 @@ GJ_CORE_NAMESPACE_BEGIN
 template <typename Element, usize Count>
 class Array {
 public:
-	static_assert(Count > 0, "Must have a Count greater than zero for this to be useful");
+	static_assert(
+		Count > 0,
+		"Must have a Count greater than zero for this to be useful"
+	);
 
 	Array() = default;
+
 	Array(const Array& copy) noexcept;
 	Array& operator=(const Array& copy) noexcept;
 	Array(Array&& move) noexcept;
 	Array& operator=(Array&& move) noexcept;
+
 	~Array();
 
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_len; }
@@ -28,7 +33,9 @@ public:
 	GJ_ALWAYS_INLINE operator Slice<Element>();
 	GJ_ALWAYS_INLINE operator Slice<Element const>() const;
 
-	GJ_ALWAYS_INLINE Element* begin() { return reinterpret_cast<Element*>(m_bytes); }
+	GJ_ALWAYS_INLINE Element* begin() {
+		return reinterpret_cast<Element*>(m_bytes);
+	}
 	GJ_ALWAYS_INLINE Element* end() { return begin() + m_len; }
 
 	GJ_ALWAYS_INLINE const Element* cbegin() const;
@@ -43,7 +50,8 @@ public:
 	/**
 	 * Inserts item into array by moving item into the index given
 	 *
-	 * @param index - index to move the element into. can be the length of the array to insert at end
+	 * @param index - index to move the element into. can be the length of the
+	 * array to insert at end
 	 * @param item - element moved into array
 	 */
 	void insert(usize index, Element&& item);
@@ -51,7 +59,8 @@ public:
 	/**
 	 * Inserts item into array by copying item into the index given
 	 *
-	 * @param index - index to copy the element into. can be the length of the array to insert at end
+	 * @param index - index to copy the element into. can be the length of the
+	 * array to insert at end
 	 * @param item - element copied into array
 	 */
 	GJ_ALWAYS_INLINE void insert(usize index, const Element& item_to_copy);
@@ -73,7 +82,8 @@ public:
 	GJ_ALWAYS_INLINE usize push(const Element& item);
 
 	/**
-	 * Removes an item from the array by moving it out and then shifting moving all elements after over
+	 * Removes an item from the array by moving it out and then shifting moving
+	 * all elements after over
 	 *
 	 * @param index - points to which item to remove. will crash if invalid
 	 * @return removed element
@@ -81,7 +91,8 @@ public:
 	Element remove(usize index);
 
 	/**
-	 * If the array is not empty remove the last item by moving it out and decrementing len
+	 * If the array is not empty remove the last item by moving it out and
+	 * decrementing len
 	 *
 	 * @return removed element if there was one to remove
 	 */

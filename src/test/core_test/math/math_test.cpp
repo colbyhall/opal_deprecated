@@ -6,8 +6,6 @@
 GJ_TEST_BEGIN
 
 TEST_CASE("gj::core::math") {
-	using namespace gj;
-
 	SUBCASE("min/max") {
 		CHECK(gj::min(5, 10) == 5);
 		CHECK(gj::max(5, 10) == 10);
