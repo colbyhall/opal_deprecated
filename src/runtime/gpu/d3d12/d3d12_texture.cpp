@@ -38,7 +38,7 @@ DXGI_FORMAT format_to_dxgi(Format format) {
 D3D12TextureImpl::D3D12TextureImpl(
 	Usage usage,
 	Format format,
-	const Vec3u32& size,
+	const Vector3<u32>& size,
 	ComPtr<ID3D12Resource> resource
 )
 	: m_usage(usage)

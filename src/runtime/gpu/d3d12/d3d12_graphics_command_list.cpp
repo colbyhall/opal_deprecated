@@ -157,6 +157,12 @@ void D3D12GraphicsCommandRecorderImpl::begin_render_pass(
 	if (depth_handle) m_bound_depth_buffer = *depth_handle;
 }
 
+void D3D12GraphicsCommandRecorderImpl::clear_color(const Vector4<f32>& color) {
+	const auto handle = m_bound_color_buffer.as_ref().unwrap();
+	const f32 clear_color0[] = { color.r, color.g, color.g, color.a };
+	m_command_list->ClearRenderTargetView(handle, clear_color0, 0, nullptr);
+}
+
 void D3D12GraphicsCommandRecorderImpl::set_pipeline(
 	const GraphicsPipeline& pipeline
 ) {

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "core/math/vec3.h"
+#include "core/math/vector3.h"
 #include "gpu/gpu.h"
 
 GJ_GPU_NAMESPACE_BEGIN
@@ -31,11 +31,11 @@ public:
 		Backbuffer = (1 << 4),
 	};
 
-	static Texture make(Usage usage, Format format, const Vec3u32& size);
+	static Texture make(Usage usage, Format format, const Vector3<u32>& size);
 
 	GJ_ALWAYS_INLINE Texture::Usage usage() const;
 	GJ_ALWAYS_INLINE Format format() const;
-	GJ_ALWAYS_INLINE Vec3u32 size() const;
+	GJ_ALWAYS_INLINE Vector3<u32> size() const;
 	GJ_ALWAYS_INLINE u32 bindless() const;
 
 	template <typename T = ITexture>
@@ -62,7 +62,7 @@ class ITexture {
 public:
 	virtual Texture::Usage usage() const = 0;
 	virtual Format format() const = 0;
-	virtual Vec3u32 size() const = 0;
+	virtual Vector3<u32> size() const = 0;
 	virtual u32 bindless() const = 0;
 	virtual ~ITexture() = default;
 };
@@ -73,7 +73,9 @@ GJ_ALWAYS_INLINE Texture::Usage Texture::usage() const {
 GJ_ALWAYS_INLINE Format Texture::format() const {
 	return m_interface->format();
 }
-GJ_ALWAYS_INLINE Vec3u32 Texture::size() const { return m_interface->size(); }
+GJ_ALWAYS_INLINE Vector3<u32> Texture::size() const {
+	return m_interface->size();
+}
 GJ_ALWAYS_INLINE u32 Texture::bindless() const {
 	return m_interface->bindless();
 }

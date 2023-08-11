@@ -3,6 +3,7 @@
 #pragma once
 
 #include "core/containers/function.h"
+#include "core/math/vector4.h"
 #include "gpu/gpu.h"
 
 GJ_GPU_NAMESPACE_BEGIN
@@ -38,6 +39,7 @@ public:
 	virtual void
 	begin_render_pass(const Texture& color, Option<Texture const&> depth) = 0;
 
+	virtual void clear_color(const Vector4<f32>& color) = 0;
 	virtual void set_pipeline(const GraphicsPipeline& pipeline) = 0;
 	virtual void set_vertices(const Buffer& buffer, u32 stride) = 0;
 	virtual void set_indices(const Buffer& buffer) = 0;
@@ -105,6 +107,7 @@ private:
 
 class RenderPassRecorder {
 public:
+	RenderPassRecorder& clear_color(const Vector4<f32>& color);
 	RenderPassRecorder& set_pipeline(const GraphicsPipeline& pipeline);
 	RenderPassRecorder& set_vertices(const Buffer& buffer, u32 stride);
 	RenderPassRecorder& set_indices(const Buffer& buffer);

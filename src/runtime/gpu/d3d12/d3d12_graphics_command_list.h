@@ -14,23 +14,24 @@ public:
 	explicit D3D12GraphicsCommandRecorderImpl();
 
 	// IGraphicsCommandRecorder
-	void begin() override;
-	void copy_buffer_to_texture(const Texture& dst, const Buffer& src) override;
+	void begin() final;
+	void copy_buffer_to_texture(const Texture& dst, const Buffer& src) final;
 	void texture_barrier(
 		const Texture& texture,
 		Layout old_layout,
 		Layout new_layout
-	) override;
-	void begin_render_pass(const Texture& color, Option<const Texture&> depth)
-		override;
-	void set_pipeline(const GraphicsPipeline& pipeline) override;
-	void set_vertices(const Buffer& buffer, u32 stride) override;
-	void set_indices(const Buffer& buffer) override;
-	void push_constant(const void* ptr) override;
-	void draw(usize vertex_count, usize first_vertex) override;
-	void draw_indexed(usize index_count, usize first_index) override;
-	void end_render_pass() override;
-	void end() override;
+	) final;
+	void
+	begin_render_pass(const Texture& color, Option<const Texture&> depth) final;
+	void clear_color(const Vector4<f32>& color) final;
+	void set_pipeline(const GraphicsPipeline& pipeline) final;
+	void set_vertices(const Buffer& buffer, u32 stride) final;
+	void set_indices(const Buffer& buffer) final;
+	void push_constant(const void* ptr) final;
+	void draw(usize vertex_count, usize first_vertex) final;
+	void draw_indexed(usize index_count, usize first_index) final;
+	void end_render_pass() final;
+	void end() final;
 	// ~IGraphicsCommandRecorder
 
 	GJ_ALWAYS_INLINE ComPtr<ID3D12GraphicsCommandList> command_list() const {

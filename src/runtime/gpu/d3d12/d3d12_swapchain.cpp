@@ -1,6 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "gpu/d3d12/d3d12_swapchain.h"
+#include "core/math/vector2.h"
 #include "gpu/d3d12/d3d12_context.h"
 
 GJ_GPU_NAMESPACE_BEGIN
@@ -13,8 +14,8 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(void* window_handle) {
 
 	RECT rect;
 	GetClientRect(m_hwnd, &rect);
-	const Vec2u32 size = { (u32)(rect.right - rect.left),
-						   (u32)(rect.bottom - rect.top) };
+	const Vector2<u32> size = { (u32)(rect.right - rect.left),
+								(u32)(rect.bottom - rect.top) };
 
 	DXGI_SWAP_CHAIN_DESC1 desc = {};
 	desc.BufferCount = D3D12SwapchainImpl::frame_count;
@@ -56,7 +57,7 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(void* window_handle) {
 		ComPtr<ID3D12Resource> resource;
 		throw_if_failed(m_swapchain->GetBuffer(i, IID_PPV_ARGS(&resource)));
 
-		const Vec3u32 buffer_size = { size.width, size.height, 1 };
+		const Vector3<u32> buffer_size = { size.width, size.height, 1 };
 
 		auto interface = Shared<D3D12TextureImpl>::make(
 			Texture::Usage::Color | Texture::Usage::Backbuffer,
@@ -109,8 +110,8 @@ void D3D12SwapchainImpl::resize() {
 
 	RECT rect;
 	GetClientRect(m_hwnd, &rect);
-	const Vec2u32 size = { (u32)(rect.right - rect.left),
-						   (u32)(rect.bottom - rect.top) };
+	const Vector2<u32> size = { (u32)(rect.right - rect.left),
+								(u32)(rect.bottom - rect.top) };
 
 	throw_if_failed(
 		m_swapchain
@@ -121,7 +122,7 @@ void D3D12SwapchainImpl::resize() {
 		ComPtr<ID3D12Resource> resource;
 		throw_if_failed(m_swapchain->GetBuffer(i, IID_PPV_ARGS(&resource)));
 
-		const Vec3u32 buffer_size = { size.width, size.height, 1 };
+		const Vector3<u32> buffer_size = { size.width, size.height, 1 };
 
 		auto interface = Shared<D3D12TextureImpl>::make(
 			Texture::Usage::Color | Texture::Usage::Backbuffer,

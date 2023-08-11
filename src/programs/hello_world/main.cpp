@@ -1,26 +1,48 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "core/core.h"
-
+#include "editor/application.h"
 #include "gpu/buffer.h"
 #include "gpu/context.h"
 #include "gpu/texture.h"
+#include "imgui/imgui.h"
 
-using namespace gj;
+GJ_SUPPRESS_WARNING_PUSH
+GJ_SUPPRESS_WARNINGS
 
-auto main(int argc, char** argv) -> int {
-	GJ_UNUSED(argc);
-	GJ_UNUSED(argv);
+int main(int argc, char** argv) {
+	gj::editor::Application(argc, argv).run([]() {
+		// Create a window called "My First Tool", with a menu bar.
+		static bool a = true;
+		ImGui::Begin("My First Tool", &a, ImGuiWindowFlags_MenuBar);
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */
+				}
+				if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */
+				}
+				if (ImGui::MenuItem("Close", "Ctrl+W")) {
+					a = false;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
 
-	gpu::init();
+		// Generate samples and plot them
+		float samples[100];
+		for (int n = 0; n < 100; n++)
+			samples[n] = sinf((float)n * 0.2f + (float)ImGui::GetTime() * 1.5f);
+		ImGui::PlotLines("Samples", samples, 100);
 
-	using namespace gpu;
-
-	using Usage = Buffer::Usage;
-	using Kind = Buffer::Kind;
-	auto buffer = Buffer::make(Usage::Vertex | Usage::Constant, Kind::Upload, 256 * KB);
-
-	auto texture = Texture::make(Texture::Usage::Color, Format::RGBA_U8, { 512, 512, 1 });
-
+		// Display contents in a scrolling region
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+		ImGui::BeginChild("Scrolling");
+		for (int n = 0; n < 50; n++)
+			ImGui::Text("%04d: Some text", n);
+		ImGui::EndChild();
+		ImGui::End();
+	});
 	return 0;
 }
+
+GJ_SUPPRESS_WARNING_POP

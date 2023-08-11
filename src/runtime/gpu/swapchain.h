@@ -3,7 +3,6 @@
 #pragma once
 
 #include "core/containers/unique.h"
-#include "core/math/vec2.h"
 #include "gpu/gpu.h"
 
 GJ_GPU_NAMESPACE_BEGIN

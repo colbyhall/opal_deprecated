@@ -28,7 +28,7 @@ usize format_size_in_bytes(Format format) {
 	return 0;
 }
 
-Texture Texture::make(Usage usage, Format format, const Vec3u32& size) {
+Texture Texture::make(Usage usage, Format format, const Vector3<u32>& size) {
 	auto& context = Context::the();
 
 	Option<Shared<ITexture>> interface;

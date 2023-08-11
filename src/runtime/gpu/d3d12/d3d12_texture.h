@@ -16,14 +16,14 @@ public:
 	explicit D3D12TextureImpl(
 		Usage usage,
 		Format format,
-		const Vec3u32& size,
+		const Vector3<u32>& size,
 		ComPtr<ID3D12Resource> resource = nullptr
 	);
 
 	// ITexture
 	Usage usage() const final { return m_usage; }
 	Format format() const final { return m_format; }
-	Vec3u32 size() const final { return m_size; }
+	Vector3<u32> size() const final { return m_size; }
 	u32 bindless() const final { return m_bt2dv_handle.index; }
 	~D3D12TextureImpl() final;
 	// ~ITexture
@@ -46,7 +46,7 @@ private:
 	ComPtr<ID3D12Resource> m_resource;
 	Texture::Usage m_usage;
 	Format m_format;
-	Vec3u32 m_size;
+	Vector3<u32> m_size;
 
 	D3D12DescriptorHandle m_rtv_handle = {};
 	D3D12DescriptorHandle m_dsv_handle = {};

@@ -52,10 +52,11 @@ D3D12ContextImpl::D3D12ContextImpl() {
 			// actually creating it. The adapter with the largest dedicated
 			// video memory is favored.
 			if ((dxgiAdapterDesc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0 &&
-				SUCCEEDED((m_create_device)(adapter1.Get(),
-											D3D_FEATURE_LEVEL_11_0,
-											__uuidof(ID3D12Device),
-											nullptr)) &&
+				SUCCEEDED((m_create_device
+				)(adapter1.Get(),
+				  D3D_FEATURE_LEVEL_11_0,
+				  __uuidof(ID3D12Device),
+				  nullptr)) &&
 				dxgiAdapterDesc1.DedicatedVideoMemory >
 					max_dedicated_video_memory) {
 				max_dedicated_video_memory =
@@ -70,13 +71,12 @@ D3D12ContextImpl::D3D12ContextImpl() {
 	// Create the device
 	{
 		ComPtr<ID3D12Device1> device1;
-		auto result = (m_create_device)(adapter.Get(),
-										D3D_FEATURE_LEVEL_11_0,
-										IID_PPV_ARGS(&device1));
+		auto result = (m_create_device
+		)(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device1));
 		throw_if_failed(result);
 
 		// Enable debug messages in debug mode.
-#ifdef GJ_GPU_DEBUG
+#if GJ_GPU_DEBUG
 		ComPtr<ID3D12InfoQueue> pInfoQueue;
 		if (SUCCEEDED(device1.As(&pInfoQueue))) {
 			pInfoQueue->SetBreakOnSeverity(

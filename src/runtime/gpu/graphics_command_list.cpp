@@ -72,6 +72,11 @@ GraphicsCommandRecorder& GraphicsCommandRecorder::render_pass(
 	return *this;
 }
 
+RenderPassRecorder& RenderPassRecorder::clear_color(const Vector4<f32>& color) {
+	m_interface.clear_color(color);
+	return *this;
+}
+
 RenderPassRecorder&
 RenderPassRecorder::set_pipeline(const GraphicsPipeline& pipeline) {
 	m_interface.set_pipeline(pipeline);
