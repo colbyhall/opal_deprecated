@@ -13,14 +13,24 @@ Shared<Base, Mode>::~Shared() {
 
 		// If there are no strong references deconstruct the object
 		if (strong_count == 1) {
-			value().~Base();
+			m_base->~Base();
 
+			// Base that are derived from SharedFromThis will have a weak ptr to itself. Free when weak ptr is 1
+			// to account for this
+			if constexpr (std::is_base_of_v<SharedFromThisBase, Base>) {
+				if (weak_count == 1) {
+					core::free(m_counter);
+				}
+			}
 			// Free the memory if we have no weak references
-			if (weak_count == 0) {
-				core::free(m_counter);
+			else {
+				if (weak_count == 0) {
+					core::free(m_counter);
+				}
 			}
 
 			m_counter = nullptr;
+			m_base = nullptr;
 		}
 	}
 }

@@ -7,22 +7,18 @@
 #include "core/math/vector2.h"
 #include "core/os/library.h"
 #include "core/os/windows.h"
-#undef interface
 
 #include "dxc/dxc.h"
 #include "gpu/buffer.h"
-#include "gpu/context.h"
+#include "gpu/d3d12/d3d12_device.h"
 #include "gpu/graphics_command_list.h"
 #include "gpu/graphics_pipeline.h"
 #include "gpu/swapchain.h"
+#include "gpu/texture.h"
+
 #include "imgui/imgui_impl_win32.h"
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
-	HWND hWnd,
-	UINT msg,
-	WPARAM wParam,
-	LPARAM lParam
-);
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #ifdef GJ_PLATFORM_WINDOWS
 
@@ -34,16 +30,10 @@ typedef enum PROCESS_DPI_AWARENESS {
 	PROCESS_PER_MONITOR_DPI_AWARE
 } PROCESS_DPI_AWARENESS;
 
-enum MONITOR_DPI_TYPE {
-	MDT_EFFECTIVE_DPI,
-	MDT_ANGULAR_DPI,
-	MDT_RAW_DPI,
-	MDT_DEFAULT
-};
+enum MONITOR_DPI_TYPE { MDT_EFFECTIVE_DPI, MDT_ANGULAR_DPI, MDT_RAW_DPI, MDT_DEFAULT };
 
 typedef HRESULT (*SetProcessDPIAwareness)(PROCESS_DPI_AWARENESS value);
-typedef HRESULT (*GetDPIForMonitor
-)(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT* dpiX, UINT* dpiY);
+typedef HRESULT (*GetDPIForMonitor)(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT* dpiX, UINT* dpiY);
 #endif // #ifdef GJ_PLATFORM_WINDOWS
 
 GJ_EDITOR_NAMESPACE_BEGIN
@@ -99,19 +89,22 @@ PSInput vs_main(VSInput input) {
 float4 ps_main(PSInput input) : SV_TARGET {
 	bool in_scissor =
 		input.screen_pos.x >= input.scissor.x &&
-		input.screen_pos.y >= input.scissor.y &&
+		input.screen_pos.y <= input.scissor.y &&
 		input.screen_pos.x <= input.scissor.z &&
-		input.screen_pos.y <= input.scissor.w;
+		input.screen_pos.y >= input.scissor.w;
 
-	float4 output = input.color;
-	if (true) {
-		if (input.tex2d == 0) {
-			return input.color;
+	if (in_scissor) {
+		float4 output = input.color;
+		
+		if (input.tex2d != 0) {
+			float alpha = texture2d_table[input.tex2d].Sample(sampler_table, input.uv, 0).x;
+			output.w = alpha;
 		}
-		float alpha = texture2d_table[input.tex2d].Sample(sampler_table, input.uv, 0).x;
-		output.w = alpha;
+
+		return output;
 	}
-	return output;
+
+	return float4(0, 0, 0, 0);
 }
 )#";
 
@@ -159,40 +152,27 @@ public:
 		);
 		GJ_ASSERT(handle != nullptr);
 
-		auto swapchain = gpu::Swapchain::make(handle);
-
-		::SetWindowLongPtrA(handle, GWLP_USERDATA, (LONG_PTR)&swapchain.cast());
-
 		::ShowWindow(handle, SW_SHOWDEFAULT);
 
-		return Window{ handle, gj::move(swapchain) };
+		return Window(handle);
 	}
 
 	GJ_ALWAYS_INLINE Handle handle() const { return m_handle; }
-	GJ_ALWAYS_INLINE gpu::Swapchain& swapchain() { return m_swapchain; }
-	GJ_ALWAYS_INLINE const gpu::Swapchain& swapchain() const {
-		return m_swapchain;
-	}
 
 private:
-	GJ_ALWAYS_INLINE explicit Window(Handle handle, gpu::Swapchain&& swapchain)
-		: m_handle(handle)
-		, m_swapchain(gj::move(swapchain)) {}
+	GJ_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) {}
 
 	Handle m_handle;
-	gpu::Swapchain m_swapchain;
 };
 
-static LRESULT CALLBACK
-window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
 
-	gpu::ISwapchain* const swapchain =
-		(gpu::ISwapchain*)::GetWindowLongPtrA(hWnd, GWLP_USERDATA);
+	// gpu::ISwapchain* const swapchain = (gpu::ISwapchain*)::GetWindowLongPtrA(hWnd, GWLP_USERDATA);
 
 	switch (Msg) {
 	case WM_SIZE: {
-		swapchain->resize();
+		// swapchain->resize();
 		return 0;
 	}
 	}
@@ -206,24 +186,21 @@ Application::Application(int argc, char** argv) {
 }
 
 void Application::run(FunctionRef<void()> f) {
-	gpu::init();
+	auto device = gpu::D3D12DeviceImpl::create();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |=
-		ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
 #ifdef GJ_PLATFORM_WINDOWS
 	static auto shcore = core::Library::open("shcore.dll");
 	if (shcore) {
 		auto& actual = shcore.as_mut().unwrap();
-		auto SetProcessDpiAwareness =
-			actual.find<SetProcessDPIAwareness>("SetProcessDpiAwareness");
-		if (SetProcessDpiAwareness)
-			SetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
+		auto SetProcessDpiAwareness = actual.find<SetProcessDPIAwareness>("SetProcessDpiAwareness");
+		if (SetProcessDpiAwareness) SetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
 	}
 
 	HINSTANCE hInstance = ::GetModuleHandleA(nullptr);
@@ -244,26 +221,26 @@ void Application::run(FunctionRef<void()> f) {
 
 	const ATOM atom = RegisterClassExW(&window_class);
 	GJ_ASSERT(atom != 0);
-#endif // #ifdef GJ_PLATFORM_WINDOWS
+#endif // GJ_PLATFORM_WINDOWS
 
 	auto window = Window::spawn("test", { 1280, 720 });
 	ImGui_ImplWin32_Init(window.handle());
 
+	auto swapchain = device->create_swapchain(window.handle());
+
 	// Compile the vertex shader using source
 	dxc::Input vertex_input = { source, "vs_main", dxc::ShaderType::Vertex };
 	auto vertex_output = dxc::compile(vertex_input).unwrap();
-	auto vertex_shader = gpu::VertexShader::make(
-		gj::move(vertex_output.binary),
-		gj::move(vertex_output.input_parameters)
-	);
+	auto vertex_shader =
+		device->create_vertex_shader(gj::move(vertex_output.binary), gj::move(vertex_output.input_parameters));
 
 	// Compile the pixel shader using source
 	dxc::Input pixel_input = { source, "ps_main", dxc::ShaderType::Pixel };
 	auto pixel_output = dxc::compile(pixel_input).unwrap();
-	auto pixel_shader = gpu::PixelShader::make(gj::move(pixel_output.binary));
+	auto pixel_shader = device->create_pixel_shader(gj::move(pixel_output.binary));
 
 	// Create the graphics pipeline
-	gpu::GraphicsPipeline::Definition definition = {
+	gpu::GraphicsPipelineDefinition definition = {
 		.vertex_shader = gj::move(vertex_shader),
 		.pixel_shader = gj::move(pixel_shader),
 		.blend_enabled = true,
@@ -271,43 +248,34 @@ void Application::run(FunctionRef<void()> f) {
 		.dst_color_blend_factor = gpu::BlendFactor::OneMinusSrcAlpha,
 	};
 	definition.color_attachments.push(gpu::Format::RGBA_U8);
-	auto pipeline = gpu::GraphicsPipeline::make(gj::move(definition));
+	auto pipeline = device->create_graphics_pipeline(gj::move(definition));
 
+	// Grab the font bitmap from imgui
 	unsigned char* pixels;
 	int width, height;
 	io.Fonts->GetTexDataAsAlpha8(&pixels, &width, &height);
 
-	auto pixels_buffer = gpu::Buffer::make(
-		gpu::Buffer::Usage::TransferSrc,
-		gpu::Buffer::Kind::Upload,
-		width * height
-	);
-	pixels_buffer.map([&](auto slice) {
-		core::copy(slice.begin(), pixels, slice.len());
-	});
+	// Create the font upload buffer and write the bitmap to it
+	auto pixels_buffer = device->create_buffer(gpu::BufferUsage::TransferSrc, gpu::Heap::Upload, width * height);
+	pixels_buffer->map([&](auto slice) { core::copy(slice.begin(), pixels, slice.len()); });
 
-	auto pixels_texture = gpu::Texture::make(
-		gpu::Texture::Usage::TransferDst | gpu::Texture::Usage::Sampled,
+	// Create the font gpu texture
+	auto pixels_texture = device->create_texture(
+		gpu::TextureUsage::TransferDst | gpu::TextureUsage::Sampled,
 		gpu::Format::R_U8,
 		{ (u32)width, (u32)height, 1 }
 	);
 
-	io.Fonts->SetTexID((void*)(usize)pixels_texture.bindless());
+	// Tell IMGUI how to identify the gpu texture using the bindless index
+	io.Fonts->SetTexID((void*)(usize)pixels_texture->bindless());
 
-	auto upload_font_atlas = gpu::GraphicsCommandList::record([&](auto& gcr) {
-		gcr.texture_barrier(
-			pixels_texture,
-			gpu::Layout::General,
-			gpu::Layout::TransferDst
-		);
+	// Command the gpu to transfer the pixel data from the upload buffer to the texture
+	auto upload_font_atlas = device->record_graphics([&](auto& gcr) {
+		gcr.texture_barrier(pixels_texture, gpu::Layout::General, gpu::Layout::TransferDst);
 		gcr.copy_buffer_to_texture(pixels_texture, pixels_buffer);
-		gcr.texture_barrier(
-			pixels_texture,
-			gpu::Layout::TransferDst,
-			gpu::Layout::General
-		);
+		gcr.texture_barrier(pixels_texture, gpu::Layout::TransferDst, gpu::Layout::General);
 	});
-	gpu::Context::the().submit(upload_font_atlas);
+	device->submit(upload_font_atlas);
 
 	for (;;) {
 #ifdef GJ_PLATFORM_WINDOWS
@@ -316,7 +284,7 @@ void Application::run(FunctionRef<void()> f) {
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
 		}
-#endif // #ifdef GJ_PLATFORM_WINDOWS
+#endif // GJ_PLATFORM_WINDOWS
 
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -331,93 +299,85 @@ void Application::run(FunctionRef<void()> f) {
 			u32 tex2d;
 		};
 
-		auto* draw_data = ImGui::GetDrawData();
-		GJ_UNUSED(draw_data);
+		// Record all ImGui draw commands in one command list
+		auto command_list = device->record_graphics([&](auto& gcr) {
+			auto& backbuffer = swapchain->backbuffer();
+			gcr
+				// Assume that the backbuffer was left in present mode. Switch to ColorAttachment
+				.texture_barrier(backbuffer, gpu::Layout::Present, gpu::Layout::ColorAttachment)
+				// Draw everything in a single render pass
+				.render_pass(
+					backbuffer,
+					nullptr,
+					[&](auto& rpr) {
+						auto* draw_data = ImGui::GetDrawData();
+						const auto bounds = draw_data->DisplaySize;
 
-		if (draw_data->Valid && draw_data->TotalVtxCount > 0) {
-			Vector<gpu::GraphicsCommandList> command_lists;
-			command_lists.reserve(draw_data->CmdListsCount);
+						const auto projection = Matrix4<f32>::orthographic(bounds.x, bounds.y, 0.1f, 1000.f);
+						const auto view =
+							Matrix4<f32>::transform({ -bounds.x / 2, -bounds.y / 2, 0 }, Quaternion<f32>::identity, 1);
+						const auto local_to_projection = projection * view;
 
-			for (ImDrawList* draw_list : draw_data->CmdLists) {
-				auto vertices = Vector<Vertex>();
-				vertices.reserve(draw_data->TotalVtxCount);
+						rpr
+							// Upload the view matrix using push constants
+							.push_constants(&local_to_projection)
+							// Use the graphics pipeline created earlier
+							.set_pipeline(pipeline)
+							// Clear the screen to black
+							.clear_color(0);
 
-				const auto bounds = draw_data->DisplaySize;
+						if (draw_data->Valid && draw_data->TotalVtxCount > 0) {
+							// For every draw list build our own vertex buffer, upload to the gpu, and then draw
+							for (ImDrawList* draw_list : draw_data->CmdLists) {
+								auto vertices = Vector<Vertex>();
+								vertices.reserve(draw_data->TotalVtxCount);
 
-				for (const ImDrawCmd& draw_cmd : draw_list->CmdBuffer) {
-					for (u32 i = 0; i < draw_cmd.ElemCount; ++i) {
-						const auto idx =
-							draw_list->IdxBuffer[draw_cmd.IdxOffset + i];
-						auto& vtx = draw_list->VtxBuffer[idx];
-						vertices.push(Vertex{
-							draw_cmd.ClipRect,
-							{ vtx.pos.x, bounds.y - vtx.pos.y },
-							vtx.uv,
-							vtx.col,
-							(u32) reinterpret_cast<usize>(draw_cmd.GetTexID()) }
-						);
-					}
-				}
+								// Append all vertex buffers in the draw list
+								for (const ImDrawCmd& draw_cmd : draw_list->CmdBuffer) {
+									for (u32 i = 0; i < draw_cmd.ElemCount; ++i) {
+										// We're currently not using an index buffer so lookup the vertex via the given
+										// index buffer
+										const auto idx = draw_list->IdxBuffer[draw_cmd.IdxOffset + i];
+										auto& vtx = draw_list->VtxBuffer[idx];
 
-				auto vertex_buffer = gpu::Buffer::make(
-					gpu::Buffer::Usage::Vertex,
-					gpu::Buffer::Kind::Upload,
-					vertices.len() * sizeof(Vertex)
-				);
-				vertex_buffer.map([&](auto slice) {
-					core::copy(slice.begin(), vertices.cbegin(), slice.len());
-				});
-
-				const auto projection = Matrix4<f32>::orthographic(
-					bounds.x,
-					bounds.y,
-					0.1f,
-					1000.f
-				);
-
-				const auto view = Matrix4<f32>::transform(
-					{ -bounds.x / 2, -bounds.y / 2, 0 },
-					Quaternion<f32>::identity,
-					1
-				);
-
-				const auto local_to_projection = projection * view;
-
-				auto& backbuffer = window.swapchain().backbuffer();
-				auto command_list =
-					gpu::GraphicsCommandList::record([&](auto& gcr) {
-						gcr.texture_barrier(
-							   backbuffer,
-							   gpu::Layout::Present,
-							   gpu::Layout::ColorAttachment
-						)
-							.render_pass(
-								backbuffer,
-								nullptr,
-								[&](auto& rpr) {
-									rpr.push_constants(&local_to_projection)
-										.set_pipeline(pipeline)
-										.clear_color(0)
-										.set_vertices(
-											vertex_buffer,
-											sizeof(Vertex)
-										)
-										// .set_indices(index_buffer)
-										.draw(vertices.len(), 0);
+										// We can do this because we're using bindless architecture. No need to upload
+										// resources per draw call
+										auto clip_rect = draw_cmd.ClipRect;
+										clip_rect.y = bounds.y - draw_cmd.ClipRect.y;
+										clip_rect.w = bounds.y - draw_cmd.ClipRect.w;
+										vertices.push(Vertex{ clip_rect,
+															  { vtx.pos.x, bounds.y - vtx.pos.y },
+															  vtx.uv,
+															  vtx.col,
+															  (u32) reinterpret_cast<usize>(draw_cmd.GetTexID()) });
+									}
 								}
-							)
-							.texture_barrier(
-								backbuffer,
-								gpu::Layout::ColorAttachment,
-								gpu::Layout::Present
-							);
-					});
-				command_lists.push(gj::move(command_list));
-			}
 
-			gpu::Context::the().submit(command_lists[0]);
-			window.swapchain().present();
-		}
+								// Upload build vertex buffer to the gpu
+								auto vertex_buffer = device->create_buffer(
+									gpu::BufferUsage::Vertex,
+									gpu::Heap::Upload,
+									vertices.len() * sizeof(Vertex)
+								);
+								vertex_buffer->map([&](auto slice) {
+									core::copy(slice.begin(), vertices.cbegin(), slice.len());
+								});
+
+								rpr
+									// Use the newly created vertex buffer
+									.set_vertices(vertex_buffer, sizeof(Vertex))
+									// Draw the vertex buffer without using an index buffer
+									.draw(vertices.len(), 0);
+							}
+						}
+					}
+				)
+				// Switch the backbuffer back to present mode to be shown
+				.texture_barrier(backbuffer, gpu::Layout::ColorAttachment, gpu::Layout::Present);
+		});
+
+		device->submit(command_list);
+		swapchain->present();
 	}
 
 	// ImGui_ImplWin32_Shutdown();

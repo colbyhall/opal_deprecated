@@ -17,12 +17,7 @@ struct D3D12DescriptorHandle {
 class D3D12DescriptorHeap {
 public:
 	explicit D3D12DescriptorHeap() = default;
-	void init(
-		ComPtr<ID3D12Device1> device,
-		D3D12_DESCRIPTOR_HEAP_TYPE type,
-		usize cap,
-		bool shader_visible
-	);
+	void init(ComPtr<ID3D12Device1> device, D3D12_DESCRIPTOR_HEAP_TYPE type, usize cap, bool shader_visible);
 
 	D3D12DescriptorHandle alloc() const;
 	void free(const D3D12DescriptorHandle& handle) const;
@@ -36,31 +31,23 @@ private:
 	usize m_cap = 0;
 };
 
-class D3D12ContextImpl;
+class D3D12DeviceImpl;
 
-class D3D12RootSignatureImpl {
+class D3D12RootSignature {
 public:
 	static inline constexpr u32 rtv_heap_size = 2048;
 	static inline constexpr u32 dsv_heap_size = 2048;
 	static inline constexpr u32 bt2dv_heap_size = 2048;
 	static inline constexpr u32 bt2dv_index = 1;
 
-	D3D12RootSignatureImpl() = default;
-	void init(const D3D12ContextImpl& context);
+	D3D12RootSignature() = default;
+	void init(const D3D12DeviceImpl& context);
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12RootSignature> the() const {
-		return m_root_signature;
-	}
+	GJ_ALWAYS_INLINE ComPtr<ID3D12RootSignature> the() const { return m_root_signature; }
 
-	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& rtv_heap() const {
-		return m_rtv_heap;
-	}
-	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& dsv_heap() const {
-		return m_dsv_heap;
-	}
-	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& bt2dv_heap() const {
-		return m_bt2dv_heap;
-	}
+	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& rtv_heap() const { return m_rtv_heap; }
+	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& dsv_heap() const { return m_dsv_heap; }
+	GJ_ALWAYS_INLINE const D3D12DescriptorHeap& bt2dv_heap() const { return m_bt2dv_heap; }
 
 private:
 	ComPtr<ID3D12RootSignature> m_root_signature;

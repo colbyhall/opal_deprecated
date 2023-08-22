@@ -8,62 +8,102 @@
 
 GJ_GPU_NAMESPACE_BEGIN
 
-class IBuffer;
+/**
+ * Specifies which GPU heap an IBuffer can be allocated from.
+ */
+enum class Heap : u8 {
+	/**
+	 * Memory that can only be written to and read from on the GPU. This memory exist on the GPU and therefore is
+	 * fastest to be read from during GPU operations.
+	 *
+	 * Typically used by any memory that will persist through many frames and won't mutate.
+	 *
+	 * @see IGraphicsCommandRecorder.
+	 */
+	Storage,
 
-class Buffer {
-public:
-	enum class Kind : u8 { Storage, Upload, Download };
-	enum class Usage : u8 {
-		TransferSrc = (1 << 0),
-		TransferDst = (1 << 1),
-		Vertex = (1 << 2),
-		Index = (1 << 3),
-		Constant = (1 << 4),
-	};
-
-	static Buffer make(Usage usage, Kind kind, usize len);
-
-	GJ_ALWAYS_INLINE Buffer::Usage usage() const;
-	GJ_ALWAYS_INLINE Buffer::Kind kind() const;
-	GJ_ALWAYS_INLINE usize len() const;
-	GJ_ALWAYS_INLINE void map(FunctionRef<void(Slice<u8>)> func);
-
-	template <typename T = IBuffer>
-	GJ_ALWAYS_INLINE T const& cast() const {
-		static_assert(
-			std::is_base_of_v<IBuffer, T>,
-			"T is not derived of IBuffer"
-		);
-		return static_cast<const T&>(*m_interface);
-	}
-
-private:
-	GJ_ALWAYS_INLINE explicit Buffer(Shared<IBuffer>&& interface)
-		: m_interface(gj::move(interface)) {}
-
-	Shared<IBuffer> m_interface;
+	/**
+	 * Memory that can be written to on the CPU and read from on the GPU. This memory lives on the CPU therefore, its
+	 * slow to read from on the GPU.
+	 *
+	 * Typically used for memory that will be needed for a single frame or to transfer data to `Heap::Storage` buffers
+	 * or ITextures.
+	 *
+	 * @see IBuffer::map
+	 */
+	Upload,
 };
 
-GJ_ENUM_CLASS_BITFIELD(Buffer::Usage)
+/**
+ * Describes how an IBuffer will be used throughout its lifetime.
+ *
+ * Implementations may use this data for optimizations. Enforced by implementations.
+ */
+enum class BufferUsage : u8 {
+	/**
+	 * Allows a buffer to copy its data in a command list.
+	 *
+	 * Typically used for upload buffers that carry data that will be transfered to gpu storage.
+	 */
+	TransferSrc = (1 << 0),
 
-class IBuffer {
+	/**
+	 * Allows a buffer to be copied into in a command list.
+	 *
+	 * Typically used for vertex buffers that persist across multiple frames.
+	 */
+	TransferDst = (1 << 1),
+
+	/**
+	 * Allows a buffer to be used as vertex data in an IGraphicsCommandList.
+	 */
+	Vertex = (1 << 2),
+
+	/**
+	 * Allows a buffer to be used as index data in an IGraphicsCommandList.
+	 *
+	 * Buffer must be filled with u32 data.
+	 */
+	Index = (1 << 3),
+};
+GJ_ENUM_CLASS_BITFIELD(BufferUsage)
+
+/**
+ * A buffer that owns an allocation to some GPU managed memory that belongs to a heap that exist either on the GPU or
+ * the CPU. This is the most primitive resource that a GPU can interact with. Its usage includes being used to store
+ * vertex buffers, index buffer, constant buffers, etc.
+ *
+ * @see IDevice::create_buffer
+ * @see Heap
+ * @see BufferUsage
+ */
+class IBuffer : public SharedFromThis<IBuffer> {
 public:
-	virtual Buffer::Usage usage() const = 0;
-	virtual Buffer::Kind kind() const = 0;
-	virtual usize len() const = 0;
-	virtual void map(FunctionRef<void(Slice<u8>)>& func) = 0;
+	/**
+	 * Returns the BufferUsage of this buffer.
+	 */
+	virtual BufferUsage usage() const = 0;
+
+	/**
+	 * Returns the Heap this buffer allocated from.
+	 */
+	virtual Heap heap() const = 0;
+
+	/**
+	 * Returns the size in bytes of this buffer.
+	 */
+	virtual usize size() const = 0;
+
+	/**
+	 * Maps GPU memory to the CPU to allow the transfer of data between the processing units. May only be called on a
+	 * buffer that uses Heap::Upload.
+	 *
+	 * @param func - Functor that takes a slice to GPU mapped memory. Using a functor ensures that we never forget to
+	 * unmap this memory.
+	 */
+	virtual void map(FunctionRef<void(Slice<u8>)> func) = 0;
+
 	virtual ~IBuffer() = default;
 };
-
-GJ_ALWAYS_INLINE Buffer::Usage Buffer::usage() const {
-	return m_interface->usage();
-}
-GJ_ALWAYS_INLINE Buffer::Kind Buffer::kind() const {
-	return m_interface->kind();
-}
-GJ_ALWAYS_INLINE usize Buffer::len() const { return m_interface->len(); }
-GJ_ALWAYS_INLINE void Buffer::map(FunctionRef<void(Slice<u8>)> func) {
-	m_interface->map(func);
-}
 
 GJ_GPU_NAMESPACE_END

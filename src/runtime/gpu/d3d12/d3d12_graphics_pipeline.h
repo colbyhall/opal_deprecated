@@ -9,20 +9,18 @@ GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12GraphicsPipelineImpl final : public IGraphicsPipeline {
 public:
-	using Definition = GraphicsPipeline::Definition;
-
-	explicit D3D12GraphicsPipelineImpl(Definition&& definition);
+	explicit D3D12GraphicsPipelineImpl(GraphicsPipelineDefinition&& definition, ComPtr<ID3D12PipelineState>&& pipeline)
+		: m_definition(gj::forward<GraphicsPipelineDefinition>(definition))
+		, m_pipeline(gj::forward<ComPtr<ID3D12PipelineState>>(pipeline)) {}
 
 	// IGraphicsPipeline
-	const Definition& definition() const final { return m_definition; }
+	const GraphicsPipelineDefinition& definition() const final { return m_definition; }
 	// ~IGraphicsPipeline
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const {
-		return m_pipeline;
-	}
+	GJ_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const { return m_pipeline; }
 
 private:
-	Definition m_definition;
+	GraphicsPipelineDefinition m_definition;
 	ComPtr<ID3D12PipelineState> m_pipeline;
 };
 

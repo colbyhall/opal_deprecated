@@ -1,7 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "gpu/d3d12/d3d12_texture.h"
-#include "gpu/d3d12/d3d12_context.h"
+#include "gpu/d3d12/d3d12_device.h"
 
 GJ_GPU_NAMESPACE_BEGIN
 
@@ -36,19 +36,19 @@ DXGI_FORMAT format_to_dxgi(Format format) {
 }
 
 D3D12TextureImpl::D3D12TextureImpl(
-	Usage usage,
+	const D3D12DeviceImpl& context,
+	TextureUsage usage,
 	Format format,
 	const Vector3<u32>& size,
 	ComPtr<ID3D12Resource> resource
 )
-	: m_usage(usage)
+	: m_context(context.to_shared())
+	, m_usage(usage)
 	, m_format(format)
 	, m_size(size) {
 	GJ_ASSERT(size.x > 0);
 	GJ_ASSERT(size.y > 0);
 	GJ_ASSERT(size.z > 0);
-
-	auto& context = Context::the().cast<D3D12ContextImpl>();
 
 	D3D12_RESOURCE_DIMENSION dimension = D3D12_RESOURCE_DIMENSION_UNKNOWN;
 	if (size.x > 1) {
@@ -64,9 +64,9 @@ D3D12TextureImpl::D3D12TextureImpl(
 
 	const DXGI_FORMAT dxgi_format = format_to_dxgi(format);
 
-	const bool color_attachment = (usage & Usage::Color) == Usage::Color;
-	const bool depth_attachment = (usage & Usage::Depth) == Usage::Depth;
-	const bool sampled = (usage & Usage::Sampled) == Usage::Sampled;
+	const bool color_attachment = (usage & TextureUsage::Color) == TextureUsage::Color;
+	const bool depth_attachment = (usage & TextureUsage::Depth) == TextureUsage::Depth;
+	const bool sampled = (usage & TextureUsage::Sampled) == TextureUsage::Sampled;
 
 	if (resource == nullptr) {
 		D3D12_RESOURCE_DESC desc = {};
@@ -120,43 +120,32 @@ D3D12TextureImpl::D3D12TextureImpl(
 
 	if (color_attachment) {
 		m_rtv_handle = context.root_signature().rtv_heap().alloc();
-		context.device()->CreateRenderTargetView(
-			m_resource.Get(),
-			nullptr,
-			m_rtv_handle.handle
-		);
+		context.device()->CreateRenderTargetView(m_resource.Get(), nullptr, m_rtv_handle.handle);
 	}
 	if (depth_attachment) {
 		m_dsv_handle = context.root_signature().dsv_heap().alloc();
-		context.device()->CreateDepthStencilView(
-			m_resource.Get(),
-			nullptr,
-			m_dsv_handle.handle
-		);
+		context.device()->CreateDepthStencilView(m_resource.Get(), nullptr, m_dsv_handle.handle);
 	}
 	if (sampled) {
 		m_bt2dv_handle = context.root_signature().bt2dv_heap().alloc();
-		context.device()->CreateShaderResourceView(
-			m_resource.Get(),
-			nullptr,
-			m_bt2dv_handle.handle
-		);
+		context.device()->CreateShaderResourceView(m_resource.Get(), nullptr, m_bt2dv_handle.handle);
 	}
 }
 
 D3D12TextureImpl::~D3D12TextureImpl() {
-	auto& context = Context::the().cast<D3D12ContextImpl>();
+	const auto& context = static_cast<const D3D12DeviceImpl&>(*m_context);
+	auto& root_signature = context.root_signature();
 
 	if (m_rtv_handle.handle.ptr) {
-		context.root_signature().rtv_heap().free(m_rtv_handle);
+		root_signature.rtv_heap().free(m_rtv_handle);
 		m_rtv_handle = {};
 	}
 	if (m_dsv_handle.handle.ptr) {
-		context.root_signature().dsv_heap().free(m_dsv_handle);
+		root_signature.dsv_heap().free(m_dsv_handle);
 		m_dsv_handle = {};
 	}
 	if (m_bt2dv_handle.handle.ptr) {
-		context.root_signature().bt2dv_heap().free(m_bt2dv_handle);
+		root_signature.bt2dv_heap().free(m_bt2dv_handle);
 		m_bt2dv_handle = {};
 	}
 }

@@ -2,8 +2,9 @@
 
 #include "gpu/d3d12/d3d12_graphics_command_list.h"
 #include "gpu/d3d12/d3d12_buffer.h"
-#include "gpu/d3d12/d3d12_context.h"
+#include "gpu/d3d12/d3d12_device.h"
 #include "gpu/d3d12/d3d12_graphics_pipeline.h"
+#include "gpu/d3d12/d3d12_shader.h"
 #include "gpu/d3d12/d3d12_texture.h"
 
 GJ_GPU_NAMESPACE_BEGIN
@@ -12,11 +13,8 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON;
 
 	GJ_SUPPRESS_WARNING_PUSH
-	GJ_MSVC_SUPPRESS_WARNING(4061
-	) // Not all switch cases are explicitly handled
+	GJ_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
 	switch (layout) {
-	case Layout::Undefined:
-		break;
 	case Layout::General:
 		state = D3D12_RESOURCE_STATE_GENERIC_READ;
 		break;
@@ -38,75 +36,35 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	return state;
 }
 
-D3D12GraphicsCommandRecorderImpl::D3D12GraphicsCommandRecorderImpl() {
-	auto& context = Context::the().cast<D3D12ContextImpl>();
-
-	throw_if_failed(context.device()->CreateCommandList(
-		0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		context.command_allocator().Get(),
-		nullptr,
-		IID_PPV_ARGS(&m_command_list)
-	));
-	throw_if_failed(m_command_list->Close());
-}
-
-void D3D12GraphicsCommandRecorderImpl::begin() {
-	auto& context = Context::the().cast<D3D12ContextImpl>();
-
-	// throw_if_failed(context.command_allocator->Reset());
-	throw_if_failed(
-		m_command_list->Reset(context.command_allocator().Get(), nullptr)
-	);
-	m_command_list->SetGraphicsRootSignature(context.root_signature().the().Get(
-	));
-
-	auto* heap_ptr = context.root_signature().bt2dv_heap().the().Get();
-	m_command_list->SetDescriptorHeaps(1, &heap_ptr);
-
-	m_command_list->SetGraphicsRootDescriptorTable(
-		(UINT)D3D12RootSignatureImpl::bt2dv_index,
-		context.root_signature()
-			.bt2dv_heap()
-			.the()
-			->GetGPUDescriptorHandleForHeapStart()
-	);
-}
-
-void D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(
-	const Texture& dst,
-	const Buffer& src
-) {
-	const auto& dst_interface = dst.cast<D3D12TextureImpl>();
+IGraphicsCommandRecorder&
+D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const ITexture& dst, const IBuffer& src) {
+	const auto& dst_interface = static_cast<const D3D12TextureImpl&>(dst);
 	D3D12_TEXTURE_COPY_LOCATION dst_location = {};
 	dst_location.pResource = dst_interface.resource().Get();
 
-	const auto& src_interface = src.cast<D3D12BufferImpl>();
+	const auto& src_interface = static_cast<const D3D12BufferImpl&>(src);
 	D3D12_TEXTURE_COPY_LOCATION src_location = {};
 	src_location.pResource = src_interface.resource().Get();
 
 	src_location.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-	src_location.PlacedFootprint.Footprint.Format =
-		format_to_dxgi(dst_interface.format());
+	src_location.PlacedFootprint.Footprint.Format = format_to_dxgi(dst_interface.format());
 	src_location.PlacedFootprint.Footprint.Width = dst_interface.size().x;
 	src_location.PlacedFootprint.Footprint.Height = dst_interface.size().y;
 	src_location.PlacedFootprint.Footprint.Depth = dst_interface.size().z;
-	src_location.PlacedFootprint.Footprint.RowPitch = (UINT
-	)(format_size_in_bytes(dst_interface.format()) * dst_interface.size().x);
+	src_location.PlacedFootprint.Footprint.RowPitch =
+		(UINT)(format_size_in_bytes(dst_interface.format()) * dst_interface.size().x);
 
-	m_command_list
-		->CopyTextureRegion(&dst_location, 0, 0, 0, &src_location, nullptr);
+	m_command_list.command_list->CopyTextureRegion(&dst_location, 0, 0, 0, &src_location, nullptr);
 
-	m_textures_in_use.push(dst);
-	m_buffers_in_use.push(src);
+	m_command_list.textures_in_use.push(dst.to_shared());
+	m_command_list.buffers_in_use.push(src.to_shared());
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::texture_barrier(
-	const Texture& texture,
-	Layout old_layout,
-	Layout new_layout
-) {
-	const auto& impl = texture.cast<D3D12TextureImpl>();
+IGraphicsCommandRecorder&
+D3D12GraphicsCommandRecorderImpl::texture_barrier(const ITexture& texture, Layout old_layout, Layout new_layout) {
+	const auto& impl = static_cast<const D3D12TextureImpl&>(texture);
 
 	D3D12_RESOURCE_BARRIER barrier = {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -114,28 +72,30 @@ void D3D12GraphicsCommandRecorderImpl::texture_barrier(
 	barrier.Transition.pResource = impl.resource().Get();
 	barrier.Transition.StateBefore = layout_to_resource_states(old_layout);
 	barrier.Transition.StateAfter = layout_to_resource_states(new_layout);
-	m_command_list->ResourceBarrier(1, &barrier);
+	m_command_list.command_list->ResourceBarrier(1, &barrier);
 
-	m_textures_in_use.push(texture);
+	m_command_list.textures_in_use.push(texture.to_shared());
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::begin_render_pass(
-	const Texture& color,
-	Option<const Texture&> depth
+IGraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
+	const ITexture& color,
+	Option<ITexture const&> depth,
+	FunctionRef<void(IRenderPassCommandRecorder&)> callable
 ) {
-	m_textures_in_use.push(color);
+	m_command_list.textures_in_use.push(color.to_shared());
 
 	const D3D12_CPU_DESCRIPTOR_HANDLE* depth_handle = nullptr;
 	if (depth) {
 		auto& depth_texture = depth.unwrap();
-		auto& impl = depth_texture.cast<D3D12TextureImpl>();
+		auto& impl = static_cast<const D3D12TextureImpl&>(depth_texture);
 		depth_handle = &impl.dsv_handle().handle;
-		m_textures_in_use.push(depth_texture);
+		m_command_list.textures_in_use.push(depth_texture.to_shared());
 	}
 
-	const auto& impl = color.cast<D3D12TextureImpl>();
-	m_command_list
-		->OMSetRenderTargets(1, &impl.rtv_handle().handle, 0, depth_handle);
+	const auto& impl = static_cast<const D3D12TextureImpl&>(color);
+	m_command_list.command_list->OMSetRenderTargets(1, &impl.rtv_handle().handle, 0, depth_handle);
 
 	D3D12_VIEWPORT viewport = {};
 	viewport.TopLeftX = 0;
@@ -144,95 +104,97 @@ void D3D12GraphicsCommandRecorderImpl::begin_render_pass(
 	viewport.Height = (f32)impl.size().y;
 	viewport.MinDepth = 0.f;
 	viewport.MaxDepth = 1.f;
-	m_command_list->RSSetViewports(1, &viewport);
+	m_command_list.command_list->RSSetViewports(1, &viewport);
 
 	D3D12_RECT rect = {};
 	rect.left = 0;
 	rect.top = 0;
 	rect.bottom = (LONG)impl.size().y;
 	rect.right = (LONG)impl.size().x;
-	m_command_list->RSSetScissorRects(1, &rect);
+	m_command_list.command_list->RSSetScissorRects(1, &rect);
 
-	m_bound_color_buffer = impl.rtv_handle().handle;
-	if (depth_handle) m_bound_depth_buffer = *depth_handle;
+	m_command_list.bound_color_buffer = impl.rtv_handle().handle;
+	if (depth_handle) m_command_list.bound_depth_buffer = *depth_handle;
+
+	auto render_pass_recorder = D3D12RenderPassRecorderImpl(m_command_list);
+	callable(render_pass_recorder);
+
+	if (m_command_list.bound_color_buffer) {
+		m_command_list.bound_color_buffer.unwrap();
+	}
+
+	if (m_command_list.bound_depth_buffer) {
+		m_command_list.bound_depth_buffer.unwrap();
+	}
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::clear_color(const Vector4<f32>& color) {
-	const auto handle = m_bound_color_buffer.as_ref().unwrap();
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const Vector4<f32>& color) {
+	const auto handle = m_command_list.bound_color_buffer.as_ref().unwrap();
 	const f32 clear_color0[] = { color.r, color.g, color.g, color.a };
-	m_command_list->ClearRenderTargetView(handle, clear_color0, 0, nullptr);
+	m_command_list.command_list->ClearRenderTargetView(handle, clear_color0, 0, nullptr);
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::set_pipeline(
-	const GraphicsPipeline& pipeline
-) {
-	auto& impl = pipeline.cast<D3D12GraphicsPipelineImpl>();
-	m_command_list->SetPipelineState(impl.the().Get());
-	m_command_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const IGraphicsPipeline& pipeline) {
+	auto& impl = static_cast<const D3D12GraphicsPipelineImpl&>(pipeline);
+
+	m_command_list.command_list->SetPipelineState(impl.the().Get());
+	m_command_list.command_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::set_vertices(
-	const Buffer& buffer,
-	u32 stride
-) {
-	auto& impl = buffer.cast<D3D12BufferImpl>();
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const IBuffer& buffer, u32 stride) {
+	auto& impl = static_cast<const D3D12BufferImpl&>(buffer);
 
-	GJ_ASSERT(impl.len() % stride == 0);
-	GJ_ASSERT((impl.usage() & Buffer::Usage::Vertex) == Buffer::Usage::Vertex);
+	GJ_ASSERT(impl.size() % stride == 0);
+	GJ_ASSERT((impl.usage() & BufferUsage::Vertex) == BufferUsage::Vertex);
 
 	D3D12_VERTEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
 	view.StrideInBytes = (UINT)stride;
-	view.SizeInBytes = (UINT)(impl.len());
-	m_command_list->IASetVertexBuffers(0, 1, &view);
-	m_buffers_in_use.push(buffer);
+	view.SizeInBytes = (UINT)(impl.size());
+	m_command_list.command_list->IASetVertexBuffers(0, 1, &view);
+	m_command_list.buffers_in_use.push(buffer.to_shared());
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::set_indices(const Buffer& buffer) {
-	auto& impl = buffer.cast<D3D12BufferImpl>();
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const IBuffer& buffer) {
+	auto& impl = static_cast<const D3D12BufferImpl&>(buffer);
 
-	GJ_ASSERT(impl.len() % sizeof(u32) == 0);
-	GJ_ASSERT((impl.usage() & Buffer::Usage::Index) == Buffer::Usage::Index);
+	GJ_ASSERT(impl.size() % sizeof(u32) == 0);
+	GJ_ASSERT((impl.usage() & BufferUsage::Index) == BufferUsage::Index);
 
 	D3D12_INDEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
-	view.SizeInBytes = (UINT)(impl.len());
+	view.SizeInBytes = (UINT)(impl.size());
 	view.Format = DXGI_FORMAT_R32_UINT; // All index buffers must be of u32
-	m_command_list->IASetIndexBuffer(&view);
-	m_buffers_in_use.push(buffer);
+	m_command_list.command_list->IASetIndexBuffer(&view);
+	m_command_list.buffers_in_use.push(buffer.to_shared());
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::push_constant(const void* ptr) {
-	m_command_list->SetGraphicsRoot32BitConstants(0, 16, ptr, 0);
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::push_constants(const void* ptr) {
+	m_command_list.command_list->SetGraphicsRoot32BitConstants(0, 16, ptr, 0);
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::draw(
-	usize vertex_count,
-	usize first_vertex
-) {
-	m_command_list->DrawInstanced((UINT)vertex_count, 1, (UINT)first_vertex, 0);
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw(usize vertex_count, usize first_vertex) {
+	m_command_list.command_list->DrawInstanced((UINT)vertex_count, 1, (UINT)first_vertex, 0);
+
+	return *this;
 }
 
-void D3D12GraphicsCommandRecorderImpl::draw_indexed(
-	usize index_count,
-	usize first_index
-) {
-	m_command_list
-		->DrawIndexedInstanced((UINT)index_count, 1, (UINT)first_index, 0, 0);
-}
+IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_count, usize first_index) {
+	m_command_list.command_list->DrawIndexedInstanced((UINT)index_count, 1, (UINT)first_index, 0, 0);
 
-void D3D12GraphicsCommandRecorderImpl::end_render_pass() {
-	if (m_bound_color_buffer) {
-		m_bound_color_buffer.unwrap();
-	}
-
-	if (m_bound_depth_buffer) {
-		m_bound_depth_buffer.unwrap();
-	}
-}
-
-void D3D12GraphicsCommandRecorderImpl::end() {
-	throw_if_failed(m_command_list->Close());
+	return *this;
 }
 
 GJ_GPU_NAMESPACE_END

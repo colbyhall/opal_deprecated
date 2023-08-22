@@ -10,6 +10,8 @@ GJ_CORE_NAMESPACE_BEGIN
 template <typename Element>
 class Vector {
 public:
+	static_assert(std::is_nothrow_move_constructible_v<Element> && std::is_nothrow_move_assignable_v<Element>);
+
 	Vector() = default;
 	static Vector from(Slice<const Element> slice);
 

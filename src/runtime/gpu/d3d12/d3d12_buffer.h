@@ -9,26 +9,25 @@ GJ_GPU_NAMESPACE_BEGIN
 
 class D3D12BufferImpl final : public IBuffer {
 public:
-	using Usage = Buffer::Usage;
-	using Kind = Buffer::Kind;
-
-	explicit D3D12BufferImpl(Usage usage, Kind kind, usize len);
+	explicit D3D12BufferImpl(BufferUsage usage, Heap kind, usize size, ComPtr<ID3D12Resource>&& resource)
+		: m_usage(usage)
+		, m_kind(kind)
+		, m_size(size)
+		, m_resource(gj::move(resource)) {}
 
 	// IBuffer
-	Usage usage() const final { return m_usage; }
-	Kind kind() const final { return m_kind; }
-	usize len() const final { return m_len; }
-	void map(FunctionRef<void(Slice<u8>)>& func) final;
+	BufferUsage usage() const final { return m_usage; }
+	Heap heap() const final { return m_kind; }
+	usize size() const final { return m_size; }
+	void map(FunctionRef<void(Slice<u8>)> func) final;
 	// ~IBuffer
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12Resource> resource() const {
-		return m_resource;
-	};
+	GJ_ALWAYS_INLINE const ComPtr<ID3D12Resource>& resource() const { return m_resource; };
 
 private:
-	Usage m_usage;
-	Kind m_kind;
-	usize m_len;
+	BufferUsage m_usage;
+	Heap m_kind;
+	usize m_size;
 
 	ComPtr<ID3D12Resource> m_resource;
 };

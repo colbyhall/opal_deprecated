@@ -25,7 +25,7 @@ AlignAfterOpenBracket: BlockIndent
 
 Cpp11BracedListStyle: false
 
-ColumnLimit: 80
+ColumnLimit: 120
 BreakStringLiterals: true
 ReflowComments: true
 BinPackParameters: false

@@ -41,10 +41,9 @@ Vector<Element>& Vector<Element>::operator=(const Vector& copy) noexcept {
 }
 
 template <typename Element>
-Vector<Element>::Vector(Vector&& move) noexcept
-	: m_ptr(move.m_ptr)
-	, m_len(move.m_len)
-	, m_cap(move.m_cap) {
+Vector<Element>::Vector(Vector&& move) noexcept : m_ptr(move.m_ptr)
+												, m_len(move.m_len)
+												, m_cap(move.m_cap) {
 	move.m_ptr = nullptr;
 	move.m_len = 0;
 	move.m_cap = 0;
@@ -70,6 +69,11 @@ Vector<Element>::~Vector() {
 	for (usize i = 0; i < m_len; ++i) {
 		Element& item = m_ptr[i];
 		item.~Element();
+	}
+
+	if (m_ptr) {
+		core::free(m_ptr);
+		m_ptr = nullptr;
 	}
 }
 
@@ -145,11 +149,7 @@ GJ_ALWAYS_INLINE void Vector<Element>::reserve(usize amount) {
 		void* ptr = core::malloc(core::Layout::array<Element>(m_cap));
 		m_ptr = static_cast<Element*>(ptr);
 	} else {
-		void* ptr = core::realloc(
-			m_ptr,
-			core::Layout::array<Element>(old_cap),
-			core::Layout::array<Element>(m_cap)
-		);
+		void* ptr = core::realloc(m_ptr, core::Layout::array<Element>(old_cap), core::Layout::array<Element>(m_cap));
 		m_ptr = static_cast<Element*>(ptr);
 	}
 }
@@ -170,8 +170,7 @@ void Vector<Element>::insert(usize index, Element&& item) {
 }
 
 template <typename Element>
-GJ_ALWAYS_INLINE void
-Vector<Element>::insert(usize index, const Element& item) {
+GJ_ALWAYS_INLINE void Vector<Element>::insert(usize index, const Element& item) {
 	Element copy = item;
 	insert(index, gj::move(copy));
 }
@@ -193,14 +192,22 @@ template <typename Element>
 Element Vector<Element>::remove(usize index) {
 	GJ_ASSERT(is_valid_index(index), "Index out of bounds");
 
-	Element result = gj::move(m_ptr[index]);
+	// Move element out of vector to be returned
+	auto result = gj::move(m_ptr[index]);
+
+	// Set memory that element used to occupy to 0
 	void* clear = &m_ptr[index];
 	core::set(clear, 0, sizeof(Element));
+
+	// If not removed from the end of the vector copy entire array over
 	if (index < m_len - 1) {
 		auto* src = m_ptr + index;
 		gj::core::move(src, src + 1, (len() - index) * sizeof(Element));
 	}
+
+	// Decrement length
 	m_len -= 1;
+
 	return result;
 }
 

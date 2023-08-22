@@ -3,13 +3,38 @@
 #pragma once
 
 #include "core/containers/array.h"
-#include "gpu/shader.h"
-#include "gpu/texture.h"
+#include "gpu/gpu.h"
 
 GJ_GPU_NAMESPACE_BEGIN
 
-enum class DrawMode : u8 { Fill, Line, Point };
+/**
+ * Defines how a triangle should be rasterized during a draw call.
+ */
+enum class DrawMode : u8 {
+	/**
+	 * Fills the entire triangle.
+	 */
+	Fill,
 
+	/**
+	 * Only fills in the lines connecting the vertices.
+	 *
+	 * @see GraphicsPipelineDefinition::line_width
+	 */
+	Line,
+
+	/**
+	 * Only fills in a rect at each vertex.
+	 *
+	 * @see GraphicsPipelineDefinition::line_width
+	 */
+	Point
+};
+
+/**
+ * Defines if a side of a triangle should be culled or not. The side of the triangle is defined by the order of the
+ * vertices. Currently we use clockwise for all vertex data.
+ */
 enum class CullMode : u8 { None, Front, Back };
 
 enum class CompareOp : u8 {
@@ -52,58 +77,60 @@ enum class BlendFactor : u8 {
 	OneMinusSrcAlpha,
 };
 
-class IGraphicsPipeline;
+/**
+ * Defines an IGraphicsPipeline.
+ */
+struct GraphicsPipelineDefinition {
+	/**
+	 * Vertex shader that will be used when the pipeline is active.
+	 */
+	Shared<IVertexShader> vertex_shader;
 
-class GraphicsPipeline {
-public:
-	struct Definition {
-		VertexShader vertex_shader;
-		PixelShader pixel_shader;
+	/**
+	 * Pixel shader that will be used when the pipeline is active.
+	 */
+	Shared<IPixelShader> pixel_shader;
 
-		Array<Format, 8> color_attachments;
-		Option<Format> depth_attachment = gj::none;
+	/**
+	 * Pixel format shaders are expecting as color attachments.
+	 */
+	Array<Format, 8> color_attachments;
 
-		DrawMode draw_mode = DrawMode::Fill;
-		f32 line_width = 1.f;
-		CullMode cull_mode = CullMode::None;
+	/**
+	 * Pixel format shaders are expecting for a depth attachment. None is allowed as well.
+	 */
+	Option<Format> depth_attachment = gj::none;
 
-		bool blend_enabled = false;
+	DrawMode draw_mode = DrawMode::Fill;
+	f32 line_width = 1.f;
+	CullMode cull_mode = CullMode::None;
 
-		BlendFactor src_color_blend_factor = BlendFactor::One;
-		BlendFactor dst_color_blend_factor = BlendFactor::One;
-		BlendOp color_blend_op = BlendOp::Add;
+	bool blend_enabled = false;
 
-		BlendFactor src_alpha_blend_factor = BlendFactor::One;
-		BlendFactor dst_alpha_blend_factor = BlendFactor::One;
-		BlendOp alpha_blend_op = BlendOp::Add;
+	BlendFactor src_color_blend_factor = BlendFactor::One;
+	BlendFactor dst_color_blend_factor = BlendFactor::One;
+	BlendOp color_blend_op = BlendOp::Add;
 
-		bool depth_test = false;
-		bool depth_write = false;
-		CompareOp depth_compare = CompareOp::Always;
-	};
+	BlendFactor src_alpha_blend_factor = BlendFactor::One;
+	BlendFactor dst_alpha_blend_factor = BlendFactor::One;
+	BlendOp alpha_blend_op = BlendOp::Add;
 
-	static GraphicsPipeline make(Definition&& definition);
-
-	template <typename T = IGraphicsPipeline>
-	GJ_ALWAYS_INLINE T const& cast() const {
-		static_assert(
-			std::is_base_of_v<IGraphicsPipeline, T>,
-			"T is not derived of IGraphicsPipeline"
-		);
-		return static_cast<const T&>(*m_interface);
-	}
-
-private:
-	GJ_ALWAYS_INLINE explicit GraphicsPipeline(Shared<IGraphicsPipeline>&&
-												   interface)
-		: m_interface(gj::move(interface)) {}
-
-	Shared<IGraphicsPipeline> m_interface;
+	bool depth_test = false;
+	bool depth_write = false;
+	CompareOp depth_compare = CompareOp::Always;
 };
 
-class IGraphicsPipeline {
+/**
+ * Describes how a render pass should execute a draw call. This includes what shaders should be used, how the rasterizer
+ * should draws the triangles, and much more.
+ *
+ * @see IDevice::create_graphics_pipeline.
+ * @see GraphicsPipelineDefinition.
+ * @see IGraphicsCommandRecorder.
+ */
+class IGraphicsPipeline : public SharedFromThis<IGraphicsPipeline> {
 public:
-	virtual const GraphicsPipeline::Definition& definition() const = 0;
+	virtual const GraphicsPipelineDefinition& definition() const = 0;
 	virtual ~IGraphicsPipeline() = default;
 };
 

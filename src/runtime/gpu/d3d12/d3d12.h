@@ -31,7 +31,6 @@ using Microsoft::WRL::ComPtr;
 #include <d3d12sdklayers.h>
 #include <d3dcompiler.h>
 #include <dxgi1_6.h>
-#undef interface
 #undef min
 #undef max
 

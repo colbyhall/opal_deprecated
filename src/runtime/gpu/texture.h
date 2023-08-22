@@ -7,77 +7,89 @@
 
 GJ_GPU_NAMESPACE_BEGIN
 
-class ITexture;
+/**
+ * Defines which pixel type an ITexture can use.
+ */
+enum class Format : u16 { Undefined, R_U8, RGBA_U8, RGBA_U8_SRGB, RGBA_F16, RGBA_F32, D24S8_U32 };
 
-enum class Format : u16 {
-	Undefined,
-	R_U8,
-	RGBA_U8,
-	RGBA_U8_SRGB,
-	RGBA_F16,
-	RGBA_F32,
-	D24S8_U32
-};
-
+/**
+ * Provides the size of the pixel format in bytes.
+ */
 usize format_size_in_bytes(Format format);
 
-class Texture {
-public:
-	enum class Usage : u8 {
-		TransferDst = (1 << 0),
-		Sampled = (1 << 1),
-		Color = (1 << 2),
-		Depth = (1 << 3),
-		Backbuffer = (1 << 4),
-	};
+/**
+ * Describes how an ITexture will be used throughout its lifetime.
+ *
+ * Implementations may use this data for optimizations. Enforced internally by implementations.
+ */
+enum class TextureUsage : u8 {
+	/**
+	 * Allows a texture to have pixel data copied into it from a buffer or other texture.
+	 *
+	 * @see IGraphicsCommandRecorder::copy_buffer_to_texture.
+	 */
+	TransferDst = (1 << 0),
 
-	static Texture make(Usage usage, Format format, const Vector3<u32>& size);
+	/**
+	 * Allows a texture to be sampled in a shader.
+	 *
+	 * If specified the texture will be selected using bindless architecture.
+	 */
+	Sampled = (1 << 1),
 
-	GJ_ALWAYS_INLINE Texture::Usage usage() const;
-	GJ_ALWAYS_INLINE Format format() const;
-	GJ_ALWAYS_INLINE Vector3<u32> size() const;
-	GJ_ALWAYS_INLINE u32 bindless() const;
+	/**
+	 * Allows a texture to be used as a color attachment in a render pass.
+	 */
+	Color = (1 << 2),
 
-	template <typename T = ITexture>
-	GJ_ALWAYS_INLINE T const& cast() const {
-		static_assert(
-			std::is_base_of_v<ITexture, T>,
-			"T is not derived of ITexture"
-		);
-		return static_cast<const T&>(*m_interface);
-	}
+	/**
+	 * Allows a texture to be used as a depth attachment in a render pass.
+	 */
+	Depth = (1 << 3),
 
-private:
-	GJ_ALWAYS_INLINE explicit Texture(Shared<ITexture>&& interface)
-		: m_interface(gj::move(interface)) {}
-
-	friend class D3D12SwapchainImpl;
-
-	Shared<ITexture> m_interface;
+	/**
+	 * Allows a texture to be displayed on an OS window.
+	 */
+	Backbuffer = (1 << 4),
 };
+GJ_ENUM_CLASS_BITFIELD(TextureUsage)
 
-GJ_ENUM_CLASS_BITFIELD(Texture::Usage)
-
-class ITexture {
+/**
+ * A specialized form of IBuffer's that can be used to store a variety of information in an efficient way. They can be
+ * used to store 1D, 2D, or 3D data using a predefined Format. They're allocated using Heap::Storage memory to be
+ * accessed as efficiently as possible.
+ *
+ * The most common use cases for textures are for storing diffuse maps, normal maps, depth, etc. They can be used for
+ * much more though including voxels.
+ *
+ * @see IDevice::create_texture
+ */
+class ITexture : public SharedFromThis<ITexture> {
 public:
-	virtual Texture::Usage usage() const = 0;
+	/**
+	 * Returns the TextureUsage of this texture.
+	 */
+	virtual TextureUsage usage() const = 0;
+
+	/**
+	 * Returns the Format of this texture.
+	 */
 	virtual Format format() const = 0;
+
+	/**
+	 * Returns the size of this texture in terms of Format.
+	 */
 	virtual Vector3<u32> size() const = 0;
+
+	/**
+	 * Returns the index of this texture in the devices bindless buffer. Shaders can access textures directly using this
+	 * index.
+	 *
+	 * @note texture's usage must contain TextureUsage::Sampled.
+	 */
 	virtual u32 bindless() const = 0;
+
 	virtual ~ITexture() = default;
 };
-
-GJ_ALWAYS_INLINE Texture::Usage Texture::usage() const {
-	return m_interface->usage();
-}
-GJ_ALWAYS_INLINE Format Texture::format() const {
-	return m_interface->format();
-}
-GJ_ALWAYS_INLINE Vector3<u32> Texture::size() const {
-	return m_interface->size();
-}
-GJ_ALWAYS_INLINE u32 Texture::bindless() const {
-	return m_interface->bindless();
-}
 
 GJ_GPU_NAMESPACE_END

@@ -1,9 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "editor/application.h"
-#include "gpu/buffer.h"
-#include "gpu/context.h"
-#include "gpu/texture.h"
 #include "imgui/imgui.h"
 
 GJ_SUPPRESS_WARNING_PUSH

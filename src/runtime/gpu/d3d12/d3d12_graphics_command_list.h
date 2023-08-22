@@ -9,43 +9,57 @@
 
 GJ_GPU_NAMESPACE_BEGIN
 
+class D3D12GraphicsCommandListImpl final : public IGraphicsCommandList {
+public:
+	explicit D3D12GraphicsCommandListImpl(const ComPtr<ID3D12GraphicsCommandList>& in_command_list)
+		: command_list(in_command_list) {}
+
+	ComPtr<ID3D12GraphicsCommandList> command_list;
+
+	Option<D3D12_CPU_DESCRIPTOR_HANDLE> bound_color_buffer;
+	Option<D3D12_CPU_DESCRIPTOR_HANDLE> bound_depth_buffer;
+
+	Vector<Shared<ITexture>> textures_in_use;
+	Vector<Shared<IBuffer>> buffers_in_use;
+};
+
 class D3D12GraphicsCommandRecorderImpl final : public IGraphicsCommandRecorder {
 public:
-	explicit D3D12GraphicsCommandRecorderImpl();
+	explicit D3D12GraphicsCommandRecorderImpl(D3D12GraphicsCommandListImpl& command_list)
+		: m_command_list(command_list) {}
 
 	// IGraphicsCommandRecorder
-	void begin() final;
-	void copy_buffer_to_texture(const Texture& dst, const Buffer& src) final;
-	void texture_barrier(
-		const Texture& texture,
-		Layout old_layout,
-		Layout new_layout
+	IGraphicsCommandRecorder& copy_buffer_to_texture(const ITexture& dst, const IBuffer& src) final;
+
+	IGraphicsCommandRecorder& texture_barrier(const ITexture& texture, Layout old_layout, Layout new_layout) final;
+
+	IGraphicsCommandRecorder& render_pass(
+		const ITexture& color,
+		Option<ITexture const&> depth,
+		FunctionRef<void(IRenderPassCommandRecorder&)> callable
 	) final;
-	void
-	begin_render_pass(const Texture& color, Option<const Texture&> depth) final;
-	void clear_color(const Vector4<f32>& color) final;
-	void set_pipeline(const GraphicsPipeline& pipeline) final;
-	void set_vertices(const Buffer& buffer, u32 stride) final;
-	void set_indices(const Buffer& buffer) final;
-	void push_constant(const void* ptr) final;
-	void draw(usize vertex_count, usize first_vertex) final;
-	void draw_indexed(usize index_count, usize first_index) final;
-	void end_render_pass() final;
-	void end() final;
 	// ~IGraphicsCommandRecorder
 
-	GJ_ALWAYS_INLINE ComPtr<ID3D12GraphicsCommandList> command_list() const {
-		return m_command_list;
-	}
+private:
+	D3D12GraphicsCommandListImpl& m_command_list;
+};
+
+class D3D12RenderPassRecorderImpl final : public IRenderPassCommandRecorder {
+public:
+	explicit D3D12RenderPassRecorderImpl(D3D12GraphicsCommandListImpl& command_list) : m_command_list(command_list) {}
+
+	// IGraphicsCommandRecorder
+	IRenderPassCommandRecorder& clear_color(const Vector4<f32>& color) final;
+	IRenderPassCommandRecorder& set_pipeline(const IGraphicsPipeline& pipeline) final;
+	IRenderPassCommandRecorder& set_vertices(const IBuffer& buffer, u32 stride) final;
+	IRenderPassCommandRecorder& set_indices(const IBuffer& buffer) final;
+	IRenderPassCommandRecorder& push_constants(const void* ptr) final;
+	IRenderPassCommandRecorder& draw(usize vertex_count, usize first_vertex = 0) final;
+	IRenderPassCommandRecorder& draw_index(usize index_count, usize first_index = 0) final;
+	// ~IGraphicsCommandRecorder
 
 private:
-	ComPtr<ID3D12GraphicsCommandList> m_command_list;
-
-	Option<D3D12_CPU_DESCRIPTOR_HANDLE> m_bound_color_buffer;
-	Option<D3D12_CPU_DESCRIPTOR_HANDLE> m_bound_depth_buffer;
-
-	Vector<Texture> m_textures_in_use;
-	Vector<Buffer> m_buffers_in_use;
+	D3D12GraphicsCommandListImpl& m_command_list;
 };
 
 GJ_GPU_NAMESPACE_END

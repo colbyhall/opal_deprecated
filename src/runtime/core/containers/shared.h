@@ -31,8 +31,7 @@ public:
 		};
 
 		constexpr auto layout = core::Layout::single<Combined>;
-		Combined* ptr = new (core::malloc(layout))
-			Combined{ SharedCounter<Mode>(), Base(forward<Args>(args)...) };
+		Combined* ptr = new (core::malloc(layout)) Combined{ SharedCounter<Mode>(), Base(forward<Args>(args)...) };
 
 		auto result = Shared(&ptr->counter, &ptr->base);
 		if constexpr (std::is_base_of_v<SharedFromThisBase, Base>) {
@@ -41,9 +40,7 @@ public:
 		return result;
 	}
 
-	Shared(const Shared<Base, Mode>& copy) noexcept
-		: m_counter(copy.m_counter)
-		, m_base(copy.m_base) {
+	Shared(const Shared<Base, Mode>& copy) noexcept : m_counter(copy.m_counter), m_base(copy.m_base) {
 		auto& c = counter();
 		c.add_strong();
 	}
@@ -60,22 +57,15 @@ public:
 		return *this;
 	}
 	template <typename Derived = Base>
-	Shared(Shared<Derived, Mode>&& move) noexcept
-		: m_counter(move.m_counter)
-		, m_base(move.m_base) {
-		static_assert(
-			std::is_base_of_v<Base, Derived>,
-			"Base is not a base of Derived"
-		);
+	Shared(Shared<Derived, Mode>&& move) noexcept : m_counter(move.m_counter)
+												  , m_base(move.m_base) {
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 		move.m_counter = nullptr;
 		move.m_base = nullptr;
 	}
 	template <typename Derived = Base>
 	Shared& operator=(Shared<Derived, Mode>&& m) noexcept {
-		static_assert(
-			std::is_base_of_v<Base, Derived>,
-			"Base is not a base of Derived"
-		);
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
 		Shared<Base, Mode> to_destroy = gj::move(*this);
 		m_counter = m.m_counter;
@@ -93,21 +83,19 @@ public:
 	GJ_ALWAYS_INLINE operator NonNull<Base const>() const { return &value(); }
 	GJ_ALWAYS_INLINE operator Base*() { return &value(); }
 	GJ_ALWAYS_INLINE operator Base const*() const { return &value(); }
+	GJ_ALWAYS_INLINE operator Base&() { return value(); }
+	GJ_ALWAYS_INLINE operator Base const&() const { return value(); }
 	GJ_ALWAYS_INLINE Base* operator->() { return &value(); }
 	GJ_ALWAYS_INLINE Base const* operator->() const { return &value(); }
 	GJ_ALWAYS_INLINE Base& operator*() { return value(); }
 	GJ_ALWAYS_INLINE Base const& operator*() const { return value(); }
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 strong() const {
-		return counter().strong();
-	}
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
 
 private:
 	Shared() = default;
-	explicit Shared(Counter* counter, Base* base)
-		: m_counter(counter)
-		, m_base(base) {}
+	explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
 	template <typename Derived, SMode Mode>
 	friend class Shared;
@@ -128,22 +116,15 @@ public:
 	using Counter = SharedCounter<Mode>;
 
 	template <typename Derived = Base>
-	Weak(const Weak<Derived, Mode>& copy) noexcept
-		: m_counter(copy.m_counter)
-		, m_base(copy.m_base) {
-		static_assert(
-			std::is_base_of_v<Base, Derived>,
-			"Base is not a base of Derived"
-		);
+	Weak(const Weak<Derived, Mode>& copy) noexcept : m_counter(copy.m_counter)
+												   , m_base(copy.m_base) {
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 		auto& c = counter();
 		c.add_weak();
 	}
 	template <typename Derived = Base>
 	Weak& operator=(const Weak<Derived, Mode>& copy) noexcept {
-		static_assert(
-			std::is_base_of_v<Base, Derived>,
-			"Base is not a base of Derived"
-		);
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
 		Weak<Base, Mode> to_destroy = gj::move(*this);
 		GJ_UNUSED(to_destroy);
@@ -157,22 +138,15 @@ public:
 		return *this;
 	}
 	template <typename Derived = Base>
-	Weak(Weak<Derived, Mode>&& move) noexcept
-		: m_counter(move.m_counter)
-		, m_base(move.m_base) {
-		static_assert(
-			std::is_base_of_v<Base, Derived>,
-			"Base is not a base of Derived"
-		);
+	Weak(Weak<Derived, Mode>&& move) noexcept : m_counter(move.m_counter)
+											  , m_base(move.m_base) {
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 		move.m_counter = nullptr;
 		move.m_base = nullptr;
 	}
 	template <typename Derived = Base>
 	Weak& operator=(Weak<Derived, Mode>&& m) noexcept {
-		static_assert(
-			std::is_base_of_v<Base, Derived>,
-			"Base is not a base of Derived"
-		);
+		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
 		Weak<Base, Mode> to_destroy = gj::move(*this);
 		m_counter = m.m_counter;
@@ -185,16 +159,12 @@ public:
 
 	GJ_NO_DISCARD Option<Shared<Base, Mode>> upgrade() const;
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 strong() const {
-		return counter().strong();
-	}
+	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
 	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
 
 private:
 	Weak() = default;
-	explicit Weak(Counter* counter, Base* base)
-		: m_counter(counter)
-		, m_base(base) {}
+	explicit Weak(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
 	template <typename Derived, SMode>
 	friend class Shared;
@@ -291,12 +261,12 @@ template <typename T>
 using Weak = core::Weak<T, core::SMode::NonAtomic>;
 
 template <typename T>
-using AtomicShared = core::Shared<T, core::SMode::NonAtomic>;
+using AtomicShared = core::Shared<T, core::SMode::Atomic>;
 
 template <typename T>
-using AtomicSharedFromThis = core::SharedFromThis<T, core::SMode::NonAtomic>;
+using AtomicSharedFromThis = core::SharedFromThis<T, core::SMode::Atomic>;
 
 template <typename T>
-using AtomicWeak = core::Weak<T, core::SMode::NonAtomic>;
+using AtomicWeak = core::Weak<T, core::SMode::Atomic>;
 
 GJ_NAMESPACE_END
