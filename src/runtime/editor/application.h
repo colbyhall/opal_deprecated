@@ -4,22 +4,18 @@
 
 #include "core/containers/function.h"
 #include "editor/editor.h"
+#include "gpu/gpu.h"
 
 SF_EDITOR_NAMESPACE_BEGIN
 
 class Application {
 public:
-	explicit Application(int argc, char** argv);
+	explicit Application(const gpu::IDevice& device);
 
 	void run(FunctionRef<void()> f);
 
 private:
+	gpu::Shared<gpu::IDevice> m_device;
 };
-
-#define SF_EDITOR_MAIN(f)                                                      \
-	int main(int argc, char** argv) {                                          \
-		sf::editor::Application(argc, argv).run([]() f);                       \
-		return 0;                                                              \
-	}
 
 SF_EDITOR_NAMESPACE_END

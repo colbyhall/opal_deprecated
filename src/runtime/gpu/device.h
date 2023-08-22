@@ -10,7 +10,7 @@
 SF_GPU_NAMESPACE_BEGIN
 
 /**
- * Provides an interface for creating resources and submitting commands on a GPU. Owns the queues used to submit
+ * Provides an interface for creating resources and submitting commands to a GPU. Owns the queues used to submit
  * IGraphicsCommandList along with the heaps that resources allocate from.
  */
 class IDevice : public SharedFromThis<IDevice> {

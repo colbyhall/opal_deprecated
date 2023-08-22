@@ -10,7 +10,7 @@
 
 #include "dxc/dxc.h"
 #include "gpu/buffer.h"
-#include "gpu/d3d12/d3d12_device.h"
+#include "gpu/device.h"
 #include "gpu/graphics_command_list.h"
 #include "gpu/graphics_pipeline.h"
 #include "gpu/swapchain.h"
@@ -180,14 +180,9 @@ static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
 	return ::DefWindowProcW(hWnd, Msg, wParam, lParam);
 }
 
-Application::Application(int argc, char** argv) {
-	SF_UNUSED(argc);
-	SF_UNUSED(argv);
-}
+Application::Application(const gpu::IDevice& device) : m_device(device.to_shared()) {}
 
 void Application::run(FunctionRef<void()> f) {
-	auto device = gpu::D3D12DeviceImpl::create();
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
@@ -226,18 +221,18 @@ void Application::run(FunctionRef<void()> f) {
 	auto window = Window::spawn("test", { 1280, 720 });
 	ImGui_ImplWin32_Init(window.handle());
 
-	auto swapchain = device->create_swapchain(window.handle());
+	auto swapchain = m_device->create_swapchain(window.handle());
 
 	// Compile the vertex shader using source
 	dxc::Input vertex_input = { source, "vs_main", dxc::ShaderType::Vertex };
 	auto vertex_output = dxc::compile(vertex_input).unwrap();
 	auto vertex_shader =
-		device->create_vertex_shader(sf::move(vertex_output.binary), sf::move(vertex_output.input_parameters));
+		m_device->create_vertex_shader(sf::move(vertex_output.binary), sf::move(vertex_output.input_parameters));
 
 	// Compile the pixel shader using source
 	dxc::Input pixel_input = { source, "ps_main", dxc::ShaderType::Pixel };
 	auto pixel_output = dxc::compile(pixel_input).unwrap();
-	auto pixel_shader = device->create_pixel_shader(sf::move(pixel_output.binary));
+	auto pixel_shader = m_device->create_pixel_shader(sf::move(pixel_output.binary));
 
 	// Create the graphics pipeline
 	gpu::GraphicsPipelineDefinition definition = {
@@ -248,7 +243,7 @@ void Application::run(FunctionRef<void()> f) {
 		.dst_color_blend_factor = gpu::BlendFactor::OneMinusSrcAlpha,
 	};
 	definition.color_attachments.push(gpu::Format::RGBA_U8);
-	auto pipeline = device->create_graphics_pipeline(sf::move(definition));
+	auto pipeline = m_device->create_graphics_pipeline(sf::move(definition));
 
 	// Grab the font bitmap from imgui
 	unsigned char* pixels;
@@ -256,11 +251,11 @@ void Application::run(FunctionRef<void()> f) {
 	io.Fonts->GetTexDataAsAlpha8(&pixels, &width, &height);
 
 	// Create the font upload buffer and write the bitmap to it
-	auto pixels_buffer = device->create_buffer(gpu::BufferUsage::TransferSrc, gpu::Heap::Upload, width * height);
+	auto pixels_buffer = m_device->create_buffer(gpu::BufferUsage::TransferSrc, gpu::Heap::Upload, width * height);
 	pixels_buffer->map([&](auto slice) { core::copy(slice.begin(), pixels, slice.len()); });
 
 	// Create the font gpu texture
-	auto pixels_texture = device->create_texture(
+	auto pixels_texture = m_device->create_texture(
 		gpu::TextureUsage::TransferDst | gpu::TextureUsage::Sampled,
 		gpu::Format::R_U8,
 		{ (u32)width, (u32)height, 1 }
@@ -270,12 +265,12 @@ void Application::run(FunctionRef<void()> f) {
 	io.Fonts->SetTexID((void*)(usize)pixels_texture->bindless());
 
 	// Command the gpu to transfer the pixel data from the upload buffer to the texture
-	auto upload_font_atlas = device->record_graphics([&](auto& gcr) {
+	auto upload_font_atlas = m_device->record_graphics([&](auto& gcr) {
 		gcr.texture_barrier(pixels_texture, gpu::Layout::General, gpu::Layout::TransferDst);
 		gcr.copy_buffer_to_texture(pixels_texture, pixels_buffer);
 		gcr.texture_barrier(pixels_texture, gpu::Layout::TransferDst, gpu::Layout::General);
 	});
-	device->submit(upload_font_atlas);
+	m_device->submit(upload_font_atlas);
 
 	for (;;) {
 #ifdef SF_PLATFORM_WINDOWS
@@ -300,7 +295,7 @@ void Application::run(FunctionRef<void()> f) {
 		};
 
 		// Record all ImGui draw commands in one command list
-		auto command_list = device->record_graphics([&](auto& gcr) {
+		auto command_list = m_device->record_graphics([&](auto& gcr) {
 			auto& backbuffer = swapchain->backbuffer();
 			gcr
 				// Assume that the backbuffer was left in present mode. Switch to ColorAttachment
@@ -354,7 +349,7 @@ void Application::run(FunctionRef<void()> f) {
 								}
 
 								// Upload build vertex buffer to the gpu
-								auto vertex_buffer = device->create_buffer(
+								auto vertex_buffer = m_device->create_buffer(
 									gpu::BufferUsage::Vertex,
 									gpu::Heap::Upload,
 									vertices.len() * sizeof(Vertex)
@@ -376,7 +371,7 @@ void Application::run(FunctionRef<void()> f) {
 				.texture_barrier(backbuffer, gpu::Layout::ColorAttachment, gpu::Layout::Present);
 		});
 
-		device->submit(command_list);
+		m_device->submit(command_list);
 		swapchain->present();
 	}
 

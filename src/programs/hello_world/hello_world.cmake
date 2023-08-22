@@ -10,7 +10,7 @@ set(HELLO_WORLD_SRC_FILES
 # Group source files
 source_group(TREE ${HELLO_WORLD_ROOT} FILES ${HELLO_WORLD_SRC_FILES})
 
-add_executable(hello_world ${HELLO_WORLD_SRC_FILES})
+add_executable(hello_world WIN32 ${HELLO_WORLD_SRC_FILES})
 target_include_directories(hello_world PUBLIC ${RUNTIME_ROOT})
 target_link_libraries(hello_world LINK_PUBLIC core gpu editor)
 # target_include_directories(playground PUBLIC ${THIRD_PARTY_ROOT})

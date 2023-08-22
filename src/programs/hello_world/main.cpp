@@ -1,13 +1,23 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "editor/application.h"
+#include "gpu/d3d12/d3d12_device.h"
 #include "imgui/imgui.h"
 
 SF_SUPPRESS_WARNING_PUSH
 SF_SUPPRESS_WARNINGS
 
-int main(int argc, char** argv) {
-	sf::editor::Application(argc, argv).run([]() {
+int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) {
+	SF_UNUSED(hInst);
+	SF_UNUSED(hInstPrev);
+	SF_UNUSED(cmdline);
+	SF_UNUSED(cmdshow);
+
+	using namespace sf;
+
+	auto device = gpu::D3D12DeviceImpl::create();
+
+	editor::Application(device).run([]() {
 		// Create a window called "My First Tool", with a menu bar.
 		static bool a = true;
 		ImGui::Begin("My First Tool", &a, ImGuiWindowFlags_MenuBar);
@@ -39,6 +49,7 @@ int main(int argc, char** argv) {
 		ImGui::EndChild();
 		ImGui::End();
 	});
+
 	return 0;
 }
 
