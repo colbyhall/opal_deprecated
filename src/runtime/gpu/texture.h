@@ -5,7 +5,7 @@
 #include "core/math/vector3.h"
 #include "gpu/gpu.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 /**
  * Defines which pixel type an ITexture can use.
@@ -52,7 +52,7 @@ enum class TextureUsage : u8 {
 	 */
 	Backbuffer = (1 << 4),
 };
-GJ_ENUM_CLASS_BITFIELD(TextureUsage)
+SF_ENUM_CLASS_BITFIELD(TextureUsage)
 
 /**
  * A specialized form of IBuffer's that can be used to store a variety of information in an efficient way. They can be
@@ -92,4 +92,4 @@ public:
 	virtual ~ITexture() = default;
 };
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

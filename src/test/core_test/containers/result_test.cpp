@@ -3,11 +3,11 @@
 #include "core/containers/result.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
 enum class Error : u32 { Foo, Bar, Baz };
 
-TEST_CASE("gj::core::Result") {
+TEST_CASE("sf::core::Result") {
 	SUBCASE("Value") {
 		Result<u32, Error> result = 42;
 		REQUIRE(result.is_ok());
@@ -25,4 +25,4 @@ TEST_CASE("gj::core::Result") {
 	}
 }
 
-GJ_TEST_END
+SF_TEST_END

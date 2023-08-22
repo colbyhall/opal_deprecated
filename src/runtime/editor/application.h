@@ -5,7 +5,7 @@
 #include "core/containers/function.h"
 #include "editor/editor.h"
 
-GJ_EDITOR_NAMESPACE_BEGIN
+SF_EDITOR_NAMESPACE_BEGIN
 
 class Application {
 public:
@@ -16,10 +16,10 @@ public:
 private:
 };
 
-#define GJ_EDITOR_MAIN(f)                                                      \
+#define SF_EDITOR_MAIN(f)                                                      \
 	int main(int argc, char** argv) {                                          \
-		gj::editor::Application(argc, argv).run([]() f);                       \
+		sf::editor::Application(argc, argv).run([]() f);                       \
 		return 0;                                                              \
 	}
 
-GJ_EDITOR_NAMESPACE_END
+SF_EDITOR_NAMESPACE_END

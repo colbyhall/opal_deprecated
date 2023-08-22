@@ -2,15 +2,15 @@
 
 #include "memory.h"
 
-GJ_SUPPRESS_WARNINGS_STD_BEGIN
+SF_SUPPRESS_WARNINGS_STD_BEGIN
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-GJ_SUPPRESS_WARNINGS_STD_END
+SF_SUPPRESS_WARNINGS_STD_END
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 NonNull<void> malloc(const Layout& layout) {
 	void* result = std::malloc(static_cast<std::size_t>(layout.size));
@@ -22,7 +22,7 @@ NonNull<void> realloc(
 	const Layout& old_layout,
 	const Layout& new_layout
 ) {
-	GJ_UNUSED(old_layout);
+	SF_UNUSED(old_layout);
 
 	void* result =
 		std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
@@ -57,4 +57,4 @@ u8 count_ones(u8 byte) { return count_set_bits_table[byte]; }
 #undef B6
 #undef COUNT_BITS
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

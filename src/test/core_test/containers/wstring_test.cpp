@@ -3,9 +3,9 @@
 #include "core/containers/wstring.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::WString") {
+TEST_CASE("sf::core::WString") {
 	WString str;
 	str.push(L"Hello World!");
 
@@ -13,4 +13,4 @@ TEST_CASE("gj::core::WString") {
 	REQUIRE(str[0] == 'H');
 }
 
-GJ_TEST_END
+SF_TEST_END

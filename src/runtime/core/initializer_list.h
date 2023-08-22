@@ -4,14 +4,14 @@
 
 #include "core/core.h"
 
-GJ_SUPPRESS_WARNINGS_STD_BEGIN
+SF_SUPPRESS_WARNINGS_STD_BEGIN
 #include <initializer_list>
-GJ_SUPPRESS_WARNINGS_STD_END
+SF_SUPPRESS_WARNINGS_STD_END
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 
 template <typename T>
 using InitializerList = std::initializer_list<T>;
 
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

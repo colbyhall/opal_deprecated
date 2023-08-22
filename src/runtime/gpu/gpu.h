@@ -5,18 +5,18 @@
 #include "core/containers/shared.h"
 
 // Begin the gpu namespace
-#define GJ_GPU_NAMESPACE_BEGIN                                                                                         \
-	GJ_NAMESPACE_BEGIN                                                                                                 \
+#define SF_GPU_NAMESPACE_BEGIN                                                                                         \
+	SF_NAMESPACE_BEGIN                                                                                                 \
 	namespace gpu {
 
 // End the gpu namespace
-#define GJ_GPU_NAMESPACE_END                                                                                           \
+#define SF_GPU_NAMESPACE_END                                                                                           \
 	}                                                                                                                  \
-	GJ_NAMESPACE_END
+	SF_NAMESPACE_END
 
-#define GJ_GPU_DEBUG 1
+#define SF_GPU_DEBUG 1
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 template <typename T>
 using Shared = AtomicShared<T>;
@@ -51,4 +51,4 @@ enum class Layout : u8;
 enum class ShaderPrimitive : u8;
 enum class TextureUsage : u8;
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

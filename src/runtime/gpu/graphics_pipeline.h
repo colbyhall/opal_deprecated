@@ -5,7 +5,7 @@
 #include "core/containers/array.h"
 #include "gpu/gpu.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 /**
  * Defines how a triangle should be rasterized during a draw call.
@@ -99,7 +99,7 @@ struct GraphicsPipelineDefinition {
 	/**
 	 * Pixel format shaders are expecting for a depth attachment. None is allowed as well.
 	 */
-	Option<Format> depth_attachment = gj::none;
+	Option<Format> depth_attachment = sf::none;
 
 	DrawMode draw_mode = DrawMode::Fill;
 	f32 line_width = 1.f;
@@ -134,4 +134,4 @@ public:
 	virtual ~IGraphicsPipeline() = default;
 };
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

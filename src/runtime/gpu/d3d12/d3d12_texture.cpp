@@ -3,14 +3,14 @@
 #include "gpu/d3d12/d3d12_texture.h"
 #include "gpu/d3d12/d3d12_device.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 DXGI_FORMAT format_to_dxgi(Format format) {
 	DXGI_FORMAT dxgi_format = DXGI_FORMAT_UNKNOWN;
 
 	switch (format) {
 	case Format::Undefined:
-		GJ_INVALID_CODE_PATH;
+		SF_INVALID_CODE_PATH;
 		break;
 	case Format::R_U8:
 		dxgi_format = DXGI_FORMAT_R8_UNORM;
@@ -46,9 +46,9 @@ D3D12TextureImpl::D3D12TextureImpl(
 	, m_usage(usage)
 	, m_format(format)
 	, m_size(size) {
-	GJ_ASSERT(size.x > 0);
-	GJ_ASSERT(size.y > 0);
-	GJ_ASSERT(size.z > 0);
+	SF_ASSERT(size.x > 0);
+	SF_ASSERT(size.y > 0);
+	SF_ASSERT(size.z > 0);
 
 	D3D12_RESOURCE_DIMENSION dimension = D3D12_RESOURCE_DIMENSION_UNKNOWN;
 	if (size.x > 1) {
@@ -60,7 +60,7 @@ D3D12TextureImpl::D3D12TextureImpl(
 			}
 		}
 	}
-	GJ_ASSERT(dimension != D3D12_RESOURCE_DIMENSION_UNKNOWN);
+	SF_ASSERT(dimension != D3D12_RESOURCE_DIMENSION_UNKNOWN);
 
 	const DXGI_FORMAT dxgi_format = format_to_dxgi(format);
 
@@ -150,4 +150,4 @@ D3D12TextureImpl::~D3D12TextureImpl() {
 	}
 }
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

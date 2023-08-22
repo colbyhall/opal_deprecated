@@ -5,7 +5,7 @@
 #include "core/math/quaternion.h"
 #include "core/math/vector4.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 struct alignas(16) Matrix4 {
@@ -60,12 +60,12 @@ private:
 		, w(_w) {}
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/math/matrix4.inl"
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::Matrix4;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

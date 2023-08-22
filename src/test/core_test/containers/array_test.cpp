@@ -3,12 +3,12 @@
 #include "core/containers/array.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::Array") {
+TEST_CASE("sf::core::Array") {
 	Array<int, 128> arr;
 
-	CHECK(arr.len() == 0); // gj::Array default initialization is to zero
+	CHECK(arr.len() == 0); // sf::Array default initialization is to zero
 
 	SUBCASE("Adding elements") {
 		arr.push(5);
@@ -55,4 +55,4 @@ TEST_CASE("gj::core::Array") {
 	}
 }
 
-GJ_TEST_END
+SF_TEST_END

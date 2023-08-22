@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 const Quaternion<T> Quaternion<T>::identity = {};
@@ -61,4 +61,4 @@ Quaternion<T> Quaternion<T>::operator*(const Quaternion<T>& rhs) const {
 	return result.normalize().unwrap();
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

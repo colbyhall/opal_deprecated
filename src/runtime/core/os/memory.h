@@ -4,12 +4,12 @@
 
 #include "core/containers/non_null.h"
 
-GJ_SUPPRESS_WARNINGS_STD_BEGIN
+SF_SUPPRESS_WARNINGS_STD_BEGIN
 #include <new>
-GJ_SUPPRESS_WARNINGS_STD_END
+SF_SUPPRESS_WARNINGS_STD_END
 
-GJ_CORE_NAMESPACE_BEGIN
-GJ_MSVC_SUPPRESS_WARNING(4268)
+SF_CORE_NAMESPACE_BEGIN
+SF_MSVC_SUPPRESS_WARNING(4268)
 
 struct Layout {
 	usize size;
@@ -27,12 +27,12 @@ struct Layout {
 NonNull<void> malloc(const Layout& layout);
 
 template <typename T>
-GJ_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
+SF_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
 	static_assert(
 		std::is_trivial_v<T>,
 		"Value must be a trivial type to malloc"
 	);
-	return gj::core::malloc(Layout::array<T>(len)).as<T>();
+	return sf::core::malloc(Layout::array<T>(len)).as<T>();
 }
 
 NonNull<void> realloc(
@@ -49,7 +49,7 @@ NonNull<void> set(NonNull<void> ptr, u8 value, usize count);
 u8 count_ones(u8 byte);
 
 template <typename T>
-GJ_ALWAYS_INLINE u32 count_ones(T t) {
+SF_ALWAYS_INLINE u32 count_ones(T t) {
 	const usize size = sizeof(T);
 	void* ptr = &t;
 	u8 const* u8_casted = (u8 const*)ptr;
@@ -62,4 +62,4 @@ GJ_ALWAYS_INLINE u32 count_ones(T t) {
 	return result;
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

@@ -5,7 +5,7 @@
 // Include the implementation early
 #include "core/containers/function.inl"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename F>
 class Function;
@@ -35,7 +35,7 @@ public:
 		typename = std::enable_if_t<
 			!is_function_ref<std::decay_t<Functor>> &&
 			hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
-	FunctionRef(Functor&& f) : Super(gj::forward<Functor>(f)) {}
+	FunctionRef(Functor&& f) : Super(sf::forward<Functor>(f)) {}
 
 	FunctionRef(const FunctionRef&) = default;
 	FunctionRef& operator=(const FunctionRef&) const = delete;
@@ -55,17 +55,17 @@ public:
 		typename = std::enable_if_t<
 			!is_function<std::decay_t<Functor>> &&
 			hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
-	Function(Functor&& f) : Super(gj::forward<Functor>(f)) {}
+	Function(Functor&& f) : Super(sf::forward<Functor>(f)) {}
 
 	Function(Function&& move) noexcept = default;
 
 	~Function() = default;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::Function;
 using core::FunctionRef;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

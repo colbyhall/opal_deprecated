@@ -6,31 +6,30 @@
 #if defined(_WIN32) || defined(_WIN64)
 	#include <winapifamily.h>
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
-		#define GJ_PLATFORM_WINDOWS_UWP
+		#define SF_PLATFORM_WINDOWS_UWP
 	#endif
-	#define GJ_PLATFORM_WINDOWS
+	#define SF_PLATFORM_WINDOWS
 #else
 	#error Unsupported platform
 #endif
 
 // Determine compiler
 #if defined(__clang__)
-	#define GJ_COMPILER_CLANG
+	#define SF_COMPILER_CLANG
 #elif defined(_MSC_VER)
-	#define GJ_COMPILER_MSVC
+	#define SF_COMPILER_MSVC
 #else
 	#error Unsupported compiler
 #endif
 
 // Detect CPU architecture
-#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) ||             \
-	defined(_M_IX86)
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
 	// X86 CPU architecture
-	#define GJ_CPU_X86
+	#define SF_CPU_X86
 	#if defined(__x86_64__) || defined(_M_X64)
-		#define GJ_CPU_ADDRESS_BITS 64
+		#define SF_CPU_ADDRESS_BITS 64
 	#else
-		#define GJ_CPU_ADDRESS_BITS 32
+		#define SF_CPU_ADDRESS_BITS 32
 	#endif
 #else
 	#error Unsupported CPU architecture
@@ -38,165 +37,165 @@
 
 // Pragmas to store / restore the warning state and to disable individual
 // warnings
-#ifdef GJ_COMPILER_CLANG
-	#define GJ_PRAGMA(x)				 _Pragma(#x)
-	#define GJ_SUPPRESS_WARNING_PUSH	 GJ_PRAGMA(clang diagnostic push)
-	#define GJ_SUPPRESS_WARNING_POP		 GJ_PRAGMA(clang diagnostic pop)
-	#define GJ_CLANG_SUPPRESS_WARNING(w) GJ_PRAGMA(clang diagnostic ignored w)
+#ifdef SF_COMPILER_CLANG
+	#define SF_PRAGMA(x)				 _Pragma(#x)
+	#define SF_SUPPRESS_WARNING_PUSH	 SF_PRAGMA(clang diagnostic push)
+	#define SF_SUPPRESS_WARNING_POP		 SF_PRAGMA(clang diagnostic pop)
+	#define SF_CLANG_SUPPRESS_WARNING(w) SF_PRAGMA(clang diagnostic ignored w)
 #else
-	#define GJ_CLANG_SUPPRESS_WARNING(w)
+	#define SF_CLANG_SUPPRESS_WARNING(w)
 #endif
 
-#ifdef GJ_COMPILER_MSVC
-	#define GJ_PRAGMA(x)				__pragma(x)
-	#define GJ_SUPPRESS_WARNING_PUSH	GJ_PRAGMA(warning(push))
-	#define GJ_SUPPRESS_WARNING_POP		GJ_PRAGMA(warning(pop))
-	#define GJ_MSVC_SUPPRESS_WARNING(w) GJ_PRAGMA(warning(disable : w))
+#ifdef SF_COMPILER_MSVC
+	#define SF_PRAGMA(x)				__pragma(x)
+	#define SF_SUPPRESS_WARNING_PUSH	SF_PRAGMA(warning(push))
+	#define SF_SUPPRESS_WARNING_POP		SF_PRAGMA(warning(pop))
+	#define SF_MSVC_SUPPRESS_WARNING(w) SF_PRAGMA(warning(disable : w))
 #else
-	#define GJ_MSVC_SUPPRESS_WARNING(w)
+	#define SF_MSVC_SUPPRESS_WARNING(w)
 #endif
 
 // Define inline macro
-#if defined(GJ_COMPILER_CLANG)
-	#define GJ_ALWAYS_INLINE __inline__ __attribute__((always_inline))
-#elif defined(GJ_COMPILER_MSVC)
-	#define GJ_ALWAYS_INLINE __forceinline
+#if defined(SF_COMPILER_CLANG)
+	#define SF_ALWAYS_INLINE __inline__ __attribute__((always_inline))
+#elif defined(SF_COMPILER_MSVC)
+	#define SF_ALWAYS_INLINE __forceinline
 #else
 	#error Undefined inline
 #endif
 
-#define GJ_NO_DISCARD [[nodiscard]]
+#define SF_NO_DISCARD [[nodiscard]]
 
 // Cache line size (used for aligning to cache line)
-#ifndef GJ_CACHE_LINE_SIZE
-	#define GJ_CACHE_LINE_SIZE 64
+#ifndef SF_CACHE_LINE_SIZE
+	#define SF_CACHE_LINE_SIZE 64
 #endif
 
 // Define macro to get current function name
-#if defined(GJ_COMPILER_CLANG) || defined(COMPILER_GCC)
-	#define GJ_FUNCTION_NAME __PRETTY_FUNCTION__
-#elif defined(GJ_COMPILER_MSVC)
-	#define GJ_FUNCTION_NAME __FUNCTION__
+#if defined(SF_COMPILER_CLANG) || defined(COMPILER_GCC)
+	#define SF_FUNCTION_NAME __PRETTY_FUNCTION__
+#elif defined(SF_COMPILER_MSVC)
+	#define SF_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined
 #endif
 
 // OS-specific includes
-#if defined(GJ_PLATFORM_WINDOWS)
-	#define GJ_BREAKPOINT __debugbreak()
+#if defined(SF_PLATFORM_WINDOWS)
+	#define SF_BREAKPOINT __debugbreak()
 #else
 	#error Unknown platform
 #endif
 
 #ifdef _DEBUG
-	#define GJ_BUILD_DEBUG 1
+	#define SF_BUILD_DEBUG 1
 #else
-	#define GJ_BUILD_DEBUG 1
+	#define SF_BUILD_DEBUG 1
 #endif
 
-#define GJ_THREAD_LOCAL __declspec(thread)
+#define SF_THREAD_LOCAL __declspec(thread)
 
 // Macro to indicate that a parameter / variable is unused
-#define GJ_UNUSED(x) (void)x
+#define SF_UNUSED(x) (void)x
 
 // Crashes the application
-#define GJ_CRASH                                                               \
-	GJ_SUPPRESS_WARNING_PUSH                                                   \
-	GJ_MSVC_SUPPRESS_WARNING(6011)                                             \
-	do {                                                                       \
-		int* _ptr = nullptr;                                                   \
-		*_ptr = 0;                                                             \
-	} while (false) GJ_SUPPRESS_WARNING_POP
+#define SF_CRASH                                                                                                       \
+	SF_SUPPRESS_WARNING_PUSH                                                                                           \
+	SF_MSVC_SUPPRESS_WARNING(6011)                                                                                     \
+	do {                                                                                                               \
+		int* _ptr = nullptr;                                                                                           \
+		*_ptr = 0;                                                                                                     \
+	} while (false) SF_SUPPRESS_WARNING_POP
 
 // Suppress warnings generated by the standard template library
-#define GJ_SUPPRESS_WARNINGS_STD_BEGIN                                         \
-	GJ_SUPPRESS_WARNING_PUSH                                                   \
-	GJ_MSVC_SUPPRESS_WARNING(4619)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4710)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4711)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4820)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4514)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5262)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5264)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4365)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5219)
+#define SF_SUPPRESS_WARNINGS_STD_BEGIN                                                                                 \
+	SF_SUPPRESS_WARNING_PUSH                                                                                           \
+	SF_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5262)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5219)
 
-#define GJ_SUPPRESS_WARNINGS_STD_END GJ_SUPPRESS_WARNING_POP
+#define SF_SUPPRESS_WARNINGS_STD_END SF_SUPPRESS_WARNING_POP
 
 // Disable common warnings triggered by core when compiling with -Wall
-#define GJ_SUPPRESS_WARNINGS                                                   \
-	GJ_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                \
-	GJ_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                       \
-	GJ_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                 \
-	GJ_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                             \
-	GJ_CLANG_SUPPRESS_WARNING("-Wold-style-cast")                              \
-	GJ_CLANG_SUPPRESS_WARNING("-Wgnu-anonymous-struct")                        \
-	GJ_CLANG_SUPPRESS_WARNING("-Wnested-anon-types")                           \
-	GJ_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")                         \
-	GJ_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")                       \
-	GJ_CLANG_SUPPRESS_WARNING("-Wnonportable-system-include-path")             \
-	GJ_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                    \
-	GJ_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                            \
-	GJ_CLANG_SUPPRESS_WARNING("-Wformat-nonliteral")                           \
-	GJ_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")                      \
-	GJ_CLANG_SUPPRESS_WARNING("-Wcast-align")                                  \
-	GJ_CLANG_SUPPRESS_WARNING("-Winvalid-offsetof")                            \
-	GJ_CLANG_SUPPRESS_WARNING("-Wgnu-zero-variadic-macro-arguments")           \
-	GJ_CLANG_SUPPRESS_WARNING("-Wdocumentation-unknown-command")               \
-	GJ_CLANG_SUPPRESS_WARNING("-Wctad-maybe-unsupported")                      \
-	GJ_CLANG_SUPPRESS_WARNING("-Wdeprecated-copy")                             \
-	GJ_CLANG_SUPPRESS_WARNING("-Wimplicit-int-float-conversion")               \
-                                                                               \
-	GJ_MSVC_SUPPRESS_WARNING(4619)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4514)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4710)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4711)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4820)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4100)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4626)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5027)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4365)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4324)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4625)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5026)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4623)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4201)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4371)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5045)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4583)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4582)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5219)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4826)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(5264)                                             \
-	GJ_MSVC_SUPPRESS_WARNING(4127)
+#define SF_SUPPRESS_WARNINGS                                                                                           \
+	SF_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                                                        \
+	SF_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                                               \
+	SF_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                                                         \
+	SF_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                                                                     \
+	SF_CLANG_SUPPRESS_WARNING("-Wold-style-cast")                                                                      \
+	SF_CLANG_SUPPRESS_WARNING("-Wgnu-anonymous-struct")                                                                \
+	SF_CLANG_SUPPRESS_WARNING("-Wnested-anon-types")                                                                   \
+	SF_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")                                                                 \
+	SF_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")                                                               \
+	SF_CLANG_SUPPRESS_WARNING("-Wnonportable-system-include-path")                                                     \
+	SF_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                                                            \
+	SF_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                                                                    \
+	SF_CLANG_SUPPRESS_WARNING("-Wformat-nonliteral")                                                                   \
+	SF_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")                                                              \
+	SF_CLANG_SUPPRESS_WARNING("-Wcast-align")                                                                          \
+	SF_CLANG_SUPPRESS_WARNING("-Winvalid-offsetof")                                                                    \
+	SF_CLANG_SUPPRESS_WARNING("-Wgnu-zero-variadic-macro-arguments")                                                   \
+	SF_CLANG_SUPPRESS_WARNING("-Wdocumentation-unknown-command")                                                       \
+	SF_CLANG_SUPPRESS_WARNING("-Wctad-maybe-unsupported")                                                              \
+	SF_CLANG_SUPPRESS_WARNING("-Wdeprecated-copy")                                                                     \
+	SF_CLANG_SUPPRESS_WARNING("-Wimplicit-int-float-conversion")                                                       \
+                                                                                                                       \
+	SF_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4100)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4626)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5027)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4324)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4625)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5026)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4623)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4201)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4371)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5045)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4583)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4582)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5219)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4826)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
+	SF_MSVC_SUPPRESS_WARNING(4127)
 
-// Begin the gj namespace
-#define GJ_NAMESPACE_BEGIN                                                     \
-	GJ_SUPPRESS_WARNING_PUSH                                                   \
-	GJ_SUPPRESS_WARNINGS                                                       \
-	namespace gj {
+// Begin the sf namespace
+#define SF_NAMESPACE_BEGIN                                                                                             \
+	SF_SUPPRESS_WARNING_PUSH                                                                                           \
+	SF_SUPPRESS_WARNINGS                                                                                               \
+	namespace sf {
 
-// End the gj namespace
-#define GJ_NAMESPACE_END                                                       \
-	}                                                                          \
-	GJ_SUPPRESS_WARNING_POP
+// End the sf namespace
+#define SF_NAMESPACE_END                                                                                               \
+	}                                                                                                                  \
+	SF_SUPPRESS_WARNING_POP
 
-// Begin the gj::core namespace
-#define GJ_CORE_NAMESPACE_BEGIN                                                \
-	GJ_NAMESPACE_BEGIN                                                         \
+// Begin the sf::core namespace
+#define SF_CORE_NAMESPACE_BEGIN                                                                                        \
+	SF_NAMESPACE_BEGIN                                                                                                 \
 	namespace core {
 
-// End the gj::core namespace
-#define GJ_CORE_NAMESPACE_END                                                  \
-	}                                                                          \
-	GJ_NAMESPACE_END
+// End the sf::core namespace
+#define SF_CORE_NAMESPACE_END                                                                                          \
+	}                                                                                                                  \
+	SF_NAMESPACE_END
 
-#define GJ_HIDDEN_NAMESPACE_BEGIN namespace hidden {
+#define SF_HIDDEN_NAMESPACE_BEGIN namespace hidden {
 
-#define GJ_HIDDEN_NAMESPACE_END }
+#define SF_HIDDEN_NAMESPACE_END }
 
 // Declare primitive types under core namespace
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 using u8 = unsigned char;
 constexpr u8 U8_MIN = 0;
@@ -265,10 +264,10 @@ static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 using NullPtr = decltype(nullptr);
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Export primitive types to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 
 using core::f32;
 using core::f64;
@@ -288,77 +287,65 @@ using core::GB;
 using core::KB;
 using core::MB;
 
-GJ_NAMESPACE_END
+SF_NAMESPACE_END
 
 // Turn on asserts if compiled in debug
 #if defined(_DEBUG)
-	#define GJ_ENABLE_ASSERTS
+	#define SF_ENABLE_ASSERTS
 #endif
 
-#define GJ_ENUM_CLASS_BITFIELD(Enum)                                           \
-	inline Enum& operator|=(Enum& A, Enum B) {                                 \
-		return (Enum&)((__underlying_type(Enum)&)A |=                          \
-					   (__underlying_type(Enum))B);                            \
-	}                                                                          \
-	inline Enum& operator&=(Enum& A, Enum B) {                                 \
-		return (Enum&)((__underlying_type(Enum)&)A &=                          \
-					   (__underlying_type(Enum))B);                            \
-	}                                                                          \
-	inline Enum& operator^=(Enum& A, Enum B) {                                 \
-		return (Enum&)((__underlying_type(Enum)&)A ^=                          \
-					   (__underlying_type(Enum))B);                            \
-	}                                                                          \
-	inline Enum operator|(Enum A, Enum B) {                                    \
-		return (Enum)((__underlying_type(Enum))A | (__underlying_type(Enum))B  \
-		);                                                                     \
-	}                                                                          \
-	inline Enum operator&(Enum A, Enum B) {                                    \
-		return (Enum)((__underlying_type(Enum))A & (__underlying_type(Enum))B  \
-		);                                                                     \
-	}                                                                          \
-	inline Enum operator^(Enum A, Enum B) {                                    \
-		return (Enum)((__underlying_type(Enum))A ^ (__underlying_type(Enum))B  \
-		);                                                                     \
-	}                                                                          \
+#define SF_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
+	inline Enum& operator|=(Enum& A, Enum B) {                                                                         \
+		return (Enum&)((__underlying_type(Enum)&)A |= (__underlying_type(Enum))B);                                     \
+	}                                                                                                                  \
+	inline Enum& operator&=(Enum& A, Enum B) {                                                                         \
+		return (Enum&)((__underlying_type(Enum)&)A &= (__underlying_type(Enum))B);                                     \
+	}                                                                                                                  \
+	inline Enum& operator^=(Enum& A, Enum B) {                                                                         \
+		return (Enum&)((__underlying_type(Enum)&)A ^= (__underlying_type(Enum))B);                                     \
+	}                                                                                                                  \
+	inline Enum operator|(Enum A, Enum B) { return (Enum)((__underlying_type(Enum))A | (__underlying_type(Enum))B); }  \
+	inline Enum operator&(Enum A, Enum B) { return (Enum)((__underlying_type(Enum))A & (__underlying_type(Enum))B); }  \
+	inline Enum operator^(Enum A, Enum B) { return (Enum)((__underlying_type(Enum))A ^ (__underlying_type(Enum))B); }  \
 	inline Enum operator~(Enum A) { return (Enum) ~(__underlying_type(Enum))A; }
 
-#ifdef GJ_ENABLE_ASSERTS
+#ifdef SF_ENABLE_ASSERTS
 	// Crashes application if expression evaluates to false. Usage:
 	// ASSERT(condition) or ASSERT(condition, message)
-	#define GJ_ASSERT(expression, ...)                                         \
-		do {                                                                   \
-			if (!(expression)) {                                               \
-				GJ_CRASH;                                                      \
-			}                                                                  \
+	#define SF_ASSERT(expression, ...)                                                                                 \
+		do {                                                                                                           \
+			if (!(expression)) {                                                                                       \
+				SF_CRASH;                                                                                              \
+			}                                                                                                          \
 		} while (false)
 
 	// Halts application if expression evaluates to false but can resume. Usage:
 	// ENSURE(condition) or ENSURE(condition, message)
-	#define GJ_ENSURE(expression, ...)                                         \
-		do {                                                                   \
-			if (!(expression) && gj::core::_assert_failed_helper(              \
-									 false,                                    \
-									 #expression,                              \
-									 __FILE__,                                 \
-									 gj::u32(__LINE__),                        \
-									 ##__VA_ARGS__,                            \
-									 gj::core::AssertLastParam()               \
-								 ))                                            \
-				GJ_BREAKPOINT;                                                 \
+	#define SF_ENSURE(expression, ...)                                                                                 \
+		do {                                                                                                           \
+			if (!(expression) && sf::core::_assert_failed_helper(                                                      \
+									 false,                                                                            \
+									 #expression,                                                                      \
+									 __FILE__,                                                                         \
+									 sf::u32(__LINE__),                                                                \
+									 ##__VA_ARGS__,                                                                    \
+									 sf::core::AssertLastParam()                                                       \
+								 ))                                                                                    \
+				SF_BREAKPOINT;                                                                                         \
 		} while (false)
 
 #else
-	#define GJ_ASSERT(...) ((void)0)
-	#define GJ_ENSURE(...) ((void)0)
-#endif // GJ_ENABLE_ASSERTS
+	#define SF_ASSERT(...) ((void)0)
+	#define SF_ENSURE(...) ((void)0)
+#endif // SF_ENABLE_ASSERTS
 
-#define GJ_PANIC(msg)		 GJ_ASSERT(false, msg)
-#define GJ_UNIMPLEMENTED	 GJ_PANIC("Unimplemented!")
-#define GJ_INVALID_CODE_PATH GJ_PANIC("Invalid code path!")
+#define SF_PANIC(msg)		 SF_ASSERT(false, msg)
+#define SF_UNIMPLEMENTED	 SF_PANIC("Unimplemented!")
+#define SF_INVALID_CODE_PATH SF_PANIC("Invalid code path!")
 
 #include <utility>
 
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using std::forward;
 using std::move;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

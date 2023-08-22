@@ -20,7 +20,7 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-#ifdef GJ_PLATFORM_WINDOWS
+#ifdef SF_PLATFORM_WINDOWS
 
 static const wchar_t* window_class_name = L"gj_editor_window";
 
@@ -34,9 +34,9 @@ enum MONITOR_DPI_TYPE { MDT_EFFECTIVE_DPI, MDT_ANGULAR_DPI, MDT_RAW_DPI, MDT_DEF
 
 typedef HRESULT (*SetProcessDPIAwareness)(PROCESS_DPI_AWARENESS value);
 typedef HRESULT (*GetDPIForMonitor)(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT* dpiX, UINT* dpiY);
-#endif // #ifdef GJ_PLATFORM_WINDOWS
+#endif // #ifdef SF_PLATFORM_WINDOWS
 
-GJ_EDITOR_NAMESPACE_BEGIN
+SF_EDITOR_NAMESPACE_BEGIN
 
 static const char* source = R"#(
 cbuffer bufs : register(b0) {
@@ -150,17 +150,17 @@ public:
 			hInstance,
 			nullptr
 		);
-		GJ_ASSERT(handle != nullptr);
+		SF_ASSERT(handle != nullptr);
 
 		::ShowWindow(handle, SW_SHOWDEFAULT);
 
 		return Window(handle);
 	}
 
-	GJ_ALWAYS_INLINE Handle handle() const { return m_handle; }
+	SF_ALWAYS_INLINE Handle handle() const { return m_handle; }
 
 private:
-	GJ_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) {}
+	SF_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) {}
 
 	Handle m_handle;
 };
@@ -181,8 +181,8 @@ static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
 }
 
 Application::Application(int argc, char** argv) {
-	GJ_UNUSED(argc);
-	GJ_UNUSED(argv);
+	SF_UNUSED(argc);
+	SF_UNUSED(argv);
 }
 
 void Application::run(FunctionRef<void()> f) {
@@ -195,7 +195,7 @@ void Application::run(FunctionRef<void()> f) {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-#ifdef GJ_PLATFORM_WINDOWS
+#ifdef SF_PLATFORM_WINDOWS
 	static auto shcore = core::Library::open("shcore.dll");
 	if (shcore) {
 		auto& actual = shcore.as_mut().unwrap();
@@ -220,8 +220,8 @@ void Application::run(FunctionRef<void()> f) {
 	window_class.hIconSm = ::LoadIconW(hInstance, nullptr);
 
 	const ATOM atom = RegisterClassExW(&window_class);
-	GJ_ASSERT(atom != 0);
-#endif // GJ_PLATFORM_WINDOWS
+	SF_ASSERT(atom != 0);
+#endif // SF_PLATFORM_WINDOWS
 
 	auto window = Window::spawn("test", { 1280, 720 });
 	ImGui_ImplWin32_Init(window.handle());
@@ -232,23 +232,23 @@ void Application::run(FunctionRef<void()> f) {
 	dxc::Input vertex_input = { source, "vs_main", dxc::ShaderType::Vertex };
 	auto vertex_output = dxc::compile(vertex_input).unwrap();
 	auto vertex_shader =
-		device->create_vertex_shader(gj::move(vertex_output.binary), gj::move(vertex_output.input_parameters));
+		device->create_vertex_shader(sf::move(vertex_output.binary), sf::move(vertex_output.input_parameters));
 
 	// Compile the pixel shader using source
 	dxc::Input pixel_input = { source, "ps_main", dxc::ShaderType::Pixel };
 	auto pixel_output = dxc::compile(pixel_input).unwrap();
-	auto pixel_shader = device->create_pixel_shader(gj::move(pixel_output.binary));
+	auto pixel_shader = device->create_pixel_shader(sf::move(pixel_output.binary));
 
 	// Create the graphics pipeline
 	gpu::GraphicsPipelineDefinition definition = {
-		.vertex_shader = gj::move(vertex_shader),
-		.pixel_shader = gj::move(pixel_shader),
+		.vertex_shader = sf::move(vertex_shader),
+		.pixel_shader = sf::move(pixel_shader),
 		.blend_enabled = true,
 		.src_color_blend_factor = gpu::BlendFactor::SrcAlpha,
 		.dst_color_blend_factor = gpu::BlendFactor::OneMinusSrcAlpha,
 	};
 	definition.color_attachments.push(gpu::Format::RGBA_U8);
-	auto pipeline = device->create_graphics_pipeline(gj::move(definition));
+	auto pipeline = device->create_graphics_pipeline(sf::move(definition));
 
 	// Grab the font bitmap from imgui
 	unsigned char* pixels;
@@ -278,13 +278,13 @@ void Application::run(FunctionRef<void()> f) {
 	device->submit(upload_font_atlas);
 
 	for (;;) {
-#ifdef GJ_PLATFORM_WINDOWS
+#ifdef SF_PLATFORM_WINDOWS
 		MSG msg;
 		while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
 		}
-#endif // GJ_PLATFORM_WINDOWS
+#endif // SF_PLATFORM_WINDOWS
 
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -384,4 +384,4 @@ void Application::run(FunctionRef<void()> f) {
 	// ImGui::DestroyContext();
 }
 
-GJ_EDITOR_NAMESPACE_END
+SF_EDITOR_NAMESPACE_END

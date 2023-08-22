@@ -2,11 +2,11 @@
 
 #include "core/math/math.h"
 
-GJ_SUPPRESS_WARNINGS_STD_BEGIN
+SF_SUPPRESS_WARNINGS_STD_BEGIN
 #include <cmath>
-GJ_SUPPRESS_WARNINGS_STD_END
+SF_SUPPRESS_WARNINGS_STD_END
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 f32 cos(f32 x) { return std::cos(x); }
 f64 cos(f64 x) { return std::cos(x); }
@@ -39,4 +39,4 @@ f64 fmod(f64 numerator, f64 denominator) {
 	return std::fmod(numerator, denominator);
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

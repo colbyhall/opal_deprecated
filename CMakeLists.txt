@@ -1,7 +1,7 @@
 # A lot of this was copied from the JoltPhysics library
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(grapejuice CXX)
+project(sunflower CXX)
 
 # When turning this option on, the library will be compiled with debug symbols
 option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
@@ -90,9 +90,9 @@ endif ()
 set(CMAKE_EXE_LINKER_FLAGS_DISTRIBUTION "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
 
 # Set repository root
-set(GRAPEJUICE_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(SUNFLOWER_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 enable_testing()
 
 # Include the source directory cmake file
-include(${GRAPEJUICE_REPO_ROOT}/src/src.cmake)
+include(${SUNFLOWER_REPO_ROOT}/src/src.cmake)

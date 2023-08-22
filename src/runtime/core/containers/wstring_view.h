@@ -4,38 +4,38 @@
 
 #include "core/containers/string_view.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 using WChar = wchar_t;
 
 class WStringView {
 public:
-	GJ_ALWAYS_INLINE constexpr WStringView() : m_chars() {}
-	GJ_ALWAYS_INLINE WStringView(Slice<wchar_t const> bytes) : m_chars(bytes) {}
-	GJ_ALWAYS_INLINE constexpr WStringView(const wchar_t* ptr)
+	SF_ALWAYS_INLINE constexpr WStringView() : m_chars() {}
+	SF_ALWAYS_INLINE WStringView(Slice<wchar_t const> bytes) : m_chars(bytes) {}
+	SF_ALWAYS_INLINE constexpr WStringView(const wchar_t* ptr)
 		: m_chars(ptr, core::constexpr_strlen(ptr)) {}
 
-	GJ_ALWAYS_INLINE operator Slice<wchar_t const>() const { return m_chars; }
+	SF_ALWAYS_INLINE operator Slice<wchar_t const>() const { return m_chars; }
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_chars.len(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE const WChar* operator*() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_chars.len(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE const WChar* operator*() const {
 		return &m_chars[0];
 	}
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE const WChar* begin() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE const WChar* begin() const {
 		return m_chars.cbegin();
 	}
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE const WChar* end() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE const WChar* end() const {
 		return m_chars.cend();
 	}
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE const WChar* cbegin() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE const WChar* cbegin() const {
 		return m_chars.cbegin();
 	}
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE const WChar* cend() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE const WChar* cend() const {
 		return m_chars.cend();
 	}
 
-	GJ_ALWAYS_INLINE WChar operator[](usize index) const {
+	SF_ALWAYS_INLINE WChar operator[](usize index) const {
 		return m_chars[index];
 	}
 
@@ -43,10 +43,10 @@ private:
 	Slice<WChar const> m_chars;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::WChar;
 using core::WStringView;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

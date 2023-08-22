@@ -3,9 +3,9 @@
 #include "core/math/vector3.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::Vector3") {
+TEST_CASE("sf::core::Vector3") {
 	SUBCASE("Constructors") {
 		const Vector3<f64> default_constructed;
 		CHECK(default_constructed.x == doctest::Approx(0.0));
@@ -89,7 +89,7 @@ TEST_CASE("gj::core::Vector3") {
 	SUBCASE("Length") {
 		const Vector3<f64> v = { 3.0, 4.0, 5.0 };
 		const auto len = v.len();
-		CHECK(len == doctest::Approx(gj::sqrt(9.0 + 16.0 + 25.0)));
+		CHECK(len == doctest::Approx(sf::sqrt(9.0 + 16.0 + 25.0)));
 	}
 
 	SUBCASE("Normalized") {
@@ -101,4 +101,4 @@ TEST_CASE("gj::core::Vector3") {
 	}
 }
 
-GJ_TEST_END
+SF_TEST_END

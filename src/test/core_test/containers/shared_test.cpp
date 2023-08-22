@@ -3,7 +3,7 @@
 #include "core/containers/shared.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
 class SharedFoo : public SharedFromThis<SharedFoo> {
 public:
@@ -17,7 +17,7 @@ public:
 	int get_value() const override { return 100; }
 };
 
-TEST_CASE("gj::core::Shared") {
+TEST_CASE("sf::core::Shared") {
 	Shared<SharedFoo> foo = Shared<SharedBar>::make();
 	CHECK(foo->get_value() == 100);
 	CHECK(foo.strong() == 1);
@@ -34,4 +34,4 @@ TEST_CASE("gj::core::Shared") {
 	CHECK(bar.weak() == 1);
 }
 
-GJ_TEST_END
+SF_TEST_END

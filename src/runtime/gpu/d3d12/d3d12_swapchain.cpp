@@ -4,11 +4,11 @@
 #include "core/math/vector2.h"
 #include "gpu/d3d12/d3d12_device.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* window_handle)
 	: m_device(device.to_shared()) {
-	GJ_ASSERT(window_handle != nullptr);
+	SF_ASSERT(window_handle != nullptr);
 
 	m_hwnd = (HWND)window_handle;
 
@@ -38,7 +38,7 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* wind
 
 	throw_if_failed(device.device()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence)));
 	m_fence_event = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-	GJ_ASSERT(m_fence_event);
+	SF_ASSERT(m_fence_event);
 	m_fence_value = 1;
 
 	for (int i = 0; i < D3D12SwapchainImpl::frame_count; ++i) {
@@ -54,7 +54,7 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* wind
 			buffer_size,
 			resource
 		);
-		m_backbuffers.push(gj::move(backbuffer));
+		m_backbuffers.push(sf::move(backbuffer));
 	}
 }
 
@@ -109,10 +109,10 @@ void D3D12SwapchainImpl::resize() {
 			buffer_size,
 			resource
 		);
-		m_backbuffers.push(gj::move(backbuffer));
+		m_backbuffers.push(sf::move(backbuffer));
 	}
 
 	wait_for_previous();
 }
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

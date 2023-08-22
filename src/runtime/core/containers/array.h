@@ -5,7 +5,7 @@
 #include "core/containers/option.h"
 #include "core/containers/slice.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename Element, usize Count>
 class Array {
@@ -24,28 +24,28 @@ public:
 
 	~Array();
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_len; }
+	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_len; }
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE operator bool() const { return !is_empty(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_valid_index(usize index) const;
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
+	SF_NO_DISCARD SF_ALWAYS_INLINE operator bool() const { return !is_empty(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_valid_index(usize index) const;
 
-	GJ_ALWAYS_INLINE operator Slice<Element>();
-	GJ_ALWAYS_INLINE operator Slice<Element const>() const;
+	SF_ALWAYS_INLINE operator Slice<Element>();
+	SF_ALWAYS_INLINE operator Slice<Element const>() const;
 
-	GJ_ALWAYS_INLINE Element* begin() {
+	SF_ALWAYS_INLINE Element* begin() {
 		return reinterpret_cast<Element*>(m_bytes);
 	}
-	GJ_ALWAYS_INLINE Element* end() { return begin() + m_len; }
+	SF_ALWAYS_INLINE Element* end() { return begin() + m_len; }
 
-	GJ_ALWAYS_INLINE const Element* cbegin() const;
-	GJ_ALWAYS_INLINE const Element* cend() const;
+	SF_ALWAYS_INLINE const Element* cbegin() const;
+	SF_ALWAYS_INLINE const Element* cend() const;
 
-	GJ_ALWAYS_INLINE Element& operator[](usize index);
-	GJ_ALWAYS_INLINE const Element& operator[](usize index) const;
+	SF_ALWAYS_INLINE Element& operator[](usize index);
+	SF_ALWAYS_INLINE const Element& operator[](usize index) const;
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE Option<Element&> last();
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE Option<Element const&> last() const;
+	SF_NO_DISCARD SF_ALWAYS_INLINE Option<Element&> last();
+	SF_NO_DISCARD SF_ALWAYS_INLINE Option<Element const&> last() const;
 
 	/**
 	 * Inserts item into array by moving item into the index given
@@ -63,7 +63,7 @@ public:
 	 * array to insert at end
 	 * @param item - element copied into array
 	 */
-	GJ_ALWAYS_INLINE void insert(usize index, const Element& item_to_copy);
+	SF_ALWAYS_INLINE void insert(usize index, const Element& item_to_copy);
 
 	/**
 	 * Adds item to the end of array by moving it
@@ -71,7 +71,7 @@ public:
 	 * @param item - element moved into array
 	 * @return index that the element was inserted at
 	 */
-	GJ_ALWAYS_INLINE usize push(Element&& item);
+	SF_ALWAYS_INLINE usize push(Element&& item);
 
 	/**
 	 * Adds item to the end of array by copying it
@@ -79,7 +79,7 @@ public:
 	 * @param item - element copied into array
 	 * @return index that the element was inserted at
 	 */
-	GJ_ALWAYS_INLINE usize push(const Element& item);
+	SF_ALWAYS_INLINE usize push(const Element& item);
 
 	/**
 	 * Removes an item from the array by moving it out and then shifting moving
@@ -97,7 +97,7 @@ public:
 	 * @return removed element if there was one to remove
 	 */
 
-	GJ_ALWAYS_INLINE Option<Element> pop();
+	SF_ALWAYS_INLINE Option<Element> pop();
 
 	/**
 	 * Frees all elements in the array
@@ -109,12 +109,12 @@ private:
 	usize m_len = 0;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/containers/array.inl"
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::Array;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

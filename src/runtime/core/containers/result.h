@@ -5,19 +5,19 @@
 #include "core/non_copyable.h"
 #include "core/os/memory.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename Value, typename Error>
 class Result final : NonCopyable {
 public:
-	GJ_ALWAYS_INLINE Result(Value&& t) : m_set(true), m_ok(true) {
+	SF_ALWAYS_INLINE Result(Value&& t) : m_set(true), m_ok(true) {
 		auto* p = &m_data[0];
-		new (p) Value(gj::forward<Value>(t));
+		new (p) Value(sf::forward<Value>(t));
 	}
 
-	GJ_ALWAYS_INLINE Result(Error&& e) : m_set(true), m_ok(false) {
+	SF_ALWAYS_INLINE Result(Error&& e) : m_set(true), m_ok(false) {
 		auto* p = &m_data[0];
-		new (p) Error(gj::forward<Error>(e));
+		new (p) Error(sf::forward<Error>(e));
 	}
 
 	Result(Result&& other) noexcept
@@ -29,8 +29,8 @@ public:
 		other.m_data = {};
 	}
 	Result& operator=(Result&& other) noexcept {
-		auto to_destroy = gj::move(*this);
-		GJ_UNUSED(to_destroy);
+		auto to_destroy = sf::move(*this);
+		SF_UNUSED(to_destroy);
 
 		m_set = other.m_set;
 		m_ok = other.m_ok;
@@ -54,22 +54,22 @@ public:
 		}
 	}
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_ok() const { return m_ok; }
-	GJ_ALWAYS_INLINE operator bool() const { return is_ok(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_ok() const { return m_ok; }
+	SF_ALWAYS_INLINE operator bool() const { return is_ok(); }
 
-	GJ_ALWAYS_INLINE Value unwrap() {
-		GJ_ASSERT(is_ok());
+	SF_ALWAYS_INLINE Value unwrap() {
+		SF_ASSERT(is_ok());
 		m_set = false;
 
 		auto* p = reinterpret_cast<Value*>(&m_data[0]);
-		return gj::move(*p);
+		return sf::move(*p);
 	}
 
-	GJ_ALWAYS_INLINE Error unwrap_err() {
-		GJ_ASSERT(!is_ok());
+	SF_ALWAYS_INLINE Error unwrap_err() {
+		SF_ASSERT(!is_ok());
 		m_set = false;
 		auto* p = reinterpret_cast<Error*>(&m_data[0]);
-		return gj::move(*p);
+		return sf::move(*p);
 	}
 
 private:
@@ -84,9 +84,9 @@ private:
 	alignas(Internal) u8 m_data[sizeof(Internal)] = {};
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::Result;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

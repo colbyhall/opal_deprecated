@@ -2,8 +2,8 @@
 
 #include "core/os/memory.h"
 
-GJ_CORE_NAMESPACE_BEGIN
-GJ_HIDDEN_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
+SF_HIDDEN_NAMESPACE_BEGIN
 
 template <typename Functor, typename FuncType>
 struct FunctionRefCaller;
@@ -11,14 +11,14 @@ struct FunctionRefCaller;
 template <typename Functor, typename R, typename... P>
 struct FunctionRefCaller<Functor, R(P...)> {
 	static R call(void* obj, P&... params) {
-		return std::invoke(*(Functor*)obj, gj::forward<P>(params)...);
+		return std::invoke(*(Functor*)obj, sf::forward<P>(params)...);
 	}
 };
 
 template <typename Functor, typename... P>
 struct FunctionRefCaller<Functor, void(P...)> {
 	static void call(void* obj, P&... params) {
-		std::invoke(*(Functor*)obj, gj::forward<P>(params)...);
+		std::invoke(*(Functor*)obj, sf::forward<P>(params)...);
 	}
 };
 
@@ -40,8 +40,8 @@ public:
 		typename =
 			std::enable_if_t<!std::is_same_v<FunctionBase, std::decay_t<F>>>>
 	FunctionBase(F&& f) {
-		if (auto* binding = m_storage.bind(gj::forward<F>(f))) {
-			GJ_UNUSED(binding);
+		if (auto* binding = m_storage.bind(sf::forward<F>(f))) {
+			SF_UNUSED(binding);
 			using DecayedFunctor = std::remove_pointer_t<decltype(binding)>;
 			m_callable = &FunctionRefCaller<DecayedFunctor, R(Param...)>::call;
 		}
@@ -49,23 +49,23 @@ public:
 
 	FunctionBase(FunctionBase&& other) noexcept
 		: m_callable(other.m_callable)
-		, m_storage(gj::move(other.m_storage)) {
+		, m_storage(sf::move(other.m_storage)) {
 		if (m_callable) {
 			other.m_callable = nullptr;
 		}
 	}
 	FunctionBase& operator=(FunctionBase&& other) noexcept {
-		auto to_destroy = gj::move(*this);
-		GJ_UNUSED(to_destroy);
+		auto to_destroy = sf::move(*this);
+		SF_UNUSED(to_destroy);
 
-		m_callable = gj::move(other.m_callable);
+		m_callable = sf::move(other.m_callable);
 		other.m_callable = nullptr;
 
-		m_storage = gj::move(other.m_storage);
+		m_storage = sf::move(other.m_storage);
 	}
 
 	R operator()(Param... params) const {
-		GJ_ASSERT(m_callable);
+		SF_ASSERT(m_callable);
 		return (m_callable)(m_storage.ptr(), params...);
 	}
 
@@ -103,7 +103,7 @@ struct IFunctionWrapper {
 template <typename T>
 struct FunctionWrapper : public IFunctionWrapper {
 	template <typename... A>
-	explicit FunctionWrapper(A&&... args) : t(gj::forward<A>(args)...) {}
+	explicit FunctionWrapper(A&&... args) : t(sf::forward<A>(args)...) {}
 	~FunctionWrapper() override = default;
 
 	void* ptr() override { return &t; }
@@ -133,7 +133,7 @@ struct UniqueStorage {
 	template <typename F>
 	std::remove_reference_t<F>* bind(F&& f) {
 		void* memory = core::malloc(core::Layout::single<FunctionWrapper<F>>);
-		auto* result = new (memory) FunctionWrapper<F>(gj::forward<F>(f));
+		auto* result = new (memory) FunctionWrapper<F>(sf::forward<F>(f));
 		m_ptr = memory;
 
 		return (std::remove_reference_t<F>*)result->ptr();
@@ -192,5 +192,5 @@ template <typename F, typename... P>
 inline constexpr bool func_can_bind_to_functor<void(P...), F> =
 	std::is_invocable_v<F, P...>;
 
-GJ_HIDDEN_NAMESPACE_END
-GJ_CORE_NAMESPACE_END
+SF_HIDDEN_NAMESPACE_END
+SF_CORE_NAMESPACE_END

@@ -7,13 +7,13 @@
 #include "gpu/d3d12/d3d12_shader.h"
 #include "gpu/d3d12/d3d12_texture.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON;
 
-	GJ_SUPPRESS_WARNING_PUSH
-	GJ_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
+	SF_SUPPRESS_WARNING_PUSH
+	SF_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
 	switch (layout) {
 	case Layout::General:
 		state = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -28,10 +28,10 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 		state = D3D12_RESOURCE_STATE_PRESENT;
 		break;
 	default:
-		GJ_UNIMPLEMENTED;
+		SF_UNIMPLEMENTED;
 		break;
 	}
-	GJ_SUPPRESS_WARNING_POP
+	SF_SUPPRESS_WARNING_POP
 
 	return state;
 }
@@ -150,8 +150,8 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const IGra
 IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const IBuffer& buffer, u32 stride) {
 	auto& impl = static_cast<const D3D12BufferImpl&>(buffer);
 
-	GJ_ASSERT(impl.size() % stride == 0);
-	GJ_ASSERT((impl.usage() & BufferUsage::Vertex) == BufferUsage::Vertex);
+	SF_ASSERT(impl.size() % stride == 0);
+	SF_ASSERT((impl.usage() & BufferUsage::Vertex) == BufferUsage::Vertex);
 
 	D3D12_VERTEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
@@ -166,8 +166,8 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const IBuf
 IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const IBuffer& buffer) {
 	auto& impl = static_cast<const D3D12BufferImpl&>(buffer);
 
-	GJ_ASSERT(impl.size() % sizeof(u32) == 0);
-	GJ_ASSERT((impl.usage() & BufferUsage::Index) == BufferUsage::Index);
+	SF_ASSERT(impl.size() % sizeof(u32) == 0);
+	SF_ASSERT((impl.usage() & BufferUsage::Index) == BufferUsage::Index);
 
 	D3D12_INDEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
@@ -197,4 +197,4 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_
 	return *this;
 }
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

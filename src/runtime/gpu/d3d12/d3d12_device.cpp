@@ -8,7 +8,7 @@
 #include "gpu/d3d12/d3d12_swapchain.h"
 #include "gpu/d3d12/d3d12_texture.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 static D3D12_BLEND convert_blend_factor(BlendFactor factor) {
 	switch (factor) {
@@ -64,7 +64,7 @@ D3D12DeviceImpl::D3D12DeviceImpl() {
 	m_create_device = d3d12.find<FnCreateDevice>("D3D12CreateDevice");
 	m_serialize_root_signature = d3d12.find<FnSerializeRootSignature>("D3D12SerializeRootSignature");
 
-#if GJ_GPU_DEBUG
+#if SF_GPU_DEBUG
 	// Always enable the debug layer before doing anything DX12 related
 	// so all possible errors generated while creating DX12 objects
 	// are caught by the debug layer
@@ -79,7 +79,7 @@ D3D12DeviceImpl::D3D12DeviceImpl() {
 	ComPtr<IDXGIAdapter4> adapter;
 	{
 		UINT create_factory_flags = 0;
-#if GJ_GPU_DEBUG
+#if SF_GPU_DEBUG
 		create_factory_flags = DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
@@ -114,7 +114,7 @@ D3D12DeviceImpl::D3D12DeviceImpl() {
 		throw_if_failed(result);
 
 		// Enable debug messages in debug mode.
-#if GJ_GPU_DEBUG
+#if SF_GPU_DEBUG
 		ComPtr<ID3D12InfoQueue> pInfoQueue;
 		if (SUCCEEDED(device1.As(&pInfoQueue))) {
 			pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
@@ -187,7 +187,7 @@ Shared<IBuffer> D3D12DeviceImpl::create_buffer(BufferUsage usage, Heap kind, usi
 		break;
 	default:
 		// heap.Type = D3D12_HEAP_TYPE_READBACK;
-		GJ_UNIMPLEMENTED;
+		SF_UNIMPLEMENTED;
 		break;
 	}
 
@@ -215,7 +215,7 @@ Shared<IBuffer> D3D12DeviceImpl::create_buffer(BufferUsage usage, Heap kind, usi
 		IID_PPV_ARGS(&resource)
 	));
 
-	return Shared<D3D12BufferImpl>::make(usage, kind, size, gj::move(resource));
+	return Shared<D3D12BufferImpl>::make(usage, kind, size, sf::move(resource));
 }
 
 Shared<ITexture> D3D12DeviceImpl::create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const {
@@ -296,7 +296,7 @@ Shared<IGraphicsPipeline> D3D12DeviceImpl::create_graphics_pipeline(GraphicsPipe
 			size_in_bytes = 16;
 			break;
 		case ShaderPrimitive::Matrix4f32:
-			GJ_INVALID_CODE_PATH;
+			SF_INVALID_CODE_PATH;
 			break;
 		}
 		input.AlignedByteOffset = (UINT)offset;
@@ -402,21 +402,21 @@ Shared<IGraphicsPipeline> D3D12DeviceImpl::create_graphics_pipeline(GraphicsPipe
 	throw_if_failed(m_device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&pipeline)));
 
 	return Shared<D3D12GraphicsPipelineImpl>::make(
-		gj::forward<GraphicsPipelineDefinition>(definition),
-		gj::move(pipeline)
+		sf::forward<GraphicsPipelineDefinition>(definition),
+		sf::move(pipeline)
 	);
 }
 
 Shared<IVertexShader>
 D3D12DeviceImpl::create_vertex_shader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) const {
 	return Shared<D3D12VertexShaderImpl>::make(
-		gj::forward<Vector<u8>>(binary),
-		gj::forward<Vector<InputParameter>>(input_parameters)
+		sf::forward<Vector<u8>>(binary),
+		sf::forward<Vector<InputParameter>>(input_parameters)
 	);
 }
 
 Shared<IPixelShader> D3D12DeviceImpl::create_pixel_shader(Vector<u8>&& binary) const {
-	return Shared<D3D12PixelShaderImpl>::make(gj::forward<Vector<u8>>(binary));
+	return Shared<D3D12PixelShaderImpl>::make(sf::forward<Vector<u8>>(binary));
 }
 
 void D3D12DeviceImpl::submit(const IGraphicsCommandList& command_list) const {
@@ -443,4 +443,4 @@ void D3D12DeviceImpl::flush_queue() const {
 	}
 }
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

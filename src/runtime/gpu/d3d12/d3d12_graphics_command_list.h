@@ -7,7 +7,7 @@
 #include "gpu/d3d12/d3d12.h"
 #include "gpu/graphics_command_list.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 class D3D12GraphicsCommandListImpl final : public IGraphicsCommandList {
 public:
@@ -62,4 +62,4 @@ private:
 	D3D12GraphicsCommandListImpl& m_command_list;
 };
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

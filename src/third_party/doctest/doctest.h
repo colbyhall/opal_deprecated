@@ -4,16 +4,16 @@
 
 #include "core/core.h"
 
-GJ_SUPPRESS_WARNINGS_STD_BEGIN
+SF_SUPPRESS_WARNINGS_STD_BEGIN
 #include "doctest_internal.h"
-GJ_SUPPRESS_WARNINGS_STD_END
+SF_SUPPRESS_WARNINGS_STD_END
 
-#define GJ_TEST_BEGIN                                                                                                  \
-	GJ_SUPPRESS_WARNING_PUSH                                                                                           \
-	GJ_SUPPRESS_WARNINGS                                                                                               \
-	using namespace gj;
+#define SF_TEST_BEGIN                                                                                                  \
+	SF_SUPPRESS_WARNING_PUSH                                                                                           \
+	SF_SUPPRESS_WARNINGS                                                                                               \
+	using namespace sf;
 
-#define GJ_TEST_END GJ_SUPPRESS_WARNING_POP
+#define SF_TEST_END SF_SUPPRESS_WARNING_POP
 
 #define TEST_MAIN()                                                                                                    \
 	int main(int argc, char** argv) { return doctest::Context(argc, argv).run(); }

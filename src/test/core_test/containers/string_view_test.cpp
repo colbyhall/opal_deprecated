@@ -3,9 +3,9 @@
 #include "core/containers/string_view.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::StringView") {
+TEST_CASE("sf::core::StringView") {
 	const StringView str = "Hello World!";
 
 	REQUIRE(str.len() == 12);
@@ -15,4 +15,4 @@ TEST_CASE("gj::core::StringView") {
 	REQUIRE(other == str);
 }
 
-GJ_TEST_END
+SF_TEST_END

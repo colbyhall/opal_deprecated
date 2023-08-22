@@ -3,9 +3,9 @@
 #include "core/math/vector2.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::Vector2") {
+TEST_CASE("sf::core::Vector2") {
 	SUBCASE("Constructors") {
 		const Vector2<f64> default_constructed;
 		CHECK(default_constructed.x == doctest::Approx(0.0));
@@ -79,4 +79,4 @@ TEST_CASE("gj::core::Vector2") {
 	}
 }
 
-GJ_TEST_END
+SF_TEST_END

@@ -3,9 +3,9 @@
 #include "core/containers/non_null.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::NonNull") {
+TEST_CASE("sf::core::NonNull") {
 	int x = 42;
 
 	// NonNull's behave as references but are easier to work with
@@ -32,4 +32,4 @@ TEST_CASE("gj::core::NonNull") {
 	CHECK(p_z == p_x);
 }
 
-GJ_TEST_END
+SF_TEST_END

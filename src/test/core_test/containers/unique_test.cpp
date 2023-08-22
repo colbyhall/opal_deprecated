@@ -3,7 +3,7 @@
 #include "core/containers/unique.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
 class Foo {
 public:
@@ -17,12 +17,12 @@ public:
 	int get_value() const override { return 100; }
 };
 
-TEST_CASE("gj::core::Unique") {
-	auto foo = gj::Unique<Bar>::make();
+TEST_CASE("sf::core::Unique") {
+	auto foo = sf::Unique<Bar>::make();
 	CHECK(foo->get_value() == 100);
 
 	auto bar = foo;
 	CHECK(bar->get_value() == 100);
 }
 
-GJ_TEST_END
+SF_TEST_END

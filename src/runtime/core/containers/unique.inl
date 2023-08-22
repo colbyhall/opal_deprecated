@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename Base>
 Unique<Base>::Unique(const Unique<Base>& copy) noexcept {
@@ -19,7 +19,7 @@ Unique<Base>& Unique<Base>::operator=(const Unique<Base>& copy) noexcept {
 		"Can ony perform copy with a concrete class"
 	);
 	Unique<Base> to_destroy = core::move(*this);
-	GJ_UNUSED(to_destroy);
+	SF_UNUSED(to_destroy);
 
 	void* ptr = core::malloc(core::Layout::single<Base>);
 	m_ptr = new (ptr) Base(*copy);
@@ -28,7 +28,7 @@ Unique<Base>& Unique<Base>::operator=(const Unique<Base>& copy) noexcept {
 }
 
 template <typename Base>
-GJ_ALWAYS_INLINE Unique<Base>::operator NonNull<Base const>() const {
+SF_ALWAYS_INLINE Unique<Base>::operator NonNull<Base const>() const {
 	return m_ptr;
 }
 
@@ -41,4 +41,4 @@ Unique<Base>::~Unique() {
 	}
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

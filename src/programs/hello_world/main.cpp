@@ -3,11 +3,11 @@
 #include "editor/application.h"
 #include "imgui/imgui.h"
 
-GJ_SUPPRESS_WARNING_PUSH
-GJ_SUPPRESS_WARNINGS
+SF_SUPPRESS_WARNING_PUSH
+SF_SUPPRESS_WARNINGS
 
 int main(int argc, char** argv) {
-	gj::editor::Application(argc, argv).run([]() {
+	sf::editor::Application(argc, argv).run([]() {
 		// Create a window called "My First Tool", with a menu bar.
 		static bool a = true;
 		ImGui::Begin("My First Tool", &a, ImGuiWindowFlags_MenuBar);
@@ -42,4 +42,4 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-GJ_SUPPRESS_WARNING_POP
+SF_SUPPRESS_WARNING_POP

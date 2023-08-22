@@ -3,13 +3,13 @@
 #include "core/containers/wstring_view.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::WStringView") {
+TEST_CASE("sf::core::WStringView") {
 	WStringView str = L"Hello World!";
 
 	REQUIRE(str.len() == 12);
 	REQUIRE(str[0] == 'H');
 }
 
-GJ_TEST_END
+SF_TEST_END

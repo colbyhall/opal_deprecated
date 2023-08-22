@@ -6,7 +6,7 @@
 #include "core/math/vector4.h"
 #include "gpu/gpu.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 /**
  * Defines the memory format for an ITexture. Used to transition a texture into specific states for a specific batch of
@@ -187,4 +187,4 @@ public:
 	virtual ~IRenderPassCommandRecorder() = default;
 };
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

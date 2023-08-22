@@ -1,5 +1,5 @@
 # Set the root
-set(SRC_ROOT ${GRAPEJUICE_REPO_ROOT}/src)
+set(SRC_ROOT ${SUNFLOWER_REPO_ROOT}/src)
 
 # Set the programs root
 set(PROGRAMS_ROOT ${SRC_ROOT}/programs)

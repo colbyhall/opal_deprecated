@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 const Matrix4<T> Matrix4<T>::identity = Matrix4<T>::from_columns(
@@ -211,7 +211,7 @@ Option<Matrix4<T>> Matrix4<T>::inverse() const {
 
 template <typename T>
 Vector4<T> Matrix4<T>::row(usize index) const {
-	GJ_ASSERT(index < 4);
+	SF_ASSERT(index < 4);
 	switch (index) {
 	case 0:
 		return { x.x, y.x, z.x, w.x };
@@ -268,4 +268,4 @@ Vector4<T> Matrix4<T>::operator*(const Vector4<T>& rhs) const {
 	return { x, y, z, w };
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

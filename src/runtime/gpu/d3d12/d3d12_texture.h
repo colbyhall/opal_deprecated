@@ -5,7 +5,7 @@
 #include "gpu/d3d12/d3d12_memory.h"
 #include "gpu/texture.h"
 
-GJ_GPU_NAMESPACE_BEGIN
+SF_GPU_NAMESPACE_BEGIN
 
 DXGI_FORMAT format_to_dxgi(Format format);
 
@@ -27,11 +27,11 @@ public:
 	~D3D12TextureImpl() final;
 	// ~ITexture
 
-	GJ_ALWAYS_INLINE const ComPtr<ID3D12Resource>& resource() const { return m_resource; };
+	SF_ALWAYS_INLINE const ComPtr<ID3D12Resource>& resource() const { return m_resource; };
 
-	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& rtv_handle() const { return m_rtv_handle; }
-	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& dsv_handle() const { return m_dsv_handle; }
-	GJ_ALWAYS_INLINE const D3D12DescriptorHandle& bt2dv_handle() const { return m_bt2dv_handle; }
+	SF_ALWAYS_INLINE const D3D12DescriptorHandle& rtv_handle() const { return m_rtv_handle; }
+	SF_ALWAYS_INLINE const D3D12DescriptorHandle& dsv_handle() const { return m_dsv_handle; }
+	SF_ALWAYS_INLINE const D3D12DescriptorHandle& bt2dv_handle() const { return m_bt2dv_handle; }
 
 private:
 	Shared<IDevice> m_context;
@@ -46,4 +46,4 @@ private:
 	D3D12DescriptorHandle m_bt2dv_handle = {};
 };
 
-GJ_GPU_NAMESPACE_END
+SF_GPU_NAMESPACE_END

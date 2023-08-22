@@ -2,22 +2,22 @@
 
 #include "core/os/file_system.h"
 
-#ifdef GJ_PLATFORM_WINDOWS
+#ifdef SF_PLATFORM_WINDOWS
 	#include "core/os/windows.h"
 	#include "core/containers/wstring.h"
 #else
 	#error "core/os/file_system not implemented for current platform"
 #endif
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
-#ifdef GJ_PLATFORM_WINDOWS
+#ifdef SF_PLATFORM_WINDOWS
 
 Result<File, File::Error> File::open(const StringView& path, Flags flags) {
 	const bool read = (flags & Flags::Read) == Flags::Read;
 	const bool write = (flags & Flags::Write) == Flags::Write;
 	const bool create = (flags & Flags::Create) == Flags::Create;
-	GJ_ASSERT(read || write);
+	SF_ASSERT(read || write);
 
 	DWORD access = 0;
 	if (read) {
@@ -78,23 +78,23 @@ usize File::seek(Seek method, isize distance) {
 	LARGE_INTEGER new_cursor;
 	const bool ok =
 		::SetFilePointerEx(m_handle, win32_distance, &new_cursor, win32_method);
-	GJ_ASSERT(ok);
+	SF_ASSERT(ok);
 
 	m_cursor = static_cast<usize>(new_cursor.QuadPart);
 	return m_cursor;
 }
 
 void File::set_eof() {
-	GJ_ASSERT(
+	SF_ASSERT(
 		(m_flags & Flags::Write) == Flags::Write,
 		"Can only write to file that has been open with File::Flags::Read"
 	);
 	const bool ok = ::SetEndOfFile(m_handle);
-	GJ_ASSERT(ok);
+	SF_ASSERT(ok);
 }
 
 usize File::read(Slice<u8> buffer) {
-	GJ_ASSERT(
+	SF_ASSERT(
 		(m_flags & Flags::Read) == Flags::Write,
 		"Can only read a file that has been open with File::Flags::Read"
 	);
@@ -107,7 +107,7 @@ usize File::read(Slice<u8> buffer) {
 		&amount_read,
 		nullptr
 	);
-	GJ_ASSERT(ok);
+	SF_ASSERT(ok);
 
 	m_cursor += amount_read;
 
@@ -115,7 +115,7 @@ usize File::read(Slice<u8> buffer) {
 }
 
 void File::write(Slice<const u8> buffer) {
-	GJ_ASSERT(
+	SF_ASSERT(
 		(m_flags & Flags::Write) == Flags::Write,
 		"Can only write to file that has been open with File::Flags::Read"
 	);
@@ -127,7 +127,7 @@ void File::write(Slice<const u8> buffer) {
 		nullptr,
 		nullptr
 	);
-	GJ_ASSERT(ok);
+	SF_ASSERT(ok);
 
 	m_cursor += buffer.len();
 }
@@ -135,7 +135,7 @@ void File::write(Slice<const u8> buffer) {
 File::~File() {
 	if (m_handle) {
 		const bool ok = ::CloseHandle((HANDLE)m_handle) > 0;
-		GJ_ASSERT(ok);
+		SF_ASSERT(ok);
 		m_handle = nullptr;
 	}
 }
@@ -162,7 +162,7 @@ static void read_directory_impl(
 
 	if (find_handle == INVALID_HANDLE_VALUE) {
 		// const auto error = GetLastError();
-		GJ_ASSERT(true, "Check error");
+		SF_ASSERT(true, "Check error");
 	}
 
 	do {
@@ -209,10 +209,10 @@ static void read_directory_impl(
 
 			if (recursive) read_directory_impl(new_path, recursive, function);
 
-			item.path = gj::move(new_path);
+			item.path = sf::move(new_path);
 		} else {
 			item.type = DirectoryItem::Type::File;
-			item.path = gj::move(new_path);
+			item.path = sf::move(new_path);
 
 			item.meta.read_only =
 				(find_data.dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0;
@@ -236,7 +236,7 @@ void read_dir_recursive(const StringView& path, ReadDirFunction function) {
 String cwd() {
 	// Query the length of the path
 	const auto len = (usize)GetCurrentDirectoryW(0, nullptr);
-	GJ_ASSERT(len > 0);
+	SF_ASSERT(len > 0);
 
 	// Create a wide string buffer to get the cwd path
 	WString buffer;
@@ -276,7 +276,7 @@ Result<String, File::Error> read_to_string(const StringView& path) {
 	// Null terminate
 	bytes.push(0);
 
-	return String::from(gj::move(bytes));
+	return String::from(sf::move(bytes));
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

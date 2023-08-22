@@ -9,16 +9,16 @@
 #include "gpu/shader.h"
 
 // Begin the dxc namespace
-#define GJ_DXC_NAMESPACE_BEGIN																    \
-	GJ_NAMESPACE_BEGIN																			\
+#define SF_DXC_NAMESPACE_BEGIN																    \
+	SF_NAMESPACE_BEGIN																			\
 	namespace dxc {
 
 // End the dxc namespace
-#define GJ_DXC_NAMESPACE_END																	\
+#define SF_DXC_NAMESPACE_END																	\
 	}																						\
-	GJ_NAMESPACE_END
+	SF_NAMESPACE_END
 
-GJ_DXC_NAMESPACE_BEGIN
+SF_DXC_NAMESPACE_BEGIN
 
 using gpu::InputParameter;
 
@@ -40,4 +40,4 @@ struct Output {
 
 Result<Output, String> compile(const Input& input);
 
-GJ_DXC_NAMESPACE_END
+SF_DXC_NAMESPACE_END

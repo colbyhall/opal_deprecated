@@ -6,7 +6,7 @@
 #include "core/containers/option.h"
 #include "core/type_traits.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 enum class SMode { NonAtomic, Atomic };
 
@@ -45,8 +45,8 @@ public:
 		c.add_strong();
 	}
 	Shared& operator=(const Shared<Base, Mode>& copy) noexcept {
-		Shared<Base, Mode> to_destroy = gj::move(*this);
-		GJ_UNUSED(to_destroy);
+		Shared<Base, Mode> to_destroy = sf::move(*this);
+		SF_UNUSED(to_destroy);
 
 		m_counter = copy.m_counter;
 		m_base = copy.m_base;
@@ -67,7 +67,7 @@ public:
 	Shared& operator=(Shared<Derived, Mode>&& m) noexcept {
 		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
-		Shared<Base, Mode> to_destroy = gj::move(*this);
+		Shared<Base, Mode> to_destroy = sf::move(*this);
 		m_counter = m.m_counter;
 		m_base = m.m_base;
 		m.m_counter = nullptr;
@@ -79,19 +79,19 @@ public:
 	Weak<Base, Mode> downgrade() const;
 
 	// Accessors
-	GJ_ALWAYS_INLINE operator NonNull<Base>() { return &value(); }
-	GJ_ALWAYS_INLINE operator NonNull<Base const>() const { return &value(); }
-	GJ_ALWAYS_INLINE operator Base*() { return &value(); }
-	GJ_ALWAYS_INLINE operator Base const*() const { return &value(); }
-	GJ_ALWAYS_INLINE operator Base&() { return value(); }
-	GJ_ALWAYS_INLINE operator Base const&() const { return value(); }
-	GJ_ALWAYS_INLINE Base* operator->() { return &value(); }
-	GJ_ALWAYS_INLINE Base const* operator->() const { return &value(); }
-	GJ_ALWAYS_INLINE Base& operator*() { return value(); }
-	GJ_ALWAYS_INLINE Base const& operator*() const { return value(); }
+	SF_ALWAYS_INLINE operator NonNull<Base>() { return &value(); }
+	SF_ALWAYS_INLINE operator NonNull<Base const>() const { return &value(); }
+	SF_ALWAYS_INLINE operator Base*() { return &value(); }
+	SF_ALWAYS_INLINE operator Base const*() const { return &value(); }
+	SF_ALWAYS_INLINE operator Base&() { return value(); }
+	SF_ALWAYS_INLINE operator Base const&() const { return value(); }
+	SF_ALWAYS_INLINE Base* operator->() { return &value(); }
+	SF_ALWAYS_INLINE Base const* operator->() const { return &value(); }
+	SF_ALWAYS_INLINE Base& operator*() { return value(); }
+	SF_ALWAYS_INLINE Base const& operator*() const { return value(); }
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
 
 private:
 	Shared() = default;
@@ -103,8 +103,8 @@ private:
 	template <typename Derived, SMode Mode>
 	friend class Weak;
 
-	GJ_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
-	GJ_ALWAYS_INLINE Base& value() const { return *m_base; }
+	SF_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+	SF_ALWAYS_INLINE Base& value() const { return *m_base; }
 
 	Counter* m_counter;
 	Base* m_base;
@@ -126,8 +126,8 @@ public:
 	Weak& operator=(const Weak<Derived, Mode>& copy) noexcept {
 		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
-		Weak<Base, Mode> to_destroy = gj::move(*this);
-		GJ_UNUSED(to_destroy);
+		Weak<Base, Mode> to_destroy = sf::move(*this);
+		SF_UNUSED(to_destroy);
 
 		m_counter = copy.m_counter;
 		m_base = copy.m_base;
@@ -148,7 +148,7 @@ public:
 	Weak& operator=(Weak<Derived, Mode>&& m) noexcept {
 		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");
 
-		Weak<Base, Mode> to_destroy = gj::move(*this);
+		Weak<Base, Mode> to_destroy = sf::move(*this);
 		m_counter = m.m_counter;
 		m_base = m.m_base;
 		m.m_counter = nullptr;
@@ -157,10 +157,10 @@ public:
 	}
 	~Weak();
 
-	GJ_NO_DISCARD Option<Shared<Base, Mode>> upgrade() const;
+	SF_NO_DISCARD Option<Shared<Base, Mode>> upgrade() const;
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE u32 strong() const { return counter().strong(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE u32 weak() const { return counter().weak(); }
 
 private:
 	Weak() = default;
@@ -172,7 +172,7 @@ private:
 	template <typename Derived, SMode>
 	friend class Weak;
 
-	GJ_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+	SF_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
 
 	Counter* m_counter;
 	Base* m_base;
@@ -183,23 +183,23 @@ class SharedCounter<SMode::NonAtomic> {
 public:
 	SharedCounter() = default;
 
-	GJ_ALWAYS_INLINE u32 strong() const { return m_strong; }
-	GJ_ALWAYS_INLINE u32 weak() const { return m_weak; }
+	SF_ALWAYS_INLINE u32 strong() const { return m_strong; }
+	SF_ALWAYS_INLINE u32 weak() const { return m_weak; }
 
-	GJ_ALWAYS_INLINE u32 add_strong() const {
+	SF_ALWAYS_INLINE u32 add_strong() const {
 		m_strong += 1;
 		return m_strong - 1;
 	}
-	GJ_ALWAYS_INLINE u32 remove_strong() const {
+	SF_ALWAYS_INLINE u32 remove_strong() const {
 		m_strong -= 1;
 		return m_strong + 1;
 	}
 
-	GJ_ALWAYS_INLINE u32 add_weak() const {
+	SF_ALWAYS_INLINE u32 add_weak() const {
 		m_weak += 1;
 		return m_weak - 1;
 	}
-	GJ_ALWAYS_INLINE u32 remove_weak() const {
+	SF_ALWAYS_INLINE u32 remove_weak() const {
 		m_weak -= 1;
 		return m_weak + 1;
 	}
@@ -214,14 +214,14 @@ class SharedCounter<SMode::Atomic> {
 public:
 	SharedCounter() = default;
 
-	GJ_ALWAYS_INLINE u32 strong() const { return m_strong.load(); }
-	GJ_ALWAYS_INLINE u32 weak() const { return m_weak.load(); }
+	SF_ALWAYS_INLINE u32 strong() const { return m_strong.load(); }
+	SF_ALWAYS_INLINE u32 weak() const { return m_weak.load(); }
 
-	GJ_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1); }
-	GJ_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1); }
+	SF_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1); }
+	SF_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1); }
 
-	GJ_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1); }
-	GJ_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1); }
+	SF_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1); }
+	SF_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1); }
 
 private:
 	Atomic<u32> m_strong = 1;
@@ -244,13 +244,13 @@ private:
 	Option<Weak<T, Mode>> m_this;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/containers/shared.inl"
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 template <typename T>
 using Shared = core::Shared<T, core::SMode::NonAtomic>;
 
@@ -269,4 +269,4 @@ using AtomicSharedFromThis = core::SharedFromThis<T, core::SMode::Atomic>;
 template <typename T>
 using AtomicWeak = core::Weak<T, core::SMode::Atomic>;
 
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

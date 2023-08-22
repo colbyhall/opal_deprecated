@@ -5,13 +5,13 @@
 #include "core/os/memory.h"
 #include "core/type_traits.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename Base>
 class Unique {
 public:
 	template <typename... Args>
-	static GJ_ALWAYS_INLINE Unique make(Args&&... args) {
+	static SF_ALWAYS_INLINE Unique make(Args&&... args) {
 		return Unique<Base>(Base(forward<Args>(args)...));
 	}
 
@@ -40,14 +40,14 @@ public:
 	}
 	~Unique();
 
-	GJ_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
-	GJ_ALWAYS_INLINE operator NonNull<Base const>() const;
-	GJ_ALWAYS_INLINE operator Base*() { return m_ptr; }
-	GJ_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
-	GJ_ALWAYS_INLINE Base* operator->() { return m_ptr; }
-	GJ_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
-	GJ_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
-	GJ_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
+	SF_ALWAYS_INLINE operator NonNull<Base>() { return m_ptr; }
+	SF_ALWAYS_INLINE operator NonNull<Base const>() const;
+	SF_ALWAYS_INLINE operator Base*() { return m_ptr; }
+	SF_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
+	SF_ALWAYS_INLINE Base* operator->() { return m_ptr; }
+	SF_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
+	SF_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
+	SF_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
 
 private:
 	Unique() = default;
@@ -55,20 +55,20 @@ private:
 	template <typename Derived>
 	friend class Unique;
 
-	GJ_ALWAYS_INLINE explicit Unique(Base&& base) {
+	SF_ALWAYS_INLINE explicit Unique(Base&& base) {
 		void* ptr = core::malloc(core::Layout::single<Base>);
-		m_ptr = new (ptr) Base(gj::forward<Base>(base));
+		m_ptr = new (ptr) Base(sf::forward<Base>(base));
 	}
 
 	Base* m_ptr;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/containers/unique.inl"
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::Unique;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

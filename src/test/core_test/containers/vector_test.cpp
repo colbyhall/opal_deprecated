@@ -3,12 +3,12 @@
 #include "core/containers/vector.h"
 #include "doctest/doctest.h"
 
-GJ_TEST_BEGIN
+SF_TEST_BEGIN
 
-TEST_CASE("gj::core::Vector") {
+TEST_CASE("sf::core::Vector") {
 	Vector<int> vec;
 
-	CHECK(vec.len() == 0); // gj::Vector default initialization is to zero
+	CHECK(vec.len() == 0); // sf::Vector default initialization is to zero
 
 	SUBCASE("Adding elements") {
 		vec.push(5);
@@ -21,7 +21,7 @@ TEST_CASE("gj::core::Vector") {
 		CHECK(vec[2] == 15);
 
 		auto foo = vec;
-		GJ_UNUSED(foo);
+		SF_UNUSED(foo);
 	}
 
 	SUBCASE("Removing elements") {
@@ -58,4 +58,4 @@ TEST_CASE("gj::core::Vector") {
 	}
 }
 
-GJ_TEST_END
+SF_TEST_END

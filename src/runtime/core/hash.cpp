@@ -2,7 +2,7 @@
 
 #include "core/hash.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 const u64 FNV1Hasher::offset_basic = 0xcbf29ce484222325;
 const u64 FNV1Hasher::prime = 0x100000001b3;
@@ -18,4 +18,4 @@ void FNV1Hasher::write(Slice<u8 const> bytes) {
 	m_result |= hash;
 }
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

@@ -8,7 +8,7 @@
 #include "core/non_copyable.h"
 #include "core/type_traits.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 template <typename Key, typename Value, typename Hasher>
 class Map;
@@ -16,20 +16,20 @@ class Map;
 template <typename Key, typename Value, typename Hasher>
 class MapIterator {
 public:
-	GJ_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map)
+	SF_ALWAYS_INLINE explicit MapIterator(Map<Key, Value, Hasher>& map)
 		: m_map(map) {}
 
-	GJ_ALWAYS_INLINE operator bool() const {
+	SF_ALWAYS_INLINE operator bool() const {
 		return m_index < m_map.m_buckets.len();
 	}
-	GJ_ALWAYS_INLINE MapIterator& operator++() {
+	SF_ALWAYS_INLINE MapIterator& operator++() {
 		m_index += 1;
 		return *this;
 	}
-	GJ_ALWAYS_INLINE const Key& key() const {
+	SF_ALWAYS_INLINE const Key& key() const {
 		return m_map.m_buckets[m_index].key;
 	}
-	GJ_ALWAYS_INLINE Value& value() const {
+	SF_ALWAYS_INLINE Value& value() const {
 		return m_map.m_buckets[m_index].value;
 	}
 
@@ -41,22 +41,22 @@ private:
 template <typename Key, typename Value, typename Hasher>
 class ConstMapIterator {
 public:
-	GJ_ALWAYS_INLINE explicit ConstMapIterator(
+	SF_ALWAYS_INLINE explicit ConstMapIterator(
 		const Map<Key, Value, Hasher>& map
 	)
 		: m_map(map) {}
 
-	GJ_ALWAYS_INLINE operator bool() const {
+	SF_ALWAYS_INLINE operator bool() const {
 		return m_index < m_map.m_buckets.len();
 	}
-	GJ_ALWAYS_INLINE ConstMapIterator& operator++() {
+	SF_ALWAYS_INLINE ConstMapIterator& operator++() {
 		m_index += 1;
 		return *this;
 	}
-	GJ_ALWAYS_INLINE const Key& key() const {
+	SF_ALWAYS_INLINE const Key& key() const {
 		return m_map.m_buckets[m_index].key;
 	}
-	GJ_ALWAYS_INLINE const Value& value() const {
+	SF_ALWAYS_INLINE const Value& value() const {
 		return m_map.m_buckets[m_index].value;
 	}
 
@@ -84,9 +84,9 @@ public:
 	using Iterator = MapIterator<Key, Value, Hasher>;
 
 	void reserve(usize amount);
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE bool is_empty() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_empty() const {
 		return m_buckets.is_empty();
 	}
 
@@ -99,26 +99,26 @@ public:
 	Option<Value const&> find(const Key& key) const;
 	Option<Value&> find_mut(const Key& key);
 
-	GJ_ALWAYS_INLINE ConstIterator iter() const;
-	GJ_ALWAYS_INLINE Iterator iter_mut();
+	SF_ALWAYS_INLINE ConstIterator iter() const;
+	SF_ALWAYS_INLINE Iterator iter_mut();
 
 private:
 	friend class MapIterator<Key, Value, Hasher>;
 	friend class ConstMapIterator<Key, Value, Hasher>;
 
-	GJ_ALWAYS_INLINE usize key_to_layout_index(const Key& key) const;
+	SF_ALWAYS_INLINE usize key_to_layout_index(const Key& key) const;
 	void refresh_layout();
 
 	Vector<Bucket> m_buckets;
 	Vector<i32> m_layout;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/containers/map.inl"
 
 // Export to gj namespace
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::Map;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END

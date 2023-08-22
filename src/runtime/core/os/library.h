@@ -6,7 +6,7 @@
 #include "core/containers/string_view.h"
 #include "core/non_copyable.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 class Library : NonCopyable {
 public:
@@ -23,13 +23,13 @@ public:
 		return nullptr;
 	}
 
-	GJ_ALWAYS_INLINE Library(Library&& move) noexcept
+	SF_ALWAYS_INLINE Library(Library&& move) noexcept
 		: m_handle(move.m_handle) {
 		move.m_handle = nullptr;
 	}
-	GJ_ALWAYS_INLINE Library& operator=(Library&& move) noexcept {
-		auto to_destroy = gj::move(*this);
-		GJ_UNUSED(to_destroy);
+	SF_ALWAYS_INLINE Library& operator=(Library&& move) noexcept {
+		auto to_destroy = sf::move(*this);
+		SF_UNUSED(to_destroy);
 
 		m_handle = move.m_handle;
 		move.m_handle = nullptr;
@@ -39,10 +39,10 @@ public:
 	~Library();
 
 private:
-	GJ_ALWAYS_INLINE explicit Library(void* handle) : m_handle(handle) {}
+	SF_ALWAYS_INLINE explicit Library(void* handle) : m_handle(handle) {}
 	void* find_internal(const StringView& name);
 
 	void* m_handle;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END

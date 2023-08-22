@@ -5,7 +5,7 @@
 #include "core/containers/string_view.h"
 #include "core/containers/vector.h"
 
-GJ_CORE_NAMESPACE_BEGIN
+SF_CORE_NAMESPACE_BEGIN
 
 class WStringView;
 
@@ -18,27 +18,27 @@ public:
 
 	operator Slice<char const>() const;
 	operator StringView() const;
-	GJ_ALWAYS_INLINE char* operator*() { return &m_bytes[0]; }
-	GJ_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
+	SF_ALWAYS_INLINE char* operator*() { return &m_bytes[0]; }
+	SF_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
 
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE CharsIterator chars() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE CharsIterator chars() const {
 		return CharsIterator(m_bytes);
 	}
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize len() const {
+	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const {
 		return m_bytes.len() > 0 ? m_bytes.len() - 1 : 0;
 	}
-	GJ_NO_DISCARD GJ_ALWAYS_INLINE usize cap() const { return m_bytes.cap(); }
+	SF_NO_DISCARD SF_ALWAYS_INLINE usize cap() const { return m_bytes.cap(); }
 
-	GJ_ALWAYS_INLINE bool operator==(StringView rhs) const {
+	SF_ALWAYS_INLINE bool operator==(StringView rhs) const {
 		StringView view = *this;
 		return view == rhs;
 	}
-	GJ_ALWAYS_INLINE bool operator!=(StringView rhs) const {
+	SF_ALWAYS_INLINE bool operator!=(StringView rhs) const {
 		StringView view = *this;
 		return view != rhs;
 	}
 
-	GJ_ALWAYS_INLINE void reserve(usize amount) { m_bytes.reserve(amount + 1); }
+	SF_ALWAYS_INLINE void reserve(usize amount) { m_bytes.reserve(amount + 1); }
 	String& push(Char c);
 	String& push(StringView string);
 
@@ -46,8 +46,8 @@ private:
 	Vector<char> m_bytes;
 };
 
-GJ_CORE_NAMESPACE_END
+SF_CORE_NAMESPACE_END
 
-GJ_NAMESPACE_BEGIN
+SF_NAMESPACE_BEGIN
 using core::String;
-GJ_NAMESPACE_END
+SF_NAMESPACE_END
