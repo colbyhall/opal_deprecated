@@ -20,12 +20,3 @@ add_library(stb STATIC ${STB_SRC_FILES})
 target_link_libraries(stb LINK_PUBLIC core)
 target_include_directories(stb PRIVATE ${RUNTIME_ROOT} ${THIRD_PARTY_ROOT})
 set_target_properties(stb PROPERTIES FOLDER "third_party")
-
-# Disable warnings are errors for clang
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(stb PRIVATE -Wno-error)
-endif()
-# And similarly for MSVC
-if(MSVC)
-    target_compile_options(stb PRIVATE /WX-)
-endif()
