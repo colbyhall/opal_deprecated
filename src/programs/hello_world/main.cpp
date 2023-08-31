@@ -3,6 +3,7 @@
 #include "editor/application.h"
 #include "gpu/d3d12/d3d12_device.h"
 #include "imgui/imgui.h"
+#include "stb/stb_image.h"
 
 SF_SUPPRESS_WARNING_PUSH
 SF_SUPPRESS_WARNINGS

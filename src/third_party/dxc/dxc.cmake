@@ -1,3 +1,5 @@
+# https://github.com/microsoft/DirectXShaderCompiler
+
 # Set the root
 set(DXC_ROOT ${THIRD_PARTY_ROOT}/dxc)
 

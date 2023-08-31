@@ -1,3 +1,5 @@
+# https://github.com/ocornut/imgui
+
 # Set the root
 set(IMGUI_ROOT ${THIRD_PARTY_ROOT}/imgui)
 
@@ -27,10 +29,10 @@ target_link_libraries(imgui LINK_PUBLIC core)
 target_include_directories(imgui PRIVATE ${RUNTIME_ROOT} ${IMGUI_ROOT})
 set_target_properties(imgui PROPERTIES FOLDER "third_party")
 
+# Disable warnings are errors for clang
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(imgui PRIVATE -Wno-error)
 endif()
-
 # And similarly for MSVC
 if(MSVC)
     target_compile_options(imgui PRIVATE /WX-)
