@@ -162,9 +162,7 @@ public:
 	SF_ALWAYS_INLINE constexpr Option(NullPtr) : m_ptr(nullptr) {}
 	SF_ALWAYS_INLINE constexpr Option(T& t) : m_ptr(&t) {}
 
-	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_set() const {
-		return m_ptr != nullptr;
-	}
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
 	SF_ALWAYS_INLINE operator bool() const { return is_set(); }
 
 	SF_ALWAYS_INLINE T& unwrap() {
@@ -178,7 +176,7 @@ private:
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::none;
 using core::Option;

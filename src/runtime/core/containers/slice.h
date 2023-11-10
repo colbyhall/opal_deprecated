@@ -15,14 +15,10 @@ class Slice {
 public:
 	// Constructors
 	Slice() = default;
-	SF_ALWAYS_INLINE constexpr explicit Slice(T* ptr, usize len)
-		: m_ptr(ptr)
-		, m_len(len) {}
+	SF_ALWAYS_INLINE constexpr explicit Slice(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
 
 	// Copy and Move operators
-	SF_ALWAYS_INLINE Slice(const Slice<T>& c)
-		: m_ptr(c.m_ptr)
-		, m_len(c.m_len) {}
+	SF_ALWAYS_INLINE Slice(const Slice<T>& c) : m_ptr(c.m_ptr), m_len(c.m_len) {}
 	SF_ALWAYS_INLINE Slice<T>& operator=(const Slice<T>& c);
 	SF_ALWAYS_INLINE Slice(Slice<T>&& m) noexcept;
 	SF_ALWAYS_INLINE Slice<T>& operator=(Slice<T>&& m) noexcept;
@@ -30,9 +26,7 @@ public:
 	// Array functionality
 	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_len; }
 	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_empty() const { return m_len == 0; }
-	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_valid_index(usize index) const {
-		return index < m_len;
-	}
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < m_len; }
 	SF_ALWAYS_INLINE operator bool() const { return !is_empty(); }
 
 	// Range accessors
@@ -47,9 +41,7 @@ public:
 		return m_ptr[index];
 	}
 
-	SF_ALWAYS_INLINE operator Slice<T const>() const {
-		return { m_ptr, m_len };
-	}
+	SF_ALWAYS_INLINE operator Slice<T const>() const { return { m_ptr, m_len }; }
 
 	// Shrinks the slice by amount. Returns new len
 	SF_ALWAYS_INLINE usize shrink(usize amount) {
@@ -68,17 +60,11 @@ class Slice<T const> {
 public:
 	// Constructors
 	Slice() = default;
-	SF_ALWAYS_INLINE constexpr Slice(T const* ptr, usize len)
-		: m_ptr(ptr)
-		, m_len(len) {}
-	Slice(InitializerList<T const> list)
-		: m_ptr(list.begin())
-		, m_len(list.end() - list.begin()) {}
+	SF_ALWAYS_INLINE constexpr Slice(T const* ptr, usize len) : m_ptr(ptr), m_len(len) {}
+	Slice(InitializerList<T const> list) : m_ptr(list.begin()), m_len(list.end() - list.begin()) {}
 
 	// Copy and Move operators
-	SF_ALWAYS_INLINE Slice(const Slice<T const>& c)
-		: m_ptr(c.m_ptr)
-		, m_len(c.m_len) {}
+	SF_ALWAYS_INLINE Slice(const Slice<T const>& c) : m_ptr(c.m_ptr), m_len(c.m_len) {}
 	SF_ALWAYS_INLINE Slice<T const>& operator=(const Slice<T const>& c);
 	SF_ALWAYS_INLINE Slice(Slice<T const>&& m) noexcept;
 	SF_ALWAYS_INLINE Slice<T const>& operator=(Slice<T const>&& m) noexcept;
@@ -86,9 +72,7 @@ public:
 	// Array functionality
 	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_len; }
 	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_empty() const { return m_len == 0; }
-	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_valid_index(usize index) const {
-		return index < m_len;
-	}
+	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < m_len; }
 	SF_ALWAYS_INLINE operator bool() const { return !is_empty(); }
 
 	// Range accessors
@@ -120,7 +104,7 @@ SF_CORE_NAMESPACE_END
 // Include the implementation
 #include "core/containers/slice.inl"
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::Slice;
 SF_NAMESPACE_END

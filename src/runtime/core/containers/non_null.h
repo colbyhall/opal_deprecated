@@ -15,10 +15,7 @@ class NonNull {
 public:
 	// Only way to initialize NonNull is by a valid ptr
 	SF_ALWAYS_INLINE constexpr NonNull(T* ptr) : m_ptr(ptr) {
-		SF_ASSERT(
-			m_ptr != nullptr,
-			"NonNull only accepts pointers that are not nullptr"
-		);
+		SF_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 	}
 
 	// Prevent default and nullptr initialization
@@ -35,13 +32,9 @@ public:
 	SF_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
 
 	// Compare ops
-	SF_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const {
-		return ptr.m_ptr == m_ptr;
-	}
+	SF_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const { return ptr.m_ptr == m_ptr; }
 	SF_ALWAYS_INLINE bool operator==(T* ptr) const { return ptr == m_ptr; }
-	SF_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const {
-		return ptr.m_ptr != m_ptr;
-	}
+	SF_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const { return ptr.m_ptr != m_ptr; }
 	SF_ALWAYS_INLINE bool operator!=(T* ptr) const { return ptr != m_ptr; }
 
 private:
@@ -54,10 +47,7 @@ class NonNull<void> {
 public:
 	// Only way to initialize NonNull is by a valid ptr
 	SF_ALWAYS_INLINE constexpr NonNull(void* ptr) : m_ptr(ptr) {
-		SF_ASSERT(
-			m_ptr != nullptr,
-			"NonNull only accepts pointers that are not nullptr"
-		);
+		SF_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 	}
 
 	// Prevent default and nullptr initialization
@@ -69,13 +59,9 @@ public:
 	SF_ALWAYS_INLINE void* operator*() const { return m_ptr; }
 
 	// Compare ops
-	SF_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const {
-		return ptr.m_ptr == m_ptr;
-	}
+	SF_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const { return ptr.m_ptr == m_ptr; }
 	SF_ALWAYS_INLINE bool operator==(void* ptr) const { return ptr == m_ptr; }
-	SF_ALWAYS_INLINE bool operator!=(NonNull<void> ptr) const {
-		return ptr.m_ptr != m_ptr;
-	}
+	SF_ALWAYS_INLINE bool operator!=(NonNull<void> ptr) const { return ptr.m_ptr != m_ptr; }
 	SF_ALWAYS_INLINE bool operator!=(void* ptr) const { return ptr != m_ptr; }
 
 	// Casting
@@ -94,10 +80,7 @@ class NonNull<void const> {
 public:
 	// Only way to initialize NonNull is by a valid ptr
 	SF_ALWAYS_INLINE constexpr NonNull(void const* ptr) : m_ptr(ptr) {
-		SF_ASSERT(
-			m_ptr != nullptr,
-			"NonNull only accepts pointers that are not nullptr"
-		);
+		SF_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 	}
 
 	// Prevent default and nullptr initialization
@@ -109,18 +92,10 @@ public:
 	SF_ALWAYS_INLINE void const* operator*() const { return m_ptr; }
 
 	// Compare ops
-	SF_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const {
-		return ptr.m_ptr == m_ptr;
-	}
-	SF_ALWAYS_INLINE bool operator==(void const* ptr) const {
-		return ptr == m_ptr;
-	}
-	SF_ALWAYS_INLINE bool operator!=(NonNull<void const> ptr) const {
-		return ptr.m_ptr != m_ptr;
-	}
-	SF_ALWAYS_INLINE bool operator!=(void const* ptr) const {
-		return ptr != m_ptr;
-	}
+	SF_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const { return ptr.m_ptr == m_ptr; }
+	SF_ALWAYS_INLINE bool operator==(void const* ptr) const { return ptr == m_ptr; }
+	SF_ALWAYS_INLINE bool operator!=(NonNull<void const> ptr) const { return ptr.m_ptr != m_ptr; }
+	SF_ALWAYS_INLINE bool operator!=(void const* ptr) const { return ptr != m_ptr; }
 
 	// Casting
 	template <typename T>
@@ -134,7 +109,7 @@ private:
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::NonNull;
 SF_NAMESPACE_END

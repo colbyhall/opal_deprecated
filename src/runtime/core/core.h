@@ -266,7 +266,7 @@ using NullPtr = decltype(nullptr);
 
 SF_CORE_NAMESPACE_END
 
-// Export primitive types to gj namespace
+// Export primitive types to sf namespace
 SF_NAMESPACE_BEGIN
 
 using core::f32;

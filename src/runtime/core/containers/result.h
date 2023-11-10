@@ -20,10 +20,7 @@ public:
 		new (p) Error(sf::forward<Error>(e));
 	}
 
-	Result(Result&& other) noexcept
-		: m_set(other.m_set)
-		, m_ok(other.m_ok)
-		, m_data(other.m_data) {
+	Result(Result&& other) noexcept : m_set(other.m_set), m_ok(other.m_ok), m_data(other.m_data) {
 		other.m_set = false;
 		other.m_ok = false;
 		other.m_data = {};
@@ -86,7 +83,7 @@ private:
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::Result;
 SF_NAMESPACE_END

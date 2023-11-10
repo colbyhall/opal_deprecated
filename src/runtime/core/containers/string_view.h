@@ -56,18 +56,14 @@ class StringView {
 public:
 	SF_ALWAYS_INLINE constexpr StringView() = default;
 	SF_ALWAYS_INLINE StringView(Slice<char const> bytes) : m_bytes(bytes) {}
-	SF_ALWAYS_INLINE constexpr StringView(const char* ptr)
-		: m_bytes(ptr, constexpr_strlen(ptr)) {}
-	SF_ALWAYS_INLINE constexpr explicit StringView(const char* ptr, usize size)
-		: m_bytes(ptr, size) {}
+	SF_ALWAYS_INLINE constexpr StringView(const char* ptr) : m_bytes(ptr, constexpr_strlen(ptr)) {}
+	SF_ALWAYS_INLINE constexpr explicit StringView(const char* ptr, usize size) : m_bytes(ptr, size) {}
 
 	SF_ALWAYS_INLINE operator Slice<char const>() const { return m_bytes; }
 	SF_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
 
 	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
-	SF_NO_DISCARD SF_ALWAYS_INLINE CharsIterator chars() const {
-		return CharsIterator(m_bytes);
-	}
+	SF_NO_DISCARD SF_ALWAYS_INLINE CharsIterator chars() const { return CharsIterator(m_bytes); }
 	bool operator==(const StringView& right) const;
 	bool operator!=(const StringView& right) const;
 
@@ -77,7 +73,7 @@ private:
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::CharsIterator;
 using core::StringView;

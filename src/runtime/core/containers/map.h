@@ -97,7 +97,7 @@ SF_CORE_NAMESPACE_END
 // Include the implementation
 #include "core/containers/map.inl"
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::Map;
 SF_NAMESPACE_END

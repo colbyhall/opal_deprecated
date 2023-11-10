@@ -20,7 +20,7 @@ public:
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::NonCopyable;
 SF_NAMESPACE_END

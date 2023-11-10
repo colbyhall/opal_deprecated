@@ -10,10 +10,7 @@ SF_CORE_NAMESPACE_BEGIN
 template <typename Element, usize Count>
 class Array {
 public:
-	static_assert(
-		Count > 0,
-		"Must have a Count greater than zero for this to be useful"
-	);
+	static_assert(Count > 0, "Must have a Count greater than zero for this to be useful");
 
 	Array() = default;
 
@@ -33,9 +30,7 @@ public:
 	SF_ALWAYS_INLINE operator Slice<Element>();
 	SF_ALWAYS_INLINE operator Slice<Element const>() const;
 
-	SF_ALWAYS_INLINE Element* begin() {
-		return reinterpret_cast<Element*>(m_bytes);
-	}
+	SF_ALWAYS_INLINE Element* begin() { return reinterpret_cast<Element*>(m_bytes); }
 	SF_ALWAYS_INLINE Element* end() { return begin() + m_len; }
 
 	SF_ALWAYS_INLINE const Element* cbegin() const;
@@ -114,7 +109,7 @@ SF_CORE_NAMESPACE_END
 // Include the implementation
 #include "core/containers/array.inl"
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::Array;
 SF_NAMESPACE_END

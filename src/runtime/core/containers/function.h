@@ -33,8 +33,7 @@ public:
 	template <
 		typename Functor,
 		typename = std::enable_if_t<
-			!is_function_ref<std::decay_t<Functor>> &&
-			hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
+			!is_function_ref<std::decay_t<Functor>> && hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
 	FunctionRef(Functor&& f) : Super(sf::forward<Functor>(f)) {}
 
 	FunctionRef(const FunctionRef&) = default;
@@ -53,8 +52,7 @@ public:
 	template <
 		typename Functor,
 		typename = std::enable_if_t<
-			!is_function<std::decay_t<Functor>> &&
-			hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
+			!is_function<std::decay_t<Functor>> && hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
 	Function(Functor&& f) : Super(sf::forward<Functor>(f)) {}
 
 	Function(Function&& move) noexcept = default;
@@ -64,7 +62,7 @@ public:
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::Function;
 using core::FunctionRef;

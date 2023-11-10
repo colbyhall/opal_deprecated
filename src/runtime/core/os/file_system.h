@@ -25,10 +25,7 @@ public:
 	usize read(Slice<u8> buffer);
 	void write(Slice<const u8> buffer);
 
-	SF_ALWAYS_INLINE File(File&& move) noexcept
-		: m_handle(move.m_handle)
-		, m_flags(move.m_flags)
-		, m_cursor(0) {
+	SF_ALWAYS_INLINE File(File&& move) noexcept : m_handle(move.m_handle), m_flags(move.m_flags), m_cursor(0) {
 		move.m_handle = nullptr;
 	}
 	SF_ALWAYS_INLINE File& operator=(File&& move) noexcept {
@@ -43,10 +40,7 @@ public:
 	~File();
 
 private:
-	SF_ALWAYS_INLINE File(void* handle, Flags flags)
-		: m_handle(handle)
-		, m_flags(flags)
-		, m_cursor(0) {}
+	SF_ALWAYS_INLINE File(void* handle, Flags flags) : m_handle(handle), m_flags(flags), m_cursor(0) {}
 
 	void* m_handle;
 	Flags m_flags;
@@ -81,7 +75,7 @@ String cwd();
 
 SF_CORE_NAMESPACE_END
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::File;
 using core::read_to_string;

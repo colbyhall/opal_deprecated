@@ -32,7 +32,7 @@ private:
 
 SF_CORE_NAMESPACE_END
 
-// Implement hash for gj primitives
+// Implement hash for sf primitives
 SF_NAMESPACE_BEGIN
 
 template <typename H>

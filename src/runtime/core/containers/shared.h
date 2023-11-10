@@ -249,7 +249,7 @@ SF_CORE_NAMESPACE_END
 // Include the implementation
 #include "core/containers/shared.inl"
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 template <typename T>
 using Shared = core::Shared<T, core::SMode::NonAtomic>;

@@ -66,7 +66,7 @@ SF_CORE_NAMESPACE_END
 // Include the implementation
 #include "core/containers/vector.inl"
 
-// Export to gj namespace
+// Export to sf namespace
 SF_NAMESPACE_BEGIN
 using core::Vector;
 SF_NAMESPACE_END
