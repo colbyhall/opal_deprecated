@@ -28,8 +28,6 @@ Library::~Library() {
 	}
 }
 
-void* Library::find_internal(const StringView& name) {
-	return (void*)GetProcAddress((HMODULE)m_handle, *name);
-}
+void* Library::find_internal(const StringView& name) { return (void*)GetProcAddress((HMODULE)m_handle, *name); }
 
 SF_CORE_NAMESPACE_END

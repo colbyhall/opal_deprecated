@@ -23,10 +23,7 @@ public:
 		return nullptr;
 	}
 
-	SF_ALWAYS_INLINE Library(Library&& move) noexcept
-		: m_handle(move.m_handle) {
-		move.m_handle = nullptr;
-	}
+	SF_ALWAYS_INLINE Library(Library&& move) noexcept : m_handle(move.m_handle) { move.m_handle = nullptr; }
 	SF_ALWAYS_INLINE Library& operator=(Library&& move) noexcept {
 		auto to_destroy = sf::move(*this);
 		SF_UNUSED(to_destroy);

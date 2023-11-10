@@ -3,30 +3,18 @@
 SF_CORE_NAMESPACE_BEGIN
 
 template <typename T>
-const Matrix4<T> Matrix4<T>::identity = Matrix4<T>::from_columns(
-	{ 1, 0, 0, 0 },
-	{ 0, 1, 0, 0 },
-	{ 0, 0, 1, 0 },
-	{ 0, 0, 0, 1 }
-);
+const Matrix4<T> Matrix4<T>::identity =
+	Matrix4<T>::from_columns({ 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 });
 
 template <typename T>
-constexpr Matrix4<T> Matrix4<T>::from_columns(
-	const Vector4<T>& x,
-	const Vector4<T>& y,
-	const Vector4<T>& z,
-	const Vector4<T>& w
-) {
+constexpr Matrix4<T>
+Matrix4<T>::from_columns(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w) {
 	return { x, y, z, w };
 }
 
 template <typename T>
-constexpr Matrix4<T> Matrix4<T>::from_rows(
-	const Vector4<T>& x,
-	const Vector4<T>& y,
-	const Vector4<T>& z,
-	const Vector4<T>& w
-) {
+constexpr Matrix4<T>
+Matrix4<T>::from_rows(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w) {
 	const Vector4<T> x_col = { x.x, y.x, z.x, w.x };
 	const Vector4<T> y_col = { x.y, y.y, z.y, w.y };
 	const Vector4<T> z_col = { x.z, y.z, z.z, w.z };
@@ -35,8 +23,7 @@ constexpr Matrix4<T> Matrix4<T>::from_rows(
 }
 
 template <typename T>
-constexpr Matrix4<T>
-Matrix4<T>::orthographic(T width, T height, T near, T far) {
+constexpr Matrix4<T> Matrix4<T>::orthographic(T width, T height, T near, T far) {
 	// 0 - 1 z clipping
 	auto result = Matrix4::identity;
 	result.x.x = (T)2 / width;
@@ -66,11 +53,7 @@ Matrix4<T> Matrix4<T>::perspective(T fov, T aspect_ratio, T near, T far) {
 }
 
 template <typename T>
-Matrix4<T> Matrix4<T>::transform(
-	const Vector3<T>& position,
-	const Quaternion<T>& rotation,
-	const Vector3<T>& scale
-) {
+Matrix4<T> Matrix4<T>::transform(const Vector3<T>& position, const Quaternion<T>& rotation, const Vector3<T>& scale) {
 	Matrix4 result;
 	result.x = { rotation.rotate(Vector3<T>::forward) * scale.x, 0 };
 	result.y = { rotation.rotate(Vector3<T>::right) * scale.y, 0 };
@@ -82,121 +65,72 @@ Matrix4<T> Matrix4<T>::transform(
 template <typename T>
 Option<Matrix4<T>> Matrix4<T>::inverse() const {
 	Matrix4 result = {};
-	result.elements[0] = elements[5] * elements[10] * elements[15] -
-						 elements[5] * elements[11] * elements[14] -
-						 elements[9] * elements[6] * elements[15] +
-						 elements[9] * elements[7] * elements[14] +
-						 elements[13] * elements[6] * elements[11] -
-						 elements[13] * elements[7] * elements[10];
+	result.elements[0] = elements[5] * elements[10] * elements[15] - elements[5] * elements[11] * elements[14] -
+						 elements[9] * elements[6] * elements[15] + elements[9] * elements[7] * elements[14] +
+						 elements[13] * elements[6] * elements[11] - elements[13] * elements[7] * elements[10];
 
-	result.elements[4] = -elements[4] * elements[10] * elements[15] +
-						 elements[4] * elements[11] * elements[14] +
-						 elements[8] * elements[6] * elements[15] -
-						 elements[8] * elements[7] * elements[14] -
-						 elements[12] * elements[6] * elements[11] +
-						 elements[12] * elements[7] * elements[10];
+	result.elements[4] = -elements[4] * elements[10] * elements[15] + elements[4] * elements[11] * elements[14] +
+						 elements[8] * elements[6] * elements[15] - elements[8] * elements[7] * elements[14] -
+						 elements[12] * elements[6] * elements[11] + elements[12] * elements[7] * elements[10];
 
-	result.elements[8] = elements[4] * elements[9] * elements[15] -
-						 elements[4] * elements[11] * elements[13] -
-						 elements[8] * elements[5] * elements[15] +
-						 elements[8] * elements[7] * elements[13] +
-						 elements[12] * elements[5] * elements[11] -
-						 elements[12] * elements[7] * elements[9];
+	result.elements[8] = elements[4] * elements[9] * elements[15] - elements[4] * elements[11] * elements[13] -
+						 elements[8] * elements[5] * elements[15] + elements[8] * elements[7] * elements[13] +
+						 elements[12] * elements[5] * elements[11] - elements[12] * elements[7] * elements[9];
 
-	result.elements[12] = -elements[4] * elements[9] * elements[14] +
-						  elements[4] * elements[10] * elements[13] +
-						  elements[8] * elements[5] * elements[14] -
-						  elements[8] * elements[6] * elements[13] -
-						  elements[12] * elements[5] * elements[10] +
-						  elements[12] * elements[6] * elements[9];
+	result.elements[12] = -elements[4] * elements[9] * elements[14] + elements[4] * elements[10] * elements[13] +
+						  elements[8] * elements[5] * elements[14] - elements[8] * elements[6] * elements[13] -
+						  elements[12] * elements[5] * elements[10] + elements[12] * elements[6] * elements[9];
 
-	result.elements[1] = -elements[1] * elements[10] * elements[15] +
-						 elements[1] * elements[11] * elements[14] +
-						 elements[9] * elements[2] * elements[15] -
-						 elements[9] * elements[3] * elements[14] -
-						 elements[13] * elements[2] * elements[11] +
-						 elements[13] * elements[3] * elements[10];
+	result.elements[1] = -elements[1] * elements[10] * elements[15] + elements[1] * elements[11] * elements[14] +
+						 elements[9] * elements[2] * elements[15] - elements[9] * elements[3] * elements[14] -
+						 elements[13] * elements[2] * elements[11] + elements[13] * elements[3] * elements[10];
 
-	result.elements[5] = elements[0] * elements[10] * elements[15] -
-						 elements[0] * elements[11] * elements[14] -
-						 elements[8] * elements[2] * elements[15] +
-						 elements[8] * elements[3] * elements[14] +
-						 elements[12] * elements[2] * elements[11] -
-						 elements[12] * elements[3] * elements[10];
+	result.elements[5] = elements[0] * elements[10] * elements[15] - elements[0] * elements[11] * elements[14] -
+						 elements[8] * elements[2] * elements[15] + elements[8] * elements[3] * elements[14] +
+						 elements[12] * elements[2] * elements[11] - elements[12] * elements[3] * elements[10];
 
-	result.elements[9] = -elements[0] * elements[9] * elements[15] +
-						 elements[0] * elements[11] * elements[13] +
-						 elements[8] * elements[1] * elements[15] -
-						 elements[8] * elements[3] * elements[13] -
-						 elements[12] * elements[1] * elements[11] +
-						 elements[12] * elements[3] * elements[9];
+	result.elements[9] = -elements[0] * elements[9] * elements[15] + elements[0] * elements[11] * elements[13] +
+						 elements[8] * elements[1] * elements[15] - elements[8] * elements[3] * elements[13] -
+						 elements[12] * elements[1] * elements[11] + elements[12] * elements[3] * elements[9];
 
-	result.elements[13] = elements[0] * elements[9] * elements[14] -
-						  elements[0] * elements[10] * elements[13] -
-						  elements[8] * elements[1] * elements[14] +
-						  elements[8] * elements[2] * elements[13] +
-						  elements[12] * elements[1] * elements[10] -
-						  elements[12] * elements[2] * elements[9];
+	result.elements[13] = elements[0] * elements[9] * elements[14] - elements[0] * elements[10] * elements[13] -
+						  elements[8] * elements[1] * elements[14] + elements[8] * elements[2] * elements[13] +
+						  elements[12] * elements[1] * elements[10] - elements[12] * elements[2] * elements[9];
 
-	result.elements[2] = elements[1] * elements[6] * elements[15] -
-						 elements[1] * elements[7] * elements[14] -
-						 elements[5] * elements[2] * elements[15] +
-						 elements[5] * elements[3] * elements[14] +
-						 elements[13] * elements[2] * elements[7] -
-						 elements[13] * elements[3] * elements[6];
+	result.elements[2] = elements[1] * elements[6] * elements[15] - elements[1] * elements[7] * elements[14] -
+						 elements[5] * elements[2] * elements[15] + elements[5] * elements[3] * elements[14] +
+						 elements[13] * elements[2] * elements[7] - elements[13] * elements[3] * elements[6];
 
-	result.elements[6] = -elements[0] * elements[6] * elements[15] +
-						 elements[0] * elements[7] * elements[14] +
-						 elements[4] * elements[2] * elements[15] -
-						 elements[4] * elements[3] * elements[14] -
-						 elements[12] * elements[2] * elements[7] +
-						 elements[12] * elements[3] * elements[6];
+	result.elements[6] = -elements[0] * elements[6] * elements[15] + elements[0] * elements[7] * elements[14] +
+						 elements[4] * elements[2] * elements[15] - elements[4] * elements[3] * elements[14] -
+						 elements[12] * elements[2] * elements[7] + elements[12] * elements[3] * elements[6];
 
-	result.elements[10] = elements[0] * elements[5] * elements[15] -
-						  elements[0] * elements[7] * elements[13] -
-						  elements[4] * elements[1] * elements[15] +
-						  elements[4] * elements[3] * elements[13] +
-						  elements[12] * elements[1] * elements[7] -
-						  elements[12] * elements[3] * elements[5];
+	result.elements[10] = elements[0] * elements[5] * elements[15] - elements[0] * elements[7] * elements[13] -
+						  elements[4] * elements[1] * elements[15] + elements[4] * elements[3] * elements[13] +
+						  elements[12] * elements[1] * elements[7] - elements[12] * elements[3] * elements[5];
 
-	result.elements[14] = -elements[0] * elements[5] * elements[14] +
-						  elements[0] * elements[6] * elements[13] +
-						  elements[4] * elements[1] * elements[14] -
-						  elements[4] * elements[2] * elements[13] -
-						  elements[12] * elements[1] * elements[6] +
-						  elements[12] * elements[2] * elements[5];
+	result.elements[14] = -elements[0] * elements[5] * elements[14] + elements[0] * elements[6] * elements[13] +
+						  elements[4] * elements[1] * elements[14] - elements[4] * elements[2] * elements[13] -
+						  elements[12] * elements[1] * elements[6] + elements[12] * elements[2] * elements[5];
 
-	result.elements[3] = -elements[1] * elements[6] * elements[11] +
-						 elements[1] * elements[7] * elements[10] +
-						 elements[5] * elements[2] * elements[11] -
-						 elements[5] * elements[3] * elements[10] -
-						 elements[9] * elements[2] * elements[7] +
-						 elements[9] * elements[3] * elements[6];
+	result.elements[3] = -elements[1] * elements[6] * elements[11] + elements[1] * elements[7] * elements[10] +
+						 elements[5] * elements[2] * elements[11] - elements[5] * elements[3] * elements[10] -
+						 elements[9] * elements[2] * elements[7] + elements[9] * elements[3] * elements[6];
 
-	result.elements[7] = elements[0] * elements[6] * elements[11] -
-						 elements[0] * elements[7] * elements[10] -
-						 elements[4] * elements[2] * elements[11] +
-						 elements[4] * elements[3] * elements[10] +
-						 elements[8] * elements[2] * elements[7] -
-						 elements[8] * elements[3] * elements[6];
+	result.elements[7] = elements[0] * elements[6] * elements[11] - elements[0] * elements[7] * elements[10] -
+						 elements[4] * elements[2] * elements[11] + elements[4] * elements[3] * elements[10] +
+						 elements[8] * elements[2] * elements[7] - elements[8] * elements[3] * elements[6];
 
-	result.elements[11] = -elements[0] * elements[5] * elements[11] +
-						  elements[0] * elements[7] * elements[9] +
-						  elements[4] * elements[1] * elements[11] -
-						  elements[4] * elements[3] * elements[9] -
-						  elements[8] * elements[1] * elements[7] +
-						  elements[8] * elements[3] * elements[5];
+	result.elements[11] = -elements[0] * elements[5] * elements[11] + elements[0] * elements[7] * elements[9] +
+						  elements[4] * elements[1] * elements[11] - elements[4] * elements[3] * elements[9] -
+						  elements[8] * elements[1] * elements[7] + elements[8] * elements[3] * elements[5];
 
-	result.elements[15] = elements[0] * elements[5] * elements[10] -
-						  elements[0] * elements[6] * elements[9] -
-						  elements[4] * elements[1] * elements[10] +
-						  elements[4] * elements[2] * elements[9] +
-						  elements[8] * elements[1] * elements[6] -
-						  elements[8] * elements[2] * elements[5];
+	result.elements[15] = elements[0] * elements[5] * elements[10] - elements[0] * elements[6] * elements[9] -
+						  elements[4] * elements[1] * elements[10] + elements[4] * elements[2] * elements[9] +
+						  elements[8] * elements[1] * elements[6] - elements[8] * elements[2] * elements[5];
 
-	const auto det =
-		elements[0] * result.elements[0] + elements[1] * result.elements[4] +
-		elements[2] * result.elements[8] + elements[3] * result.elements[12];
+	const auto det = elements[0] * result.elements[0] + elements[1] * result.elements[4] +
+					 elements[2] * result.elements[8] + elements[3] * result.elements[12];
 	if (det == 0.f) {
 		return Option<Matrix4>{};
 	}

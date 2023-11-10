@@ -7,7 +7,7 @@ set(EDITOR_SRC_FILES
         ${EDITOR_ROOT}/application.cpp
         ${EDITOR_ROOT}/editor.cmake
         ${EDITOR_ROOT}/editor.h
-        )
+)
 
 # Group source files
 source_group(TREE ${EDITOR_ROOT} FILES ${EDITOR_SRC_FILES})

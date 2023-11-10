@@ -12,8 +12,7 @@ Array<Element, Count>::Array(const Array& copy) noexcept : m_len(copy.m_len) {
 }
 
 template <typename Element, usize Count>
-Array<Element, Count>& Array<Element, Count>::operator=(const Array& copy
-) noexcept {
+Array<Element, Count>& Array<Element, Count>::operator=(const Array& copy) noexcept {
 	auto to_destroy = sf::move(*this);
 	SF_UNUSED(to_destroy);
 
@@ -89,8 +88,7 @@ SF_ALWAYS_INLINE Element& Array<Element, Count>::operator[](usize index) {
 }
 
 template <typename Element, usize Count>
-SF_ALWAYS_INLINE const Element& Array<Element, Count>::operator[](usize index
-) const {
+SF_ALWAYS_INLINE const Element& Array<Element, Count>::operator[](usize index) const {
 	SF_ASSERT(is_valid_index(index), "Index out of bounds");
 	return cbegin()[index];
 }
@@ -123,8 +121,7 @@ void Array<Element, Count>::insert(usize index, Element&& item) {
 }
 
 template <typename Element, usize Count>
-SF_ALWAYS_INLINE void
-Array<Element, Count>::insert(usize index, const Element& item) {
+SF_ALWAYS_INLINE void Array<Element, Count>::insert(usize index, const Element& item) {
 	Element copy = item;
 	insert(index, sf::move(copy));
 }

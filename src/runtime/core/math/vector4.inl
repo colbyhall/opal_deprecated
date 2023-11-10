@@ -12,11 +12,10 @@ template <typename T>
 const Vector4<T> Vector4<T>::infinite = { sf::infinity<T> };
 
 template <typename T>
-SF_ALWAYS_INLINE constexpr Vector4<T>::Vector4(Vector3<T> xyz, T w)
-	: r(xyz.x)
-	, g(xyz.y)
-	, b(xyz.z)
-	, a(w) {}
+SF_ALWAYS_INLINE constexpr Vector4<T>::Vector4(Vector3<T> xyz, T w) : r(xyz.x)
+																	, g(xyz.y)
+																	, b(xyz.z)
+																	, a(w) {}
 
 template <typename T>
 SF_ALWAYS_INLINE Vector4<T> Vector4<T>::operator+(const Vector4<T>& rhs) const {
@@ -63,8 +62,7 @@ SF_ALWAYS_INLINE bool Vector4<T>::has_nan() const {
 
 template <typename T>
 SF_ALWAYS_INLINE bool Vector4<T>::has_infinite() const {
-	return x == sf::infinity || y == sf::infinity || z == sf::infinity ||
-		   w == sf::infinity;
+	return x == sf::infinity || y == sf::infinity || z == sf::infinity || w == sf::infinity;
 }
 
 SF_CORE_NAMESPACE_END

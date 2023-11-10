@@ -10,8 +10,7 @@ String String::from(Vector<char>&& bytes) {
 	string.m_bytes = sf::forward<Vector<char>>(bytes);
 
 	// Add a null terminator if one is not found
-	if (!string.m_bytes.is_empty() &&
-		string.m_bytes[string.m_bytes.len() - 1] != 0) {
+	if (!string.m_bytes.is_empty() && string.m_bytes[string.m_bytes.len() - 1] != 0) {
 		string.m_bytes.push(0);
 	}
 	return string;

@@ -31,15 +31,15 @@ set(CORE_SRC_FILES
 
         ${CORE_ROOT}/math/math.h
         ${CORE_ROOT}/math/math.cpp
-		${CORE_ROOT}/math/matrix4.h
+        ${CORE_ROOT}/math/matrix4.h
         ${CORE_ROOT}/math/matrix4.inl
-		${CORE_ROOT}/math/quaternion.h
+        ${CORE_ROOT}/math/quaternion.h
         ${CORE_ROOT}/math/quaternion.inl
         ${CORE_ROOT}/math/vector2.h
         ${CORE_ROOT}/math/vector2.inl
         ${CORE_ROOT}/math/vector3.h
         ${CORE_ROOT}/math/vector3.inl
-		${CORE_ROOT}/math/vector4.h
+        ${CORE_ROOT}/math/vector4.h
         ${CORE_ROOT}/math/vector4.inl
 
         ${CORE_ROOT}/os/file_system.h
@@ -61,7 +61,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/initializer_list.h
         ${CORE_ROOT}/non_copyable.h
         ${CORE_ROOT}/type_traits.h
-        )
+)
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     # Add natvis file

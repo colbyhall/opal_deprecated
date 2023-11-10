@@ -21,10 +21,9 @@ template <typename T>
 const Vector3<T> Vector3<T>::up = { 0, 0, 1 };
 
 template <typename T>
-SF_ALWAYS_INLINE constexpr Vector3<T>::Vector3(Vector2<T> xy, T z)
-	: u(xy.x)
-	, v(xy.y)
-	, w(z) {}
+SF_ALWAYS_INLINE constexpr Vector3<T>::Vector3(Vector2<T> xy, T z) : u(xy.x)
+																   , v(xy.y)
+																   , w(z) {}
 
 template <typename T>
 SF_ALWAYS_INLINE Vector3<T> Vector3<T>::operator+(const Vector3<T>& rhs) const {
@@ -53,9 +52,7 @@ SF_ALWAYS_INLINE T Vector3<T>::dot(const Vector3<T>& rhs) const {
 
 template <typename T>
 SF_ALWAYS_INLINE Vector3<T> Vector3<T>::cross(const Vector3<T>& rhs) const {
-	return { y * rhs.z - rhs.y * z,
-			 z * rhs.x - rhs.z * x,
-			 x * rhs.y - rhs.x * y };
+	return { y * rhs.z - rhs.y * z, z * rhs.x - rhs.z * x, x * rhs.y - rhs.x * y };
 }
 
 template <typename T>

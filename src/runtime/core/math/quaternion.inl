@@ -52,12 +52,10 @@ Vector3<T> Quaternion<T>::rotate(const Vector3<T>& xyz) const {
 
 template <typename T>
 Quaternion<T> Quaternion<T>::operator*(const Quaternion<T>& rhs) const {
-	const auto result = Quaternion<T>{
-		(((w * rhs.i) + (i * rhs.w)) + (j * rhs.k)) - (k * rhs.j),
-		(((w * rhs.j) + (j * rhs.w)) + (k * rhs.i)) - (i * rhs.k),
-		(((w * rhs.k) + (k * rhs.w)) + (i * rhs.j)) - (j * rhs.i),
-		(((w * rhs.w) - (i * rhs.i)) - (j * rhs.j)) - (k * rhs.k)
-	};
+	const auto result = Quaternion<T>{ (((w * rhs.i) + (i * rhs.w)) + (j * rhs.k)) - (k * rhs.j),
+									   (((w * rhs.j) + (j * rhs.w)) + (k * rhs.i)) - (i * rhs.k),
+									   (((w * rhs.k) + (k * rhs.w)) + (i * rhs.j)) - (j * rhs.i),
+									   (((w * rhs.w) - (i * rhs.i)) - (j * rhs.j)) - (k * rhs.k) };
 	return result.normalize().unwrap();
 }
 

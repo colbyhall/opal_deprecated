@@ -28,18 +28,11 @@ NonNull<void> malloc(const Layout& layout);
 
 template <typename T>
 SF_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
-	static_assert(
-		std::is_trivial_v<T>,
-		"Value must be a trivial type to malloc"
-	);
+	static_assert(std::is_trivial_v<T>, "Value must be a trivial type to malloc");
 	return sf::core::malloc(Layout::array<T>(len)).as<T>();
 }
 
-NonNull<void> realloc(
-	NonNull<void> old_ptr,
-	const Layout& old_layout,
-	const Layout& new_layout
-);
+NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout);
 void free(NonNull<void> ptr);
 
 NonNull<void> copy(NonNull<void> dst, NonNull<void const> src, usize count);
