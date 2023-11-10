@@ -168,7 +168,7 @@ private:
 static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
 
-	// gpu::ISwapchain* const swapchain = (gpu::ISwapchain*)::GetWindowLongPtrA(hWnd, GWLP_USERDATA);
+	// gpu::Swapchain* const swapchain = (gpu::Swapchain*)::GetWindowLongPtrA(hWnd, GWLP_USERDATA);
 
 	switch (Msg) {
 	case WM_SIZE: {
@@ -180,7 +180,7 @@ static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
 	return ::DefWindowProcW(hWnd, Msg, wParam, lParam);
 }
 
-Application::Application(const gpu::IDevice& device) : m_device(device.to_shared()) {}
+Application::Application(const gpu::Device& device) : m_device(device.to_shared()) {}
 
 void Application::run(FunctionRef<void()> f) {
 	IMGUI_CHECKVERSION();

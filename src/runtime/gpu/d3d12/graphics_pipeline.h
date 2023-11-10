@@ -7,15 +7,15 @@
 
 SF_GPU_NAMESPACE_BEGIN
 
-class D3D12GraphicsPipelineImpl final : public IGraphicsPipeline {
+class D3D12GraphicsPipeline final : public GraphicsPipeline {
 public:
-	explicit D3D12GraphicsPipelineImpl(GraphicsPipelineDefinition&& definition, ComPtr<ID3D12PipelineState>&& pipeline)
+	explicit D3D12GraphicsPipeline(GraphicsPipelineDefinition&& definition, ComPtr<ID3D12PipelineState>&& pipeline)
 		: m_definition(sf::forward<GraphicsPipelineDefinition>(definition))
 		, m_pipeline(sf::forward<ComPtr<ID3D12PipelineState>>(pipeline)) {}
 
-	// IGraphicsPipeline
+	// GraphicsPipeline
 	const GraphicsPipelineDefinition& definition() const final { return m_definition; }
-	// ~IGraphicsPipeline
+	// ~GraphicsPipeline
 
 	SF_ALWAYS_INLINE ComPtr<ID3D12PipelineState> the() const { return m_pipeline; }
 

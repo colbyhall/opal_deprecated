@@ -8,7 +8,7 @@
 SF_GPU_NAMESPACE_BEGIN
 
 /**
- * Defines which pixel type an ITexture can use.
+ * Defines which pixel type an Texture can use.
  */
 enum class Format : u16 { Undefined, R_U8, RGBA_U8, RGBA_U8_SRGB, RGBA_F16, RGBA_F32, D24S8_U32 };
 
@@ -18,7 +18,7 @@ enum class Format : u16 { Undefined, R_U8, RGBA_U8, RGBA_U8_SRGB, RGBA_F16, RGBA
 usize format_size_in_bytes(Format format);
 
 /**
- * Describes how an ITexture will be used throughout its lifetime.
+ * Describes how an Texture will be used throughout its lifetime.
  *
  * Implementations may use this data for optimizations. Enforced internally by implementations.
  */
@@ -26,7 +26,7 @@ enum class TextureUsage : u8 {
 	/**
 	 * Allows a texture to have pixel data copied into it from a buffer or other texture.
 	 *
-	 * @see IGraphicsCommandRecorder::copy_buffer_to_texture.
+	 * @see GraphicsCommandRecorder::copy_buffer_to_texture.
 	 */
 	TransferDst = (1 << 0),
 
@@ -55,16 +55,16 @@ enum class TextureUsage : u8 {
 SF_ENUM_CLASS_BITFIELD(TextureUsage)
 
 /**
- * A specialized form of IBuffer's that can be used to store a variety of information in an efficient way. They can be
+ * A specialized form of Buffer's that can be used to store a variety of information in an efficient way. They can be
  * used to store 1D, 2D, or 3D data using a predefined Format. They're allocated using Heap::Storage memory to be
  * accessed as efficiently as possible.
  *
  * The most common use cases for textures are for storing diffuse maps, normal maps, depth, etc. They can be used for
  * much more though including voxels.
  *
- * @see IDevice::create_texture
+ * @see Device::create_texture
  */
-class ITexture : public SharedFromThis<ITexture> {
+class Texture : public SharedFromThis<Texture> {
 public:
 	/**
 	 * Returns the TextureUsage of this texture.
@@ -89,7 +89,7 @@ public:
 	 */
 	virtual u32 bindless() const = 0;
 
-	virtual ~ITexture() = default;
+	virtual ~Texture() = default;
 };
 
 SF_GPU_NAMESPACE_END

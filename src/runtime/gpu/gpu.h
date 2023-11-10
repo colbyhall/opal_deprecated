@@ -25,16 +25,16 @@ template <typename T>
 using SharedFromThis = AtomicSharedFromThis<T>;
 
 // Forward declarations
-class IBuffer;
-class IDevice;
-class IGraphicsCommandList;
-class IGraphicsCommandRecorder;
-class IGraphicsPipeline;
-class IPixelShader;
-class IRenderPassCommandRecorder;
-class ISwapchain;
-class ITexture;
-class IVertexShader;
+class Buffer;
+class Device;
+class GraphicsCommandList;
+class GraphicsCommandRecorder;
+class GraphicsPipeline;
+class PixelShader;
+class RenderPassCommandRecorder;
+class Swapchain;
+class Texture;
+class VertexShader;
 
 struct GraphicsPipelineDefinition;
 struct InputParameter;

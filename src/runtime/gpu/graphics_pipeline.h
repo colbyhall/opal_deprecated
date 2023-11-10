@@ -78,18 +78,18 @@ enum class BlendFactor : u8 {
 };
 
 /**
- * Defines an IGraphicsPipeline.
+ * Defines an GraphicsPipeline.
  */
 struct GraphicsPipelineDefinition {
 	/**
 	 * Vertex shader that will be used when the pipeline is active.
 	 */
-	Shared<IVertexShader> vertex_shader;
+	Shared<VertexShader> vertex_shader;
 
 	/**
 	 * Pixel shader that will be used when the pipeline is active.
 	 */
-	Shared<IPixelShader> pixel_shader;
+	Shared<PixelShader> pixel_shader;
 
 	/**
 	 * Pixel format shaders are expecting as color attachments.
@@ -124,14 +124,14 @@ struct GraphicsPipelineDefinition {
  * Describes how a render pass should execute a draw call. This includes what shaders should be used, how the rasterizer
  * should draws the triangles, and much more.
  *
- * @see IDevice::create_graphics_pipeline.
+ * @see Device::create_graphics_pipeline.
  * @see GraphicsPipelineDefinition.
- * @see IGraphicsCommandRecorder.
+ * @see GraphicsCommandRecorder.
  */
-class IGraphicsPipeline : public SharedFromThis<IGraphicsPipeline> {
+class GraphicsPipeline : public SharedFromThis<GraphicsPipeline> {
 public:
 	virtual const GraphicsPipelineDefinition& definition() const = 0;
-	virtual ~IGraphicsPipeline() = default;
+	virtual ~GraphicsPipeline() = default;
 };
 
 SF_GPU_NAMESPACE_END

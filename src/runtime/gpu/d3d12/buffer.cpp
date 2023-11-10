@@ -1,10 +1,10 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "gpu/d3d12/d3d12_buffer.h"
+#include "gpu/d3d12/buffer.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
-void D3D12BufferImpl::map(FunctionRef<void(Slice<u8>)> func) {
+void D3D12Buffer::map(FunctionRef<void(Slice<u8>)> func) {
 	D3D12_RANGE range = {};
 	void* ptr;
 	throw_if_failed(m_resource->Map(0, &range, &ptr));

@@ -4,28 +4,29 @@
 
 #include "core/containers/option.h"
 #include "core/os/library.h"
-#include "gpu/d3d12/d3d12_memory.h"
+#include "gpu/d3d12/memory.h"
 #include "gpu/device.h"
 #include "gpu/graphics_command_list.h"
 
-typedef HRESULT(__stdcall* PFN_D3D12_SERIALIZE_ROOT_SIGNATURE
-)(const D3D12_ROOT_SIGNATURE_DESC* root_signature_desc,
-  D3D_ROOT_SIGNATURE_VERSION version,
-  ID3DBlob** blob,
-  ID3DBlob** error_blob);
+typedef HRESULT(__stdcall* PFN_D3D12_SERIALIZE_ROOT_SIGNATURE)(
+	const D3D12_ROOT_SIGNATURE_DESC* root_signature_desc,
+	D3D_ROOT_SIGNATURE_VERSION version,
+	ID3DBlob** blob,
+	ID3DBlob** error_blob
+);
 
 SF_GPU_NAMESPACE_BEGIN
 
 struct D3D12QueuedWork {
 	ComPtr<ID3D12Fence> fence;
-	Shared<IGraphicsCommandList> command_list;
+	Shared<GraphicsCommandList> command_list;
 
 	SF_ALWAYS_INLINE explicit D3D12QueuedWork(
 		const ComPtr<ID3D12Fence>& in_fence,
-		Shared<IGraphicsCommandList>&& in_command_list
+		Shared<GraphicsCommandList>&& in_command_list
 	)
 		: fence(in_fence)
-		, command_list(sf::forward<Shared<IGraphicsCommandList>>(in_command_list)) {}
+		, command_list(sf::forward<Shared<GraphicsCommandList>>(in_command_list)) {}
 
 	SF_ALWAYS_INLINE D3D12QueuedWork(D3D12QueuedWork&& move) noexcept
 		: fence(move.fence)
@@ -44,26 +45,26 @@ struct D3D12QueuedWork {
 	}
 };
 
-class D3D12DeviceImpl final : public IDevice {
+class D3D12Device final : public Device {
 public:
 	using FnSerializeRootSignature = PFN_D3D12_SERIALIZE_ROOT_SIGNATURE;
 	using FnCreateDevice = PFN_D3D12_CREATE_DEVICE;
 
-	static Shared<IDevice> create();
-	explicit D3D12DeviceImpl();
+	static Shared<Device> create();
+	explicit D3D12Device();
 
-	// IDevice
-	Unique<ISwapchain> create_swapchain(void* handle) const final;
-	Shared<IBuffer> create_buffer(BufferUsage usage, Heap kind, usize size) const final;
-	Shared<ITexture> create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const final;
-	Shared<IGraphicsPipeline> create_graphics_pipeline(GraphicsPipelineDefinition&& definition) const final;
-	Shared<IVertexShader>
+	// Device
+	Unique<Swapchain> create_swapchain(void* handle) const final;
+	Shared<Buffer> create_buffer(BufferUsage usage, Heap kind, usize size) const final;
+	Shared<Texture> create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const final;
+	Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipelineDefinition&& definition) const final;
+	Shared<VertexShader>
 	create_vertex_shader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) const final;
-	Shared<IPixelShader> create_pixel_shader(Vector<u8>&& binary) const final;
+	Shared<PixelShader> create_pixel_shader(Vector<u8>&& binary) const final;
 
-	Shared<IGraphicsCommandList> record_graphics(FunctionRef<void(IGraphicsCommandRecorder&)> callable) const final;
-	void submit(const IGraphicsCommandList& command_list) const final;
-	// ~IDevice
+	Shared<GraphicsCommandList> record_graphics(FunctionRef<void(GraphicsCommandRecorder&)> callable) const final;
+	void submit(const GraphicsCommandList& command_list) const final;
+	// ~Device
 
 	void flush_queue() const;
 
@@ -94,7 +95,7 @@ private:
 	D3D12RootSignature m_root_signature;
 
 	// Resources used to fill empty bindless slots
-	Option<Shared<ITexture>> null_texture;
+	Option<Shared<Texture>> null_texture;
 
 	// TODO: Wrap this in a Mutex to ensure thread safety
 	mutable Vector<D3D12QueuedWork> m_queued_work;

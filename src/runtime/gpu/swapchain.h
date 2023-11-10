@@ -6,14 +6,14 @@
 
 SF_GPU_NAMESPACE_BEGIN
 
-class ITexture;
+class Texture;
 
-class ISwapchain {
+class Swapchain {
 public:
-	virtual const ITexture& backbuffer() const = 0;
+	virtual const Texture& backbuffer() const = 0;
 	virtual void present() = 0;
 	virtual void resize() = 0;
-	virtual ~ISwapchain() = default;
+	virtual ~Swapchain() = default;
 };
 
 SF_GPU_NAMESPACE_END

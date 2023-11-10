@@ -3,32 +3,32 @@
 #pragma once
 
 #include "core/containers/array.h"
-#include "gpu/d3d12/d3d12_texture.h"
+#include "gpu/d3d12/texture.h"
 #include "gpu/swapchain.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
-class D3D12SwapchainImpl final : public ISwapchain {
+class D3D12Swapchain final : public Swapchain {
 public:
 	static inline constexpr usize frame_count = 2;
 
-	explicit D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* window_handle);
+	explicit D3D12Swapchain(const D3D12Device& device, void* window_handle);
 
 	void wait_for_previous();
 
-	// ISwapchain
-	const ITexture& backbuffer() const final;
+	// Swapchain
+	const Texture& backbuffer() const final;
 	void present() final;
 	void resize() final;
-	// ~ISwapchain
+	// ~Swapchain
 
 private:
-	Shared<IDevice> m_device;
+	Shared<Device> m_device;
 
 	HWND m_hwnd;
 
 	ComPtr<IDXGISwapChain3> m_swapchain;
-	Array<Shared<ITexture>, frame_count> m_backbuffers;
+	Array<Shared<Texture>, frame_count> m_backbuffers;
 	u8 m_current;
 
 	ComPtr<ID3D12Fence> m_fence;

@@ -1,7 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "editor/application.h"
-#include "gpu/d3d12/d3d12_device.h"
+#include "gpu/d3d12/device.h"
 #include "imgui/imgui.h"
 #include "stb/stb_image.h"
 
@@ -16,7 +16,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
 	using namespace sf;
 
-	auto device = gpu::D3D12DeviceImpl::create();
+	auto device = gpu::D3D12Device::create();
 
 	editor::Application(device).run([]() {
 		// Create a window called "My First Tool", with a menu bar.

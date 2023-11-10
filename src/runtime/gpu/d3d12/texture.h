@@ -2,30 +2,30 @@
 
 #pragma once
 
-#include "gpu/d3d12/d3d12_memory.h"
+#include "gpu/d3d12/memory.h"
 #include "gpu/texture.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
 DXGI_FORMAT format_to_dxgi(Format format);
 
-class D3D12TextureImpl final : public ITexture {
+class D3D12Texture final : public Texture {
 public:
-	explicit D3D12TextureImpl(
-		const D3D12DeviceImpl& context,
+	explicit D3D12Texture(
+		const D3D12Device& context,
 		TextureUsage usage,
 		Format format,
 		const Vector3<u32>& size,
 		ComPtr<ID3D12Resource> resource = nullptr
 	);
 
-	// ITexture
+	// Texture
 	TextureUsage usage() const final { return m_usage; }
 	Format format() const final { return m_format; }
 	Vector3<u32> size() const final { return m_size; }
 	u32 bindless() const final { return m_bt2dv_handle.index; }
-	~D3D12TextureImpl() final;
-	// ~ITexture
+	~D3D12Texture() final;
+	// ~Texture
 
 	SF_ALWAYS_INLINE const ComPtr<ID3D12Resource>& resource() const { return m_resource; };
 
@@ -34,7 +34,7 @@ public:
 	SF_ALWAYS_INLINE const D3D12DescriptorHandle& bt2dv_handle() const { return m_bt2dv_handle; }
 
 private:
-	Shared<IDevice> m_context;
+	Shared<Device> m_context;
 
 	ComPtr<ID3D12Resource> m_resource;
 	TextureUsage m_usage;

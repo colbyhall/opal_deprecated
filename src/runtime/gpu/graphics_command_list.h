@@ -9,10 +9,10 @@
 SF_GPU_NAMESPACE_BEGIN
 
 /**
- * Defines the memory format for an ITexture. Used to transition a texture into specific states for a specific batch of
+ * Defines the memory format for an Texture. Used to transition a texture into specific states for a specific batch of
  * operations.
  *
- * @see IGraphicsCommandRecorder::texture_barrier
+ * @see GraphicsCommandRecorder::texture_barrier
  */
 enum class Layout : u8 {
 	/**
@@ -60,20 +60,20 @@ enum class Layout : u8 {
  *
  * @note not always implemented as a list.
  *
- * @see IDevice::record_graphics
- * @see IDevice::submit
+ * @see Device::record_graphics
+ * @see Device::submit
  */
-class IGraphicsCommandList : public SharedFromThis<IGraphicsCommandList> {
+class GraphicsCommandList : public SharedFromThis<GraphicsCommandList> {
 public:
-	virtual ~IGraphicsCommandList() = default;
+	virtual ~GraphicsCommandList() = default;
 };
 
 /**
- * Builder pattern object that builds IGraphicsCommandList.
+ * Builder pattern object that builds GraphicsCommandList.
  *
- * @see IDevice::record_graphics.
+ * @see Device::record_graphics.
  */
-class IGraphicsCommandRecorder {
+class GraphicsCommandRecorder {
 public:
 	/**
 	 * Copies a buffer to a texture.
@@ -82,9 +82,9 @@ public:
 	 *
 	 * @param src - the buffer that will be copied from.
 	 *
-	 * @see IGraphicsCommandRecorder::texture_barrier for layout transition.
+	 * @see GraphicsCommandRecorder::texture_barrier for layout transition.
 	 */
-	virtual IGraphicsCommandRecorder& copy_buffer_to_texture(const ITexture& dst, const IBuffer& src) = 0;
+	virtual GraphicsCommandRecorder& copy_buffer_to_texture(const Texture& dst, const Buffer& src) = 0;
 
 	/**
 	 * Transitions a texture's layout.
@@ -95,56 +95,55 @@ public:
 	 *
 	 * @param new_layout - the layout that the texture will be transitioned to.
 	 */
-	virtual IGraphicsCommandRecorder&
-	texture_barrier(const ITexture& texture, Layout old_layout, Layout new_layout) = 0;
+	virtual GraphicsCommandRecorder& texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout) = 0;
 
 	/**
 	 * Executes a render pass on provided color and depth attachments. Draw calls are executed during render passes.
 	 *
-	 * @param color - the texture that will be rendered into. TODO: This should be a slice of ITexture's.
+	 * @param color - the texture that will be rendered into. TODO: This should be a slice of Texture's.
 	 *
 	 * @param depth - an optional texture that will have depth information rendered into.
 	 *
-	 * @param callable - a FunctionRef which takes an IRenderPassCommandRecorder to record render pass specific
+	 * @param callable - a FunctionRef which takes an RenderPassCommandRecorder to record render pass specific
 	 * commands.
 	 */
-	virtual IGraphicsCommandRecorder& render_pass(
-		const ITexture& color,
-		Option<ITexture const&> depth,
-		FunctionRef<void(IRenderPassCommandRecorder&)> callable
+	virtual GraphicsCommandRecorder& render_pass(
+		const Texture& color,
+		Option<Texture const&> depth,
+		FunctionRef<void(RenderPassCommandRecorder&)> callable
 	) = 0;
 
-	virtual ~IGraphicsCommandRecorder() = default;
+	virtual ~GraphicsCommandRecorder() = default;
 };
 
 /**
- * Similar to an IGraphicsCommandRecorder but only allows render pass specific operations.
+ * Similar to an GraphicsCommandRecorder but only allows render pass specific operations.
  *
- * @see IGraphicsCommandRecorder::render_pass.
+ * @see GraphicsCommandRecorder::render_pass.
  */
-class IRenderPassCommandRecorder {
+class RenderPassCommandRecorder {
 public:
 	/**
 	 * Sets every pixel in color attachment's current scissor to a certain color.
 	 *
 	 * TODO: color should use some LinearColor abstraction
 	 */
-	virtual IRenderPassCommandRecorder& clear_color(const Vector4<f32>& color) = 0;
+	virtual RenderPassCommandRecorder& clear_color(const Vector4<f32>& color) = 0;
 
 	/**
 	 * Specifies which pipeline following commands should use.
 	 */
-	virtual IRenderPassCommandRecorder& set_pipeline(const IGraphicsPipeline& pipeline) = 0;
+	virtual RenderPassCommandRecorder& set_pipeline(const GraphicsPipeline& pipeline) = 0;
 
 	/**
 	 * Specifies which buffer to be used for vertex data during a draw command.
 	 *
 	 * @note buffer's usage must contain BufferUsage::Vertex.
 	 *
-	 * @see IRenderPassCommandRecorder::draw
-	 * @see IRenderPassCommandRecorder::draw_indexed
+	 * @see RenderPassCommandRecorder::draw
+	 * @see RenderPassCommandRecorder::draw_indexed
 	 */
-	virtual IRenderPassCommandRecorder& set_vertices(const IBuffer& buffer, u32 stride) = 0;
+	virtual RenderPassCommandRecorder& set_vertices(const Buffer& buffer, u32 stride) = 0;
 
 	/**
 	 * Specifies which buffer to be used for index data during a draw command.
@@ -152,14 +151,14 @@ public:
 	 * @note buffer's usage must contain BufferUsage::Index.
 	 * @note index buffers currently are expected to be u32's.
 	 *
-	 * @see IRenderPassCommandRecorder::draw_indexed
+	 * @see RenderPassCommandRecorder::draw_indexed
 	 */
-	virtual IRenderPassCommandRecorder& set_indices(const IBuffer& buffer) = 0;
+	virtual RenderPassCommandRecorder& set_indices(const Buffer& buffer) = 0;
 
 	/**
 	 * TODO: Wrap this into an appropriate api.
 	 */
-	virtual IRenderPassCommandRecorder& push_constants(const void* ptr) = 0;
+	virtual RenderPassCommandRecorder& push_constants(const void* ptr) = 0;
 
 	/**
 	 * Performs a draw call using just vertex data.
@@ -167,10 +166,10 @@ public:
 	 * @param vertex_count - the amount of vertices to draw.
 	 * @param first_verex - index of vertex to start drawing at. Defaults to 0.
 	 *
-	 * @see IRenderPassCommandRecorder::set_pipeline
-	 * @see IRenderPassCommandRecorder::set_vertices
+	 * @see RenderPassCommandRecorder::set_pipeline
+	 * @see RenderPassCommandRecorder::set_vertices
 	 */
-	virtual IRenderPassCommandRecorder& draw(usize vertex_count, usize first_vertex = 0) = 0;
+	virtual RenderPassCommandRecorder& draw(usize vertex_count, usize first_vertex = 0) = 0;
 
 	/**
 	 * Performs a draw call using index data.
@@ -178,13 +177,13 @@ public:
 	 * @param index_count - the amount of indices to draw from.
 	 * @param first_index - index of the index to start drawing from. Defaults to 0.
 	 *
-	 * @see IRenderPassCommandRecorder::set_pipeline
-	 * @see IRenderPassCommandRecorder::set_vertices
-	 * @see IRenderPassCommandRecorder::set_indices
+	 * @see RenderPassCommandRecorder::set_pipeline
+	 * @see RenderPassCommandRecorder::set_vertices
+	 * @see RenderPassCommandRecorder::set_indices
 	 */
-	virtual IRenderPassCommandRecorder& draw_index(usize index_count, usize first_index = 0) = 0;
+	virtual RenderPassCommandRecorder& draw_index(usize index_count, usize first_index = 0) = 0;
 
-	virtual ~IRenderPassCommandRecorder() = default;
+	virtual ~RenderPassCommandRecorder() = default;
 };
 
 SF_GPU_NAMESPACE_END

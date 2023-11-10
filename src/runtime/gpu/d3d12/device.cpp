@@ -1,12 +1,12 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "gpu/d3d12/d3d12_device.h"
-#include "gpu/d3d12/d3d12_buffer.h"
-#include "gpu/d3d12/d3d12_graphics_command_list.h"
-#include "gpu/d3d12/d3d12_graphics_pipeline.h"
-#include "gpu/d3d12/d3d12_shader.h"
-#include "gpu/d3d12/d3d12_swapchain.h"
-#include "gpu/d3d12/d3d12_texture.h"
+#include "gpu/d3d12/device.h"
+#include "gpu/d3d12/buffer.h"
+#include "gpu/d3d12/graphics_command_list.h"
+#include "gpu/d3d12/graphics_pipeline.h"
+#include "gpu/d3d12/shader.h"
+#include "gpu/d3d12/swapchain.h"
+#include "gpu/d3d12/texture.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
@@ -48,8 +48,8 @@ static D3D12_BLEND_OP convert_blend_op(BlendOp op) {
 	return D3D12_BLEND_OP_ADD;
 }
 
-Shared<IDevice> D3D12DeviceImpl::create() {
-	auto result = Shared<D3D12DeviceImpl>::make();
+Shared<Device> D3D12Device::create() {
+	auto result = Shared<D3D12Device>::make();
 
 	// Initialize null resources used to fill empty bindless slots
 	result->null_texture = result->create_texture(TextureUsage::Sampled, Format::RGBA_U8, { 8, 8, 1 });
@@ -57,7 +57,7 @@ Shared<IDevice> D3D12DeviceImpl::create() {
 	return result;
 }
 
-D3D12DeviceImpl::D3D12DeviceImpl() {
+D3D12Device::D3D12Device() {
 	m_d3d12 = core::Library::open("d3d12.dll");
 	auto& d3d12 = m_d3d12.as_mut().unwrap();
 
@@ -172,11 +172,11 @@ D3D12DeviceImpl::D3D12DeviceImpl() {
 	m_root_signature.init(*this);
 }
 
-Unique<ISwapchain> D3D12DeviceImpl::create_swapchain(void* handle) const {
-	return Unique<D3D12SwapchainImpl>::make(*this, handle);
+Unique<Swapchain> D3D12Device::create_swapchain(void* handle) const {
+	return Unique<D3D12Swapchain>::make(*this, handle);
 }
 
-Shared<IBuffer> D3D12DeviceImpl::create_buffer(BufferUsage usage, Heap kind, usize size) const {
+Shared<Buffer> D3D12Device::create_buffer(BufferUsage usage, Heap kind, usize size) const {
 	D3D12_HEAP_PROPERTIES heap = {};
 	switch (kind) {
 	case Heap::Storage:
@@ -215,15 +215,14 @@ Shared<IBuffer> D3D12DeviceImpl::create_buffer(BufferUsage usage, Heap kind, usi
 		IID_PPV_ARGS(&resource)
 	));
 
-	return Shared<D3D12BufferImpl>::make(usage, kind, size, sf::move(resource));
+	return Shared<D3D12Buffer>::make(usage, kind, size, sf::move(resource));
 }
 
-Shared<ITexture> D3D12DeviceImpl::create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const {
-	return Shared<D3D12TextureImpl>::make(*this, usage, format, size);
+Shared<Texture> D3D12Device::create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const {
+	return Shared<D3D12Texture>::make(*this, usage, format, size);
 }
 
-Shared<IGraphicsCommandList> D3D12DeviceImpl::record_graphics(FunctionRef<void(IGraphicsCommandRecorder&)> callable
-) const {
+Shared<GraphicsCommandList> D3D12Device::record_graphics(FunctionRef<void(GraphicsCommandRecorder&)> callable) const {
 	ComPtr<ID3D12GraphicsCommandList> command_list;
 	throw_if_failed(m_device->CreateCommandList(
 		0,
@@ -245,7 +244,7 @@ Shared<IGraphicsCommandList> D3D12DeviceImpl::record_graphics(FunctionRef<void(I
 		heap_ptr->GetGPUDescriptorHandleForHeapStart()
 	);
 
-	auto result = Shared<D3D12GraphicsCommandListImpl>::make(command_list);
+	auto result = Shared<D3D12GraphicsCommandList>::make(command_list);
 
 	auto recorder = D3D12GraphicsCommandRecorderImpl(*result);
 	callable(recorder);
@@ -254,7 +253,7 @@ Shared<IGraphicsCommandList> D3D12DeviceImpl::record_graphics(FunctionRef<void(I
 	return result;
 }
 
-Shared<IGraphicsPipeline> D3D12DeviceImpl::create_graphics_pipeline(GraphicsPipelineDefinition&& definition) const {
+Shared<GraphicsPipeline> D3D12Device::create_graphics_pipeline(GraphicsPipelineDefinition&& definition) const {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
 	desc.pRootSignature = m_root_signature.the().Get();
 
@@ -401,26 +400,23 @@ Shared<IGraphicsPipeline> D3D12DeviceImpl::create_graphics_pipeline(GraphicsPipe
 	ComPtr<ID3D12PipelineState> pipeline;
 	throw_if_failed(m_device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&pipeline)));
 
-	return Shared<D3D12GraphicsPipelineImpl>::make(
-		sf::forward<GraphicsPipelineDefinition>(definition),
-		sf::move(pipeline)
-	);
+	return Shared<D3D12GraphicsPipeline>::make(sf::forward<GraphicsPipelineDefinition>(definition), sf::move(pipeline));
 }
 
-Shared<IVertexShader>
-D3D12DeviceImpl::create_vertex_shader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) const {
-	return Shared<D3D12VertexShaderImpl>::make(
+Shared<VertexShader>
+D3D12Device::create_vertex_shader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) const {
+	return Shared<D3D12VertexShader>::make(
 		sf::forward<Vector<u8>>(binary),
 		sf::forward<Vector<InputParameter>>(input_parameters)
 	);
 }
 
-Shared<IPixelShader> D3D12DeviceImpl::create_pixel_shader(Vector<u8>&& binary) const {
-	return Shared<D3D12PixelShaderImpl>::make(sf::forward<Vector<u8>>(binary));
+Shared<PixelShader> D3D12Device::create_pixel_shader(Vector<u8>&& binary) const {
+	return Shared<D3D12PixelShader>::make(sf::forward<Vector<u8>>(binary));
 }
 
-void D3D12DeviceImpl::submit(const IGraphicsCommandList& command_list) const {
-	auto& casted_command_list = static_cast<const D3D12GraphicsCommandListImpl&>(command_list);
+void D3D12Device::submit(const GraphicsCommandList& command_list) const {
+	auto& casted_command_list = static_cast<const D3D12GraphicsCommandList&>(command_list);
 	ID3D12CommandList* ppCommandLists[] = { casted_command_list.command_list.Get() };
 	m_queue->ExecuteCommandLists(1, ppCommandLists);
 
@@ -433,7 +429,7 @@ void D3D12DeviceImpl::submit(const IGraphicsCommandList& command_list) const {
 	m_queued_work.push(D3D12QueuedWork(fence, command_list.to_shared()));
 }
 
-void D3D12DeviceImpl::flush_queue() const {
+void D3D12Device::flush_queue() const {
 	for (i32 i = static_cast<i32>(m_queued_work.len()) - 1; i >= 0; --i) {
 		const auto value = m_queued_work[i].fence->GetCompletedValue();
 

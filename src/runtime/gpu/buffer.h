@@ -9,7 +9,7 @@
 SF_GPU_NAMESPACE_BEGIN
 
 /**
- * Specifies which GPU heap an IBuffer can be allocated from.
+ * Specifies which GPU heap an Buffer can be allocated from.
  */
 enum class Heap : u8 {
 	/**
@@ -18,7 +18,7 @@ enum class Heap : u8 {
 	 *
 	 * Typically used by any memory that will persist through many frames and won't mutate.
 	 *
-	 * @see IGraphicsCommandRecorder.
+	 * @see GraphicsCommandRecorder.
 	 */
 	Storage,
 
@@ -27,15 +27,15 @@ enum class Heap : u8 {
 	 * slow to read from on the GPU.
 	 *
 	 * Typically used for memory that will be needed for a single frame or to transfer data to `Heap::Storage` buffers
-	 * or ITextures.
+	 * or Textures.
 	 *
-	 * @see IBuffer::map
+	 * @see Buffer::map
 	 */
 	Upload,
 };
 
 /**
- * Describes how an IBuffer will be used throughout its lifetime.
+ * Describes how an Buffer will be used throughout its lifetime.
  *
  * Implementations may use this data for optimizations. Enforced by implementations.
  */
@@ -55,12 +55,12 @@ enum class BufferUsage : u8 {
 	TransferDst = (1 << 1),
 
 	/**
-	 * Allows a buffer to be used as vertex data in an IGraphicsCommandList.
+	 * Allows a buffer to be used as vertex data in an GraphicsCommandList.
 	 */
 	Vertex = (1 << 2),
 
 	/**
-	 * Allows a buffer to be used as index data in an IGraphicsCommandList.
+	 * Allows a buffer to be used as index data in an GraphicsCommandList.
 	 *
 	 * Buffer must be filled with u32 data.
 	 */
@@ -73,11 +73,11 @@ SF_ENUM_CLASS_BITFIELD(BufferUsage)
  * the CPU. This is the most primitive resource that a GPU can interact with. Its usage includes being used to store
  * vertex buffers, index buffer, constant buffers, etc.
  *
- * @see IDevice::create_buffer
+ * @see Device::create_buffer
  * @see Heap
  * @see BufferUsage
  */
-class IBuffer : public SharedFromThis<IBuffer> {
+class Buffer : public SharedFromThis<Buffer> {
 public:
 	/**
 	 * Returns the BufferUsage of this buffer.
@@ -103,7 +103,7 @@ public:
 	 */
 	virtual void map(FunctionRef<void(Slice<u8>)> func) = 0;
 
-	virtual ~IBuffer() = default;
+	virtual ~Buffer() = default;
 };
 
 SF_GPU_NAMESPACE_END

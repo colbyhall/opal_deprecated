@@ -31,7 +31,7 @@ private:
 	usize m_cap = 0;
 };
 
-class D3D12DeviceImpl;
+class D3D12Device;
 
 class D3D12RootSignature {
 public:
@@ -41,7 +41,7 @@ public:
 	static inline constexpr u32 bt2dv_index = 1;
 
 	D3D12RootSignature() = default;
-	void init(const D3D12DeviceImpl& context);
+	void init(const D3D12Device& context);
 
 	SF_ALWAYS_INLINE ComPtr<ID3D12RootSignature> the() const { return m_root_signature; }
 

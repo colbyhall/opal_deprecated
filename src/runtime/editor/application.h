@@ -10,12 +10,12 @@ SF_EDITOR_NAMESPACE_BEGIN
 
 class Application {
 public:
-	explicit Application(const gpu::IDevice& device);
+	explicit Application(const gpu::Device& device);
 
 	void run(FunctionRef<void()> f);
 
 private:
-	gpu::Shared<gpu::IDevice> m_device;
+	gpu::Shared<gpu::Device> m_device;
 };
 
 SF_EDITOR_NAMESPACE_END

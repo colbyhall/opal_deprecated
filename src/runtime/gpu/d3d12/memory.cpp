@@ -1,7 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "gpu/d3d12/d3d12_memory.h"
-#include "gpu/d3d12/d3d12_device.h"
+#include "gpu/d3d12/memory.h"
+#include "gpu/d3d12/device.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
@@ -56,7 +56,7 @@ void D3D12DescriptorHeap::free(const D3D12DescriptorHandle& handle) const {
 	m_free_slots[handle.index].store(false);
 }
 
-void D3D12RootSignature::init(const D3D12DeviceImpl& context) {
+void D3D12RootSignature::init(const D3D12Device& context) {
 	D3D12_ROOT_PARAMETER push_constants = {};
 	push_constants.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 	push_constants.Constants.Num32BitValues = 16;

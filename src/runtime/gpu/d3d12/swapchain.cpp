@@ -1,13 +1,12 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "gpu/d3d12/d3d12_swapchain.h"
+#include "gpu/d3d12/swapchain.h"
 #include "core/math/vector2.h"
-#include "gpu/d3d12/d3d12_device.h"
+#include "gpu/d3d12/device.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
-D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* window_handle)
-	: m_device(device.to_shared()) {
+D3D12Swapchain::D3D12Swapchain(const D3D12Device& device, void* window_handle) : m_device(device.to_shared()) {
 	SF_ASSERT(window_handle != nullptr);
 
 	m_hwnd = (HWND)window_handle;
@@ -17,7 +16,7 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* wind
 	const Vector2<u32> size = { (u32)(rect.right - rect.left), (u32)(rect.bottom - rect.top) };
 
 	DXGI_SWAP_CHAIN_DESC1 desc = {};
-	desc.BufferCount = D3D12SwapchainImpl::frame_count;
+	desc.BufferCount = D3D12Swapchain::frame_count;
 	desc.Width = size.width;
 	desc.Height = size.height;
 	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -41,13 +40,13 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* wind
 	SF_ASSERT(m_fence_event);
 	m_fence_value = 1;
 
-	for (int i = 0; i < D3D12SwapchainImpl::frame_count; ++i) {
+	for (int i = 0; i < D3D12Swapchain::frame_count; ++i) {
 		ComPtr<ID3D12Resource> resource;
 		throw_if_failed(m_swapchain->GetBuffer(i, IID_PPV_ARGS(&resource)));
 
 		const Vector3<u32> buffer_size = { size.width, size.height, 1 };
 
-		auto backbuffer = Shared<D3D12TextureImpl>::make(
+		auto backbuffer = Shared<D3D12Texture>::make(
 			device,
 			TextureUsage::Color | TextureUsage::Backbuffer,
 			Format::RGBA_U8,
@@ -58,18 +57,18 @@ D3D12SwapchainImpl::D3D12SwapchainImpl(const D3D12DeviceImpl& device, void* wind
 	}
 }
 
-const ITexture& D3D12SwapchainImpl::backbuffer() const { return *m_backbuffers[m_current]; }
+const Texture& D3D12Swapchain::backbuffer() const { return *m_backbuffers[m_current]; }
 
-void D3D12SwapchainImpl::present() {
+void D3D12Swapchain::present() {
 	throw_if_failed(m_swapchain->Present(1, 0));
 	wait_for_previous();
 
-	auto& device = static_cast<D3D12DeviceImpl&>(*m_device);
+	auto& device = static_cast<D3D12Device&>(*m_device);
 	device.command_allocator()->Reset();
 }
 
-void D3D12SwapchainImpl::wait_for_previous() {
-	auto& device = static_cast<D3D12DeviceImpl&>(*m_device);
+void D3D12Swapchain::wait_for_previous() {
+	auto& device = static_cast<D3D12Device&>(*m_device);
 
 	const auto fence_value = m_fence_value;
 	throw_if_failed(device.queue()->Signal(m_fence.Get(), fence_value));
@@ -86,7 +85,7 @@ void D3D12SwapchainImpl::wait_for_previous() {
 	m_current = (u8)m_swapchain->GetCurrentBackBufferIndex();
 }
 
-void D3D12SwapchainImpl::resize() {
+void D3D12Swapchain::resize() {
 	m_backbuffers.reset();
 
 	RECT rect;
@@ -95,14 +94,14 @@ void D3D12SwapchainImpl::resize() {
 
 	throw_if_failed(m_swapchain->ResizeBuffers(0, size.width, size.height, DXGI_FORMAT_UNKNOWN, 0));
 
-	auto& device = static_cast<const D3D12DeviceImpl&>(*m_device);
-	for (int i = 0; i < D3D12SwapchainImpl::frame_count; ++i) {
+	auto& device = static_cast<const D3D12Device&>(*m_device);
+	for (int i = 0; i < D3D12Swapchain::frame_count; ++i) {
 		ComPtr<ID3D12Resource> resource;
 		throw_if_failed(m_swapchain->GetBuffer(i, IID_PPV_ARGS(&resource)));
 
 		const Vector3<u32> buffer_size = { size.width, size.height, 1 };
 
-		auto backbuffer = Shared<D3D12TextureImpl>::make(
+		auto backbuffer = Shared<D3D12Texture>::make(
 			device,
 			TextureUsage::Color | TextureUsage::Backbuffer,
 			Format::RGBA_U8,

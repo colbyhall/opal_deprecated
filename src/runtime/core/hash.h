@@ -7,24 +7,24 @@
 
 SF_CORE_NAMESPACE_BEGIN
 
-class IHasher {
+class Hasher {
 public:
 	virtual u64 finish() = 0;
 	virtual void write(Slice<u8 const> bytes) = 0;
-	virtual ~IHasher() = default;
+	virtual ~Hasher() = default;
 };
 
-class FNV1Hasher final : public IHasher {
+class FNV1Hasher final : public Hasher {
 public:
 	constexpr FNV1Hasher() = default;
 
 	static const u64 offset_basic;
 	static const u64 prime;
 
-	// IHasher
+	// Hasher
 	u64 finish() final;
 	void write(Slice<u8 const> bytes) final;
-	// ~IHasher
+	// ~Hasher
 
 private:
 	u64 m_result = 0;

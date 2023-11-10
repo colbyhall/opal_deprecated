@@ -1,11 +1,11 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "gpu/d3d12/d3d12_graphics_command_list.h"
-#include "gpu/d3d12/d3d12_buffer.h"
-#include "gpu/d3d12/d3d12_device.h"
-#include "gpu/d3d12/d3d12_graphics_pipeline.h"
-#include "gpu/d3d12/d3d12_shader.h"
-#include "gpu/d3d12/d3d12_texture.h"
+#include "gpu/d3d12/graphics_command_list.h"
+#include "gpu/d3d12/buffer.h"
+#include "gpu/d3d12/device.h"
+#include "gpu/d3d12/graphics_pipeline.h"
+#include "gpu/d3d12/shader.h"
+#include "gpu/d3d12/texture.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
@@ -36,13 +36,13 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	return state;
 }
 
-IGraphicsCommandRecorder&
-D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const ITexture& dst, const IBuffer& src) {
-	const auto& dst_interface = static_cast<const D3D12TextureImpl&>(dst);
+GraphicsCommandRecorder&
+D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const Texture& dst, const Buffer& src) {
+	const auto& dst_interface = static_cast<const D3D12Texture&>(dst);
 	D3D12_TEXTURE_COPY_LOCATION dst_location = {};
 	dst_location.pResource = dst_interface.resource().Get();
 
-	const auto& src_interface = static_cast<const D3D12BufferImpl&>(src);
+	const auto& src_interface = static_cast<const D3D12Buffer&>(src);
 	D3D12_TEXTURE_COPY_LOCATION src_location = {};
 	src_location.pResource = src_interface.resource().Get();
 
@@ -62,9 +62,9 @@ D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const ITexture& dst, co
 	return *this;
 }
 
-IGraphicsCommandRecorder&
-D3D12GraphicsCommandRecorderImpl::texture_barrier(const ITexture& texture, Layout old_layout, Layout new_layout) {
-	const auto& impl = static_cast<const D3D12TextureImpl&>(texture);
+GraphicsCommandRecorder&
+D3D12GraphicsCommandRecorderImpl::texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout) {
+	const auto& impl = static_cast<const D3D12Texture&>(texture);
 
 	D3D12_RESOURCE_BARRIER barrier = {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -79,22 +79,22 @@ D3D12GraphicsCommandRecorderImpl::texture_barrier(const ITexture& texture, Layou
 	return *this;
 }
 
-IGraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
-	const ITexture& color,
-	Option<ITexture const&> depth,
-	FunctionRef<void(IRenderPassCommandRecorder&)> callable
+GraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
+	const Texture& color,
+	Option<Texture const&> depth,
+	FunctionRef<void(RenderPassCommandRecorder&)> callable
 ) {
 	m_command_list.textures_in_use.push(color.to_shared());
 
 	const D3D12_CPU_DESCRIPTOR_HANDLE* depth_handle = nullptr;
 	if (depth) {
 		auto& depth_texture = depth.unwrap();
-		auto& impl = static_cast<const D3D12TextureImpl&>(depth_texture);
+		auto& impl = static_cast<const D3D12Texture&>(depth_texture);
 		depth_handle = &impl.dsv_handle().handle;
 		m_command_list.textures_in_use.push(depth_texture.to_shared());
 	}
 
-	const auto& impl = static_cast<const D3D12TextureImpl&>(color);
+	const auto& impl = static_cast<const D3D12Texture&>(color);
 	m_command_list.command_list->OMSetRenderTargets(1, &impl.rtv_handle().handle, 0, depth_handle);
 
 	D3D12_VIEWPORT viewport = {};
@@ -130,7 +130,7 @@ IGraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const Vector4<f32>& color) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const Vector4<f32>& color) {
 	const auto handle = m_command_list.bound_color_buffer.as_ref().unwrap();
 	const f32 clear_color0[] = { color.r, color.g, color.g, color.a };
 	m_command_list.command_list->ClearRenderTargetView(handle, clear_color0, 0, nullptr);
@@ -138,8 +138,8 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const Vecto
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const IGraphicsPipeline& pipeline) {
-	auto& impl = static_cast<const D3D12GraphicsPipelineImpl&>(pipeline);
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const GraphicsPipeline& pipeline) {
+	auto& impl = static_cast<const D3D12GraphicsPipeline&>(pipeline);
 
 	m_command_list.command_list->SetPipelineState(impl.the().Get());
 	m_command_list.command_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -147,8 +147,8 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const IGra
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const IBuffer& buffer, u32 stride) {
-	auto& impl = static_cast<const D3D12BufferImpl&>(buffer);
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffer& buffer, u32 stride) {
+	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
 	SF_ASSERT(impl.size() % stride == 0);
 	SF_ASSERT((impl.usage() & BufferUsage::Vertex) == BufferUsage::Vertex);
@@ -163,8 +163,8 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const IBuf
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const IBuffer& buffer) {
-	auto& impl = static_cast<const D3D12BufferImpl&>(buffer);
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer& buffer) {
+	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
 	SF_ASSERT(impl.size() % sizeof(u32) == 0);
 	SF_ASSERT((impl.usage() & BufferUsage::Index) == BufferUsage::Index);
@@ -179,19 +179,19 @@ IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const IBuff
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::push_constants(const void* ptr) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::push_constants(const void* ptr) {
 	m_command_list.command_list->SetGraphicsRoot32BitConstants(0, 16, ptr, 0);
 
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw(usize vertex_count, usize first_vertex) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw(usize vertex_count, usize first_vertex) {
 	m_command_list.command_list->DrawInstanced((UINT)vertex_count, 1, (UINT)first_vertex, 0);
 
 	return *this;
 }
 
-IRenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_count, usize first_index) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_count, usize first_index) {
 	m_command_list.command_list->DrawIndexedInstanced((UINT)index_count, 1, (UINT)first_index, 0, 0);
 
 	return *this;

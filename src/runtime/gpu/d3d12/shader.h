@@ -8,29 +8,29 @@
 
 SF_GPU_NAMESPACE_BEGIN
 
-class D3D12VertexShaderImpl final : public IVertexShader {
+class D3D12VertexShader final : public VertexShader {
 public:
-	explicit D3D12VertexShaderImpl(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters)
+	explicit D3D12VertexShader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters)
 		: m_binary(sf::move(binary))
 		, m_input_parameters(sf::move(input_parameters)) {}
 
-	// IVertexShader
+	// VertexShader
 	Slice<u8 const> binary() const final { return m_binary; }
 	Slice<gpu::InputParameter const> input_parameters() const final { return m_input_parameters; }
-	// ~IVertexShader
+	// ~VertexShader
 
 private:
 	Vector<u8> m_binary;
 	Vector<InputParameter> m_input_parameters;
 };
 
-class D3D12PixelShaderImpl : public IPixelShader {
+class D3D12PixelShader : public PixelShader {
 public:
-	explicit D3D12PixelShaderImpl(Vector<u8>&& binary) : m_binary(sf::move(binary)) {}
+	explicit D3D12PixelShader(Vector<u8>&& binary) : m_binary(sf::move(binary)) {}
 
-	// IPixelShader
+	// PixelShader
 	Slice<u8 const> binary() const final { return m_binary; }
-	// ~IPixelShader
+	// ~PixelShader
 
 private:
 	Vector<u8> m_binary;

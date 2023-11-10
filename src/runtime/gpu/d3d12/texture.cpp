@@ -1,7 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "gpu/d3d12/d3d12_texture.h"
-#include "gpu/d3d12/d3d12_device.h"
+#include "gpu/d3d12/texture.h"
+#include "gpu/d3d12/device.h"
 
 SF_GPU_NAMESPACE_BEGIN
 
@@ -35,8 +35,8 @@ DXGI_FORMAT format_to_dxgi(Format format) {
 	return dxgi_format;
 }
 
-D3D12TextureImpl::D3D12TextureImpl(
-	const D3D12DeviceImpl& context,
+D3D12Texture::D3D12Texture(
+	const D3D12Device& context,
 	TextureUsage usage,
 	Format format,
 	const Vector3<u32>& size,
@@ -132,8 +132,8 @@ D3D12TextureImpl::D3D12TextureImpl(
 	}
 }
 
-D3D12TextureImpl::~D3D12TextureImpl() {
-	const auto& context = static_cast<const D3D12DeviceImpl&>(*m_context);
+D3D12Texture::~D3D12Texture() {
+	const auto& context = static_cast<const D3D12Device&>(*m_context);
 	auto& root_signature = context.root_signature();
 
 	if (m_rtv_handle.handle.ptr) {

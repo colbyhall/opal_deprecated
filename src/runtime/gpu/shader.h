@@ -50,7 +50,7 @@ struct InputParameter {
  *
  * @see GraphicsPipelineDescription
  */
-class IVertexShader : public IShader, public SharedFromThis<IVertexShader> {
+class VertexShader : public IShader, public SharedFromThis<VertexShader> {
 public:
 	/**
 	 * Returns the HLSL vertex input parameters.
@@ -61,7 +61,7 @@ public:
 /**
  * Pixel shaders determine the color at for every pixel of a rasterized triangle.
  */
-class IPixelShader : public IShader, public SharedFromThis<IPixelShader> {
+class PixelShader : public IShader, public SharedFromThis<PixelShader> {
 public:
 };
 
