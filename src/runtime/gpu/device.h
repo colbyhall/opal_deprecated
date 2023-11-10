@@ -27,9 +27,7 @@ public:
 	 *
 	 * @param usage - the bitflag that describes how this buffer will be used. Implementations can use this for
 	 * optimization purposes. It will also be enforced by the api.
-	 *
 	 * @param heap - specifies which gpu heap to allocate memory from.
-	 *
 	 * @param size - the size of memory allocated
 	 */
 	virtual Shared<Buffer> create_buffer(BufferUsage usage, Heap heap, usize size) const = 0;
@@ -39,9 +37,7 @@ public:
 	 *
 	 * @param usage - the bitflag that describes how this texture will be used. Implementations can use this for
 	 * optimization purposes. It will also be enforced by the api.
-	 *
 	 * @param format - the format of the textures pixels.
-	 *
 	 * @param size - the size of the texture. All size components must be greater than 0.
 	 */
 	virtual Shared<Texture> create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const = 0;
@@ -57,7 +53,6 @@ public:
 	 * Creates a vertex shader using a compiled binary.
 	 *
 	 * @param binary - dxc compiled vertex shader binary.
-	 *
 	 * @param input_parameters - input parameters specified in the shader outputted from dxc.
 	 */
 	virtual Shared<VertexShader>
