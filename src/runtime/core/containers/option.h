@@ -10,7 +10,7 @@
 SF_CORE_NAMESPACE_BEGIN
 
 // Alias nullptr for readability
-constexpr NullPtr none = nullptr;
+constexpr NullPtr nullopt = nullptr;
 
 template <typename T, typename Enable = void>
 class Option {
@@ -178,6 +178,6 @@ SF_CORE_NAMESPACE_END
 
 // Export to sf namespace
 SF_NAMESPACE_BEGIN
-using core::none;
+using core::nullopt;
 using core::Option;
 SF_NAMESPACE_END

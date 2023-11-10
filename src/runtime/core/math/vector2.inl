@@ -62,7 +62,7 @@ SF_ALWAYS_INLINE Option<Vector2<T>> Vector2<T>::normalized() const {
 	if (!is_near_zero()) {
 		return *this / len();
 	}
-	return sf::none;
+	return sf::nullopt;
 }
 
 template <typename T>

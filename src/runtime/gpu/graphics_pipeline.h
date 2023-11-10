@@ -99,7 +99,7 @@ struct GraphicsPipelineDefinition {
 	/**
 	 * Pixel format shaders are expecting for a depth attachment. None is allowed as well.
 	 */
-	Option<Format> depth_attachment = sf::none;
+	Option<Format> depth_attachment = sf::nullopt;
 
 	DrawMode draw_mode = DrawMode::Fill;
 	f32 line_width = 1.f;

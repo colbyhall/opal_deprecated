@@ -11,16 +11,14 @@ public:
 	NonTriviallyCopyable(const NonTriviallyCopyable&) = delete;
 	NonTriviallyCopyable& operator=(const NonTriviallyCopyable&) = delete;
 	NonTriviallyCopyable(NonTriviallyCopyable&&) noexcept {}
-	NonTriviallyCopyable& operator=(NonTriviallyCopyable&&) noexcept {
-		return *this;
-	}
+	NonTriviallyCopyable& operator=(NonTriviallyCopyable&&) noexcept { return *this; }
 
 	int m_x = 0;
 };
 
 TEST_CASE("sf::core::Option") {
 	SUBCASE("non_trivially copyable") {
-		Option<NonTriviallyCopyable> foo = sf::none;
+		Option<NonTriviallyCopyable> foo = sf::nullopt;
 		CHECK(!foo.is_set());
 
 		// Non trivially copyable can not be copied. To unwrap without mutating
@@ -36,7 +34,7 @@ TEST_CASE("sf::core::Option") {
 	}
 
 	SUBCASE("trivially copyable") {
-		Option<int> foo = sf::none;
+		Option<int> foo = sf::nullopt;
 		CHECK(!foo.is_set());
 
 		// Trivially copyable can be copied
@@ -52,7 +50,7 @@ TEST_CASE("sf::core::Option") {
 	}
 
 	SUBCASE("reference") {
-		Option<int&> foo = sf::none;
+		Option<int&> foo = sf::nullopt;
 		CHECK(!foo.is_set());
 
 		// reference options can be copied
