@@ -4,14 +4,14 @@
 
 #include "core/core.h"
 
-SF_SUPPRESS_WARNINGS_STD_BEGIN
+OP_SUPPRESS_WARNINGS_STD_BEGIN
 #include <initializer_list>
-SF_SUPPRESS_WARNINGS_STD_END
+OP_SUPPRESS_WARNINGS_STD_END
 
-// Export to sf namespace
-SF_NAMESPACE_BEGIN
+// Export to op namespace
+OP_NAMESPACE_BEGIN
 
 template <typename T>
 using InitializerList = std::initializer_list<T>;
 
-SF_NAMESPACE_END
+OP_NAMESPACE_END

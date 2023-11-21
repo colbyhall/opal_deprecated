@@ -5,18 +5,18 @@
 
 #include "dxc/dxc.h"
 
-SF_SUPPRESS_WARNING_PUSH
-SF_SUPPRESS_WARNINGS
-SF_MSVC_SUPPRESS_WARNING(4820)
-SF_MSVC_SUPPRESS_WARNING(4265)
-SF_MSVC_SUPPRESS_WARNING(4365)
-SF_MSVC_SUPPRESS_WARNING(4514)
-SF_MSVC_SUPPRESS_WARNING(5264)
-SF_MSVC_SUPPRESS_WARNING(5204)
-SF_MSVC_SUPPRESS_WARNING(5220)
-SF_MSVC_SUPPRESS_WARNING(5220)
-SF_MSVC_SUPPRESS_WARNING(4986)
-SF_MSVC_SUPPRESS_WARNING(4062)
+OP_SUPPRESS_WARNING_PUSH
+OP_SUPPRESS_WARNINGS
+OP_MSVC_SUPPRESS_WARNING(4820)
+OP_MSVC_SUPPRESS_WARNING(4265)
+OP_MSVC_SUPPRESS_WARNING(4365)
+OP_MSVC_SUPPRESS_WARNING(4514)
+OP_MSVC_SUPPRESS_WARNING(5264)
+OP_MSVC_SUPPRESS_WARNING(5204)
+OP_MSVC_SUPPRESS_WARNING(5220)
+OP_MSVC_SUPPRESS_WARNING(5220)
+OP_MSVC_SUPPRESS_WARNING(4986)
+OP_MSVC_SUPPRESS_WARNING(4062)
 
 #include "core/os/windows.h"
 
@@ -27,13 +27,13 @@ SF_MSVC_SUPPRESS_WARNING(4062)
 #include <wrl.h>
 using Microsoft::WRL::ComPtr;
 
-SF_DXC_NAMESPACE_BEGIN
+OP_DXC_NAMESPACE_BEGIN
 
 // From DXSampleHelper.h
 // Source: https://github.com/Microsoft/DirectX-Graphics-Samples
 static void throw_if_failed(HRESULT hr) {
 	if (FAILED(hr)) {
-		SF_PANIC("DXC Error");
+		OP_PANIC("DXC Error");
 	}
 }
 
@@ -88,7 +88,7 @@ Result<Output, String> compile(const Input& input) {
 			error.reserve(output->GetBufferSize());
 			error.push(StringView{ static_cast<const char*>(output->GetBufferPointer()), output->GetBufferSize() });
 			OutputDebugStringA(*error);
-			SF_INVALID_CODE_PATH;
+			OP_INVALID_CODE_PATH;
 		}
 	}
 
@@ -144,8 +144,8 @@ Result<Output, String> compile(const Input& input) {
 				break;
 			}
 
-			gpu::InputParameter input_parameter = { param_desc.SemanticIndex, sf::move(semantic_name), primitive };
-			shader_output.input_parameters.push(sf::move(input_parameter));
+			gpu::InputParameter input_parameter = { param_desc.SemanticIndex, op::move(semantic_name), primitive };
+			shader_output.input_parameters.push(op::move(input_parameter));
 		}
 	}
 
@@ -157,5 +157,5 @@ Result<Output, String> compile(const Input& input) {
 	return shader_output;
 }
 
-SF_DXC_NAMESPACE_END
-SF_SUPPRESS_WARNING_POP
+OP_DXC_NAMESPACE_END
+OP_SUPPRESS_WARNING_POP

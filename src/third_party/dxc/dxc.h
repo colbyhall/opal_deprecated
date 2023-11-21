@@ -2,30 +2,27 @@
 
 #pragma once
 
-#include "core/containers/vector.h"
 #include "core/containers/result.h"
 #include "core/containers/string_view.h"
+#include "core/containers/vector.h"
 
 #include "gpu/shader.h"
 
 // Begin the dxc namespace
-#define SF_DXC_NAMESPACE_BEGIN																    \
-	SF_NAMESPACE_BEGIN																			\
+#define OP_DXC_NAMESPACE_BEGIN                                                                                         \
+	OP_NAMESPACE_BEGIN                                                                                                 \
 	namespace dxc {
 
 // End the dxc namespace
-#define SF_DXC_NAMESPACE_END																	\
-	}																						\
-	SF_NAMESPACE_END
+#define OP_DXC_NAMESPACE_END                                                                                           \
+	}                                                                                                                  \
+	OP_NAMESPACE_END
 
-SF_DXC_NAMESPACE_BEGIN
+OP_DXC_NAMESPACE_BEGIN
 
 using gpu::InputParameter;
 
-enum class ShaderType {
-	Vertex,
-	Pixel
-};
+enum class ShaderType { Vertex, Pixel };
 
 struct Input {
 	StringView source;
@@ -40,4 +37,4 @@ struct Output {
 
 Result<Output, String> compile(const Input& input);
 
-SF_DXC_NAMESPACE_END
+OP_DXC_NAMESPACE_END

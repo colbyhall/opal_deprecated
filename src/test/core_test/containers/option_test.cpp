@@ -3,7 +3,7 @@
 #include "core/containers/option.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
 class NonTriviallyCopyable {
 public:
@@ -16,9 +16,9 @@ public:
 	int m_x = 0;
 };
 
-TEST_CASE("sf::core::Option") {
+TEST_CASE("op::core::Option") {
 	SUBCASE("non_trivially copyable") {
-		Option<NonTriviallyCopyable> foo = sf::nullopt;
+		Option<NonTriviallyCopyable> foo = op::nullopt;
 		CHECK(!foo.is_set());
 
 		// Non trivially copyable can not be copied. To unwrap without mutating
@@ -34,7 +34,7 @@ TEST_CASE("sf::core::Option") {
 	}
 
 	SUBCASE("trivially copyable") {
-		Option<int> foo = sf::nullopt;
+		Option<int> foo = op::nullopt;
 		CHECK(!foo.is_set());
 
 		// Trivially copyable can be copied
@@ -50,7 +50,7 @@ TEST_CASE("sf::core::Option") {
 	}
 
 	SUBCASE("reference") {
-		Option<int&> foo = sf::nullopt;
+		Option<int&> foo = op::nullopt;
 		CHECK(!foo.is_set());
 
 		// reference options can be copied
@@ -67,4 +67,4 @@ TEST_CASE("sf::core::Option") {
 	}
 }
 
-SF_TEST_END
+OP_TEST_END

@@ -3,12 +3,11 @@
 #include "core/os/memory.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
-SF_MSVC_SUPPRESS_WARNING(5045)
+OP_TEST_BEGIN
+OP_MSVC_SUPPRESS_WARNING(5045)
 
-TEST_CASE("sf::core::memory") {
-	SUBCASE("sf::core::malloc, sf::core::realloc, sf::core::free, sf::core::set"
-	) {
+TEST_CASE("op::core::memory") {
+	SUBCASE("op::core::malloc, op::core::realloc, op::core::free, op::core::set") {
 		// All allocation functions require the use of the Layout struct. This
 		// stores size and alignment requirements
 		const auto count = 45;
@@ -53,7 +52,7 @@ TEST_CASE("sf::core::memory") {
 		core::free(reallocated);
 	}
 
-	SUBCASE("sf::core::copy") {
+	SUBCASE("op::core::copy") {
 		const auto count = 8;
 		const auto layout = core::Layout::array<int>(count);
 		CHECK(layout.size == sizeof(int) * count);
@@ -79,7 +78,7 @@ TEST_CASE("sf::core::memory") {
 		core::free(a);
 	}
 
-	SUBCASE("sf::core::move") {
+	SUBCASE("op::core::move") {
 		const auto count = 8;
 		const auto layout = core::Layout::array<int>(count);
 		CHECK(layout.size == sizeof(int) * count);
@@ -106,4 +105,4 @@ TEST_CASE("sf::core::memory") {
 	}
 }
 
-SF_TEST_END
+OP_TEST_END

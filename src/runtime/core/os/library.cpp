@@ -2,14 +2,14 @@
 
 #include "core/os/library.h"
 
-#ifdef SF_PLATFORM_WINDOWS
+#ifdef OP_PLATFORM_WINDOWS
 	#include "core/containers/wstring.h"
 	#include "core/os/windows.h"
 #else
-	#error "sf::core::Library unimplemented on this platform"
+	#error "op::core::Library unimplemented on this platform"
 #endif
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 Option<Library> Library::open(const StringView& path) {
 	WString wpath;
@@ -30,4 +30,4 @@ Library::~Library() {
 
 void* Library::find_internal(const StringView& name) { return (void*)GetProcAddress((HMODULE)m_handle, *name); }
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END

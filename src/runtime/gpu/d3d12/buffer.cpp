@@ -2,7 +2,7 @@
 
 #include "gpu/d3d12/buffer.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 void D3D12Buffer::map(FunctionRef<void(Slice<u8>)> func) {
 	D3D12_RANGE range = {};
@@ -13,4 +13,4 @@ void D3D12Buffer::map(FunctionRef<void(Slice<u8>)> func) {
 	m_resource->Unmap(0, nullptr);
 }
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

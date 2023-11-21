@@ -8,7 +8,7 @@
 #include "core/math/vector3.h"
 #include "gpu/gpu.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 /**
  * Provides an interface for creating resources and submitting commands to a GPU. Owns the queues used to submit
@@ -84,4 +84,4 @@ public:
 	virtual ~Device() = default;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

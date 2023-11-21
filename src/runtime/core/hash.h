@@ -5,7 +5,7 @@
 #include "core/containers/slice.h"
 #include "core/type_traits.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 class Hasher {
 public:
@@ -30,10 +30,10 @@ private:
 	u64 m_result = 0;
 };
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
-// Implement hash for sf primitives
-SF_NAMESPACE_BEGIN
+// Implement hash for op primitives
+OP_NAMESPACE_BEGIN
 
 template <typename H>
 void hash(H& hasher, const u8& value) {
@@ -75,4 +75,4 @@ void hash(H& hasher, const i64& value) {
 	hasher.write(Slice<u8 const>((u8 const*)(&value), sizeof(i64)));
 }
 
-SF_NAMESPACE_END
+OP_NAMESPACE_END

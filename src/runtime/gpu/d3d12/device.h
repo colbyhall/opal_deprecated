@@ -15,31 +15,31 @@ typedef HRESULT(__stdcall* PFN_D3D12_SERIALIZE_ROOT_SIGNATURE)(
 	ID3DBlob** error_blob
 );
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 struct D3D12QueuedWork {
 	ComPtr<ID3D12Fence> fence;
 	Shared<GraphicsCommandList> command_list;
 
-	SF_ALWAYS_INLINE explicit D3D12QueuedWork(
+	OP_ALWAYS_INLINE explicit D3D12QueuedWork(
 		const ComPtr<ID3D12Fence>& in_fence,
 		Shared<GraphicsCommandList>&& in_command_list
 	)
 		: fence(in_fence)
-		, command_list(sf::forward<Shared<GraphicsCommandList>>(in_command_list)) {}
+		, command_list(op::forward<Shared<GraphicsCommandList>>(in_command_list)) {}
 
-	SF_ALWAYS_INLINE D3D12QueuedWork(D3D12QueuedWork&& move) noexcept
+	OP_ALWAYS_INLINE D3D12QueuedWork(D3D12QueuedWork&& move) noexcept
 		: fence(move.fence)
-		, command_list(sf::move(move.command_list)) {
+		, command_list(op::move(move.command_list)) {
 		move.fence.Reset();
 	}
-	SF_ALWAYS_INLINE D3D12QueuedWork& operator=(D3D12QueuedWork&& move) noexcept {
-		auto to_destroy = sf::move(*this);
-		SF_UNUSED(to_destroy);
+	OP_ALWAYS_INLINE D3D12QueuedWork& operator=(D3D12QueuedWork&& move) noexcept {
+		auto to_destroy = op::move(*this);
+		OP_UNUSED(to_destroy);
 
 		fence = move.fence;
 		move.fence.Reset();
-		command_list = sf::move(move.command_list);
+		command_list = op::move(move.command_list);
 
 		return *this;
 	}
@@ -68,19 +68,19 @@ public:
 
 	void flush_queue() const;
 
-	SF_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
-	SF_ALWAYS_INLINE const ComPtr<IDXGIFactory4>& factory() const { return m_factory; }
-	SF_ALWAYS_INLINE const ComPtr<ID3D12Device1>& device() const { return m_device; }
-	SF_ALWAYS_INLINE const ComPtr<ID3D12CommandQueue>& queue() const { return m_queue; }
-	SF_ALWAYS_INLINE const ComPtr<ID3D12CommandAllocator>& command_allocator() const { return m_command_allocator; }
-	SF_ALWAYS_INLINE const D3D12RootSignature& root_signature() const { return m_root_signature; }
+	OP_ALWAYS_INLINE FnSerializeRootSignature serialize_root_signature() const { return m_serialize_root_signature; }
+	OP_ALWAYS_INLINE const ComPtr<IDXGIFactory4>& factory() const { return m_factory; }
+	OP_ALWAYS_INLINE const ComPtr<ID3D12Device1>& device() const { return m_device; }
+	OP_ALWAYS_INLINE const ComPtr<ID3D12CommandQueue>& queue() const { return m_queue; }
+	OP_ALWAYS_INLINE const ComPtr<ID3D12CommandAllocator>& command_allocator() const { return m_command_allocator; }
+	OP_ALWAYS_INLINE const D3D12RootSignature& root_signature() const { return m_root_signature; }
 
 private:
 	Option<core::Library> m_d3d12;
 	FnCreateDevice m_create_device;
 	FnSerializeRootSignature m_serialize_root_signature;
 
-#if SF_GPU_DEBUG
+#if OP_GPU_DEBUG
 	using FnGetDebugInterface = PFN_D3D12_GET_DEBUG_INTERFACE;
 	FnGetDebugInterface m_get_debug_interface;
 	ComPtr<ID3D12Debug> m_debug_interface;
@@ -101,4 +101,4 @@ private:
 	mutable Vector<D3D12QueuedWork> m_queued_work;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

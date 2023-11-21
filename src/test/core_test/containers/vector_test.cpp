@@ -3,12 +3,12 @@
 #include "core/containers/vector.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
-TEST_CASE("sf::core::Vector") {
+TEST_CASE("op::core::Vector") {
 	Vector<int> vec;
 
-	CHECK(vec.len() == 0); // sf::Vector default initialization is to zero
+	CHECK(vec.len() == 0); // op::Vector default initialization is to zero
 
 	SUBCASE("Adding elements") {
 		vec.push(5);
@@ -16,12 +16,12 @@ TEST_CASE("sf::core::Vector") {
 		vec.push(15);
 
 		REQUIRE(vec.len() == 3); // We've added three elements
-		CHECK(vec[0] == 5); // The elements should be in the order we added them
+		CHECK(vec[0] == 5);		 // The elements should be in the order we added them
 		CHECK(vec[1] == 10);
 		CHECK(vec[2] == 15);
 
 		auto foo = vec;
-		SF_UNUSED(foo);
+		OP_UNUSED(foo);
 	}
 
 	SUBCASE("Removing elements") {
@@ -58,4 +58,4 @@ TEST_CASE("sf::core::Vector") {
 	}
 }
 
-SF_TEST_END
+OP_TEST_END

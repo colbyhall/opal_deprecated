@@ -6,7 +6,7 @@
 #include "core/math/vector4.h"
 #include "gpu/gpu.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 /**
  * Defines the memory format for an Texture. Used to transition a texture into specific states for a specific batch of
@@ -186,4 +186,4 @@ public:
 	virtual ~RenderPassCommandRecorder() = default;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

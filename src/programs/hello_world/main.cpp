@@ -5,16 +5,16 @@
 #include "imgui/imgui.h"
 #include "stb/stb_image.h"
 
-SF_SUPPRESS_WARNING_PUSH
-SF_SUPPRESS_WARNINGS
+OP_SUPPRESS_WARNING_PUSH
+OP_SUPPRESS_WARNINGS
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) {
-	SF_UNUSED(hInst);
-	SF_UNUSED(hInstPrev);
-	SF_UNUSED(cmdline);
-	SF_UNUSED(cmdshow);
+	OP_UNUSED(hInst);
+	OP_UNUSED(hInstPrev);
+	OP_UNUSED(cmdline);
+	OP_UNUSED(cmdshow);
 
-	using namespace sf;
+	using namespace op;
 
 	auto device = gpu::D3D12Device::create();
 
@@ -54,4 +54,4 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 	return 0;
 }
 
-SF_SUPPRESS_WARNING_POP
+OP_SUPPRESS_WARNING_POP

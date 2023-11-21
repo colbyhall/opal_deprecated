@@ -5,7 +5,7 @@
 #include "core/math/quaternion.h"
 #include "core/math/vector4.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 struct alignas(16) Matrix4 {
@@ -43,12 +43,12 @@ private:
 		, w(_w) {}
 };
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
 // Include the implementation
 #include "core/math/matrix4.inl"
 
-// Export to sf namespace
-SF_NAMESPACE_BEGIN
+// Export to op namespace
+OP_NAMESPACE_BEGIN
 using core::Matrix4;
-SF_NAMESPACE_END
+OP_NAMESPACE_END

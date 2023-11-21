@@ -5,7 +5,7 @@
 #include "core/containers/string.h"
 #include "gpu/gpu.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 /**
  * A shader is a program that is ran on the GPU to transform some data. All of our shaders are written in HLSL and are
@@ -65,4 +65,4 @@ class PixelShader : public IShader, public SharedFromThis<PixelShader> {
 public:
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

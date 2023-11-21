@@ -6,211 +6,211 @@
 #if defined(_WIN32) || defined(_WIN64)
 	#include <winapifamily.h>
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
-		#define SF_PLATFORM_WINDOWS_UWP
+		#define OP_PLATFORM_WINDOWS_UWP
 	#endif
-	#define SF_PLATFORM_WINDOWS 1
+	#define OP_PLATFORM_WINDOWS 1
 #else
 	#error Unsupported platform
 #endif
-#ifndef SF_PLATFORM_WINDOWS
-	#define SF_PLATFORM_WINDOWS 0
+#ifndef OP_PLATFORM_WINDOWS
+	#define OP_PLATFORM_WINDOWS 0
 #endif
 
 // Determine compiler
 #if defined(__clang__)
-	#define SF_COMPILER_CLANG 1
+	#define OP_COMPILER_CLANG 1
 #elif defined(_MSC_VER)
-	#define SF_COMPILER_MSVC 1
+	#define OP_COMPILER_MSVC 1
 #else
 	#error Unsupported compiler
 #endif
-#ifndef SF_COMPILER_CLANG
-	#define SF_COMPILER_CLANG 0
+#ifndef OP_COMPILER_CLANG
+	#define OP_COMPILER_CLANG 0
 #endif
-#ifndef SF_COMPILER_MSVC
-	#define SF_COMPILER_MSVC 0
+#ifndef OP_COMPILER_MSVC
+	#define OP_COMPILER_MSVC 0
 #endif
-#ifndef SF_COMPILER_GCC
-	#define SF_COMPILER_GCC 0
+#ifndef OP_COMPILER_GCC
+	#define OP_COMPILER_GCC 0
 #endif
 
 // Detect CPU architecture
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
 	// X86 CPU architecture
-	#define SF_CPU_X86 1
+	#define OP_CPU_X86 1
 	#if defined(__x86_64__) || defined(_M_X64)
-		#define SF_CPU_ADDRESS_BITS 64
+		#define OP_CPU_ADDRESS_BITS 64
 	#else
-		#define SF_CPU_ADDRESS_BITS 32
+		#define OP_CPU_ADDRESS_BITS 32
 	#endif
 #else
 	#error Unsupported CPU architecture
 #endif
-#ifndef SF_GPU_X86
-	#define SF_GPU_X86 0
+#ifndef OP_GPU_X86
+	#define OP_GPU_X86 0
 #endif
 
 // Pragmas to store / restore the warning state and to disable individual
 // warnings
-#if SF_COMPILER_CLANG
-	#define SF_PRAGMA(x)				 _Pragma(#x)
-	#define SF_SUPPRESS_WARNING_PUSH	 SF_PRAGMA(clang diagnostic push)
-	#define SF_SUPPRESS_WARNING_POP		 SF_PRAGMA(clang diagnostic pop)
-	#define SF_CLANG_SUPPRESS_WARNING(w) SF_PRAGMA(clang diagnostic ignored w)
+#if OP_COMPILER_CLANG
+	#define OP_PRAGMA(x)				 _Pragma(#x)
+	#define OP_SUPPRESS_WARNING_PUSH	 OP_PRAGMA(clang diagnostic push)
+	#define OP_SUPPRESS_WARNING_POP		 OP_PRAGMA(clang diagnostic pop)
+	#define OP_CLANG_SUPPRESS_WARNING(w) OP_PRAGMA(clang diagnostic ignored w)
 #else
-	#define SF_CLANG_SUPPRESS_WARNING(w)
+	#define OP_CLANG_SUPPRESS_WARNING(w)
 #endif
 
-#if SF_COMPILER_MSVC
-	#define SF_PRAGMA(x)				__pragma(x)
-	#define SF_SUPPRESS_WARNING_PUSH	SF_PRAGMA(warning(push))
-	#define SF_SUPPRESS_WARNING_POP		SF_PRAGMA(warning(pop))
-	#define SF_MSVC_SUPPRESS_WARNING(w) SF_PRAGMA(warning(disable : w))
+#if OP_COMPILER_MSVC
+	#define OP_PRAGMA(x)				__pragma(x)
+	#define OP_SUPPRESS_WARNING_PUSH	OP_PRAGMA(warning(push))
+	#define OP_SUPPRESS_WARNING_POP		OP_PRAGMA(warning(pop))
+	#define OP_MSVC_SUPPRESS_WARNING(w) OP_PRAGMA(warning(disable : w))
 #else
-	#define SF_MSVC_SUPPRESS_WARNING(w)
+	#define OP_MSVC_SUPPRESS_WARNING(w)
 #endif
 
 // Define inline macro
-#if SF_COMPILER_CLANG
-	#define SF_ALWAYS_INLINE __inline__ __attribute__((always_inline))
-#elif SF_COMPILER_MSVC
-	#define SF_ALWAYS_INLINE __forceinline
+#if OP_COMPILER_CLANG
+	#define OP_ALWAYS_INLINE __inline__ __attribute__((always_inline))
+#elif OP_COMPILER_MSVC
+	#define OP_ALWAYS_INLINE __forceinline
 #else
 	#error Undefined inline
 #endif
 
-#define SF_NO_DISCARD [[nodiscard]]
+#define OP_NO_DISCARD [[nodiscard]]
 
 // Cache line size (used for aligning to cache line)
-#ifndef SF_CACHE_LINE_SIZE
-	#define SF_CACHE_LINE_SIZE 64
+#ifndef OP_CACHE_LINE_SIZE
+	#define OP_CACHE_LINE_SIZE 64
 #endif
 
 // Define macro to get current function name
-#if SF_COMPILER_CLANG || SF_COMPILER_GCC
-	#define SF_FUNCTION_NAME __PRETTY_FUNCTION__
-#elif SF_COMPILER_MSVC
-	#define SF_FUNCTION_NAME __FUNCTION__
+#if OP_COMPILER_CLANG || OP_COMPILER_GCC
+	#define OP_FUNCTION_NAME __PRETTY_FUNCTION__
+#elif OP_COMPILER_MSVC
+	#define OP_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined
 #endif
 
 // OS-specific includes
-#if SF_PLATFORM_WINDOWS
-	#define SF_BREAKPOINT __debugbreak()
+#if OP_PLATFORM_WINDOWS
+	#define OP_BREAKPOINT __debugbreak()
 #else
 	#error Unknown platform
 #endif
 
 #ifdef _DEBUG
-	#define SF_BUILD_DEBUG 1
+	#define OP_BUILD_DEBUG 1
 #else
-	#define SF_BUILD_DEBUG 0
+	#define OP_BUILD_DEBUG 0
 #endif
 
-#define SF_THREAD_LOCAL __declspec(thread)
+#define OP_THREAD_LOCAL __declspec(thread)
 
 // Macro to indicate that a parameter / variable is unused
-#define SF_UNUSED(x) (void)x
+#define OP_UNUSED(x) (void)x
 
 // Crashes the application
-#define SF_CRASH                                                                                                       \
-	SF_SUPPRESS_WARNING_PUSH                                                                                           \
-	SF_MSVC_SUPPRESS_WARNING(6011)                                                                                     \
+#define OP_CRASH                                                                                                       \
+	OP_SUPPRESS_WARNING_PUSH                                                                                           \
+	OP_MSVC_SUPPRESS_WARNING(6011)                                                                                     \
 	do {                                                                                                               \
 		int* _ptr = nullptr;                                                                                           \
 		*_ptr = 0;                                                                                                     \
-	} while (false) SF_SUPPRESS_WARNING_POP
+	} while (false) OP_SUPPRESS_WARNING_POP
 
 // Suppress warnings generated by the standard template library
-#define SF_SUPPRESS_WARNINGS_STD_BEGIN                                                                                 \
-	SF_SUPPRESS_WARNING_PUSH                                                                                           \
-	SF_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5262)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5219)
+#define OP_SUPPRESS_WARNINGS_STD_BEGIN                                                                                 \
+	OP_SUPPRESS_WARNING_PUSH                                                                                           \
+	OP_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5262)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5219)
 
-#define SF_SUPPRESS_WARNINGS_STD_END SF_SUPPRESS_WARNING_POP
+#define OP_SUPPRESS_WARNINGS_STD_END OP_SUPPRESS_WARNING_POP
 
 // Disable common warnings triggered by core when compiling with -Wall
-#define SF_SUPPRESS_WARNINGS                                                                                           \
-	SF_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                                                        \
-	SF_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                                               \
-	SF_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                                                         \
-	SF_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                                                                     \
-	SF_CLANG_SUPPRESS_WARNING("-Wold-style-cast")                                                                      \
-	SF_CLANG_SUPPRESS_WARNING("-Wgnu-anonymous-struct")                                                                \
-	SF_CLANG_SUPPRESS_WARNING("-Wnested-anon-types")                                                                   \
-	SF_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")                                                                 \
-	SF_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")                                                               \
-	SF_CLANG_SUPPRESS_WARNING("-Wnonportable-system-include-path")                                                     \
-	SF_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                                                            \
-	SF_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                                                                    \
-	SF_CLANG_SUPPRESS_WARNING("-Wformat-nonliteral")                                                                   \
-	SF_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")                                                              \
-	SF_CLANG_SUPPRESS_WARNING("-Wcast-align")                                                                          \
-	SF_CLANG_SUPPRESS_WARNING("-Winvalid-offsetof")                                                                    \
-	SF_CLANG_SUPPRESS_WARNING("-Wgnu-zero-variadic-macro-arguments")                                                   \
-	SF_CLANG_SUPPRESS_WARNING("-Wdocumentation-unknown-command")                                                       \
-	SF_CLANG_SUPPRESS_WARNING("-Wctad-maybe-unsupported")                                                              \
-	SF_CLANG_SUPPRESS_WARNING("-Wdeprecated-copy")                                                                     \
-	SF_CLANG_SUPPRESS_WARNING("-Wimplicit-int-float-conversion")                                                       \
+#define OP_SUPPRESS_WARNINGS                                                                                           \
+	OP_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                                                        \
+	OP_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                                               \
+	OP_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                                                         \
+	OP_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                                                                     \
+	OP_CLANG_SUPPRESS_WARNING("-Wold-style-cast")                                                                      \
+	OP_CLANG_SUPPRESS_WARNING("-Wgnu-anonymous-struct")                                                                \
+	OP_CLANG_SUPPRESS_WARNING("-Wnested-anon-types")                                                                   \
+	OP_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")                                                                 \
+	OP_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")                                                               \
+	OP_CLANG_SUPPRESS_WARNING("-Wnonportable-system-include-path")                                                     \
+	OP_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                                                            \
+	OP_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                                                                    \
+	OP_CLANG_SUPPRESS_WARNING("-Wformat-nonliteral")                                                                   \
+	OP_CLANG_SUPPRESS_WARNING("-Wcovered-switch-default")                                                              \
+	OP_CLANG_SUPPRESS_WARNING("-Wcast-align")                                                                          \
+	OP_CLANG_SUPPRESS_WARNING("-Winvalid-offsetof")                                                                    \
+	OP_CLANG_SUPPRESS_WARNING("-Wgnu-zero-variadic-macro-arguments")                                                   \
+	OP_CLANG_SUPPRESS_WARNING("-Wdocumentation-unknown-command")                                                       \
+	OP_CLANG_SUPPRESS_WARNING("-Wctad-maybe-unsupported")                                                              \
+	OP_CLANG_SUPPRESS_WARNING("-Wdeprecated-copy")                                                                     \
+	OP_CLANG_SUPPRESS_WARNING("-Wimplicit-int-float-conversion")                                                       \
                                                                                                                        \
-	SF_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4100)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4626)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5027)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4324)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4625)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5026)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4623)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4201)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4371)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5045)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4583)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4582)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5219)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4826)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
-	SF_MSVC_SUPPRESS_WARNING(4127)
+	OP_MSVC_SUPPRESS_WARNING(4619)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4514)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4710)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4711)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4820)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4100)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4626)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5027)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4365)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4324)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4625)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5026)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4623)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4201)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4371)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5045)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4583)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4582)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5219)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4826)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(4127)
 
-// Begin the sf namespace
-#define SF_NAMESPACE_BEGIN                                                                                             \
-	SF_SUPPRESS_WARNING_PUSH                                                                                           \
-	SF_SUPPRESS_WARNINGS                                                                                               \
-	namespace sf {
+// Begin the op namespace
+#define OP_NAMESPACE_BEGIN                                                                                             \
+	OP_SUPPRESS_WARNING_PUSH                                                                                           \
+	OP_SUPPRESS_WARNINGS                                                                                               \
+	namespace op {
 
-// End the sf namespace
-#define SF_NAMESPACE_END                                                                                               \
+// End the op namespace
+#define OP_NAMESPACE_END                                                                                               \
 	}                                                                                                                  \
-	SF_SUPPRESS_WARNING_POP
+	OP_SUPPRESS_WARNING_POP
 
-// Begin the sf::core namespace
-#define SF_CORE_NAMESPACE_BEGIN                                                                                        \
-	SF_NAMESPACE_BEGIN                                                                                                 \
+// Begin the op::core namespace
+#define OP_CORE_NAMESPACE_BEGIN                                                                                        \
+	OP_NAMESPACE_BEGIN                                                                                                 \
 	namespace core {
 
-// End the sf::core namespace
-#define SF_CORE_NAMESPACE_END                                                                                          \
+// End the op::core namespace
+#define OP_CORE_NAMESPACE_END                                                                                          \
 	}                                                                                                                  \
-	SF_NAMESPACE_END
+	OP_NAMESPACE_END
 
-#define SF_HIDDEN_NAMESPACE_BEGIN namespace hidden {
+#define OP_HIDDEN_NAMESPACE_BEGIN namespace hidden {
 
-#define SF_HIDDEN_NAMESPACE_END }
+#define OP_HIDDEN_NAMESPACE_END }
 
 // Declare primitive types under core namespace
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 using u8 = unsigned char;
 constexpr u8 U8_MIN = 0;
@@ -279,10 +279,10 @@ static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 using NullPtr = decltype(nullptr);
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
-// Export primitive types to sf namespace
-SF_NAMESPACE_BEGIN
+// Export primitive types to op namespace
+OP_NAMESPACE_BEGIN
 
 using core::f32;
 using core::f64;
@@ -302,14 +302,14 @@ using core::GB;
 using core::KB;
 using core::MB;
 
-SF_NAMESPACE_END
+OP_NAMESPACE_END
 
 // Turn on asserts if compiled in debug
 #if defined(_DEBUG)
-	#define SF_ENABLE_ASSERTS
+	#define OP_ENABLE_ASSERTS
 #endif
 
-#define SF_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
+#define OP_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
 	inline Enum& operator|=(Enum& A, Enum B) {                                                                         \
 		return (Enum&)((__underlying_type(Enum)&)A |= (__underlying_type(Enum))B);                                     \
 	}                                                                                                                  \
@@ -324,43 +324,43 @@ SF_NAMESPACE_END
 	inline Enum operator^(Enum A, Enum B) { return (Enum)((__underlying_type(Enum))A ^ (__underlying_type(Enum))B); }  \
 	inline Enum operator~(Enum A) { return (Enum) ~(__underlying_type(Enum))A; }
 
-#ifdef SF_ENABLE_ASSERTS
+#ifdef OP_ENABLE_ASSERTS
 	// Crashes application if expression evaluates to false. Usage:
 	// ASSERT(condition) or ASSERT(condition, message)
-	#define SF_ASSERT(expression, ...)                                                                                 \
+	#define OP_ASSERT(expression, ...)                                                                                 \
 		do {                                                                                                           \
 			if (!(expression)) {                                                                                       \
-				SF_CRASH;                                                                                              \
+				OP_CRASH;                                                                                              \
 			}                                                                                                          \
 		} while (false)
 
 	// Halts application if expression evaluates to false but can resume. Usage:
 	// ENSURE(condition) or ENSURE(condition, message)
-	#define SF_ENSURE(expression, ...)                                                                                 \
+	#define OP_ENSURE(expression, ...)                                                                                 \
 		do {                                                                                                           \
-			if (!(expression) && sf::core::_assert_failed_helper(                                                      \
+			if (!(expression) && op::core::_assert_failed_helper(                                                      \
 									 false,                                                                            \
 									 #expression,                                                                      \
 									 __FILE__,                                                                         \
-									 sf::u32(__LINE__),                                                                \
+									 op::u32(__LINE__),                                                                \
 									 ##__VA_ARGS__,                                                                    \
-									 sf::core::AssertLastParam()                                                       \
+									 op::core::AssertLastParam()                                                       \
 								 ))                                                                                    \
-				SF_BREAKPOINT;                                                                                         \
+				OP_BREAKPOINT;                                                                                         \
 		} while (false)
 
 #else
-	#define SF_ASSERT(...) ((void)0)
-	#define SF_ENSURE(...) ((void)0)
-#endif // SF_ENABLE_ASSERTS
+	#define OP_ASSERT(...) ((void)0)
+	#define OP_ENSURE(...) ((void)0)
+#endif // OP_ENABLE_ASSERTS
 
-#define SF_PANIC(msg)		 SF_ASSERT(false, msg)
-#define SF_UNIMPLEMENTED	 SF_PANIC("Unimplemented!")
-#define SF_INVALID_CODE_PATH SF_PANIC("Invalid code path!")
+#define OP_PANIC(msg)		 OP_ASSERT(false, msg)
+#define OP_UNIMPLEMENTED	 OP_PANIC("Unimplemented!")
+#define OP_INVALID_CODE_PATH OP_PANIC("Invalid code path!")
 
 #include <utility>
 
-SF_NAMESPACE_BEGIN
+OP_NAMESPACE_BEGIN
 using std::forward;
 using std::move;
-SF_NAMESPACE_END
+OP_NAMESPACE_END

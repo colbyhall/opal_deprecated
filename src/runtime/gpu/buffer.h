@@ -6,7 +6,7 @@
 #include "core/containers/slice.h"
 #include "gpu/gpu.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 /**
  * Specifies which GPU heap an Buffer can be allocated from.
@@ -66,7 +66,7 @@ enum class BufferUsage : u8 {
 	 */
 	Index = (1 << 3),
 };
-SF_ENUM_CLASS_BITFIELD(BufferUsage)
+OP_ENUM_CLASS_BITFIELD(BufferUsage)
 
 /**
  * A buffer that owns an allocation to some GPU managed memory that belongs to a heap that exist either on the GPU or
@@ -106,4 +106,4 @@ public:
 	virtual ~Buffer() = default;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

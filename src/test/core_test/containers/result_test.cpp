@@ -3,11 +3,11 @@
 #include "core/containers/result.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
 enum class Error : u32 { Foo, Bar, Baz };
 
-TEST_CASE("sf::core::Result") {
+TEST_CASE("op::core::Result") {
 	SUBCASE("Value") {
 		Result<u32, Error> result = 42;
 		REQUIRE(result.is_ok());
@@ -25,4 +25,4 @@ TEST_CASE("sf::core::Result") {
 	}
 }
 
-SF_TEST_END
+OP_TEST_END

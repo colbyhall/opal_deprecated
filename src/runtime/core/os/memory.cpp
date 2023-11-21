@@ -2,15 +2,15 @@
 
 #include "memory.h"
 
-SF_SUPPRESS_WARNINGS_STD_BEGIN
+OP_SUPPRESS_WARNINGS_STD_BEGIN
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-SF_SUPPRESS_WARNINGS_STD_END
+OP_SUPPRESS_WARNINGS_STD_END
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 NonNull<void> malloc(const Layout& layout) {
 	void* result = std::malloc(static_cast<std::size_t>(layout.size));
@@ -18,7 +18,7 @@ NonNull<void> malloc(const Layout& layout) {
 }
 
 NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout) {
-	SF_UNUSED(old_layout);
+	OP_UNUSED(old_layout);
 
 	void* result = std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
 	return result; // Nullptr check happens inside NonNull
@@ -52,4 +52,4 @@ u8 count_ones(u8 byte) { return count_set_bits_table[byte]; }
 #undef B6
 #undef COUNT_BITS
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END

@@ -3,7 +3,7 @@
 #include "gpu/d3d12/memory.h"
 #include "gpu/d3d12/device.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 void D3D12DescriptorHeap::init(
 	ComPtr<ID3D12Device1> device,
@@ -33,7 +33,7 @@ void D3D12DescriptorHeap::init(
 }
 
 D3D12DescriptorHandle D3D12DescriptorHeap::alloc() const {
-	SF_ASSERT(m_cap > 0, "Heap needs to be initialized with D3D12DescriptorHeap::init");
+	OP_ASSERT(m_cap > 0, "Heap needs to be initialized with D3D12DescriptorHeap::init");
 
 	while (true) {
 		for (usize i = 0; i < m_cap; ++i) {
@@ -50,8 +50,8 @@ D3D12DescriptorHandle D3D12DescriptorHeap::alloc() const {
 }
 
 void D3D12DescriptorHeap::free(const D3D12DescriptorHandle& handle) const {
-	SF_ASSERT(m_cap > 0, "Heap needs to be initialized with D3D12DescriptorHeap::init");
-	SF_ASSERT(m_free_slots[handle.index].load(), "Attempting to free a freed slot");
+	OP_ASSERT(m_cap > 0, "Heap needs to be initialized with D3D12DescriptorHeap::init");
+	OP_ASSERT(m_free_slots[handle.index].load(), "Attempting to free a freed slot");
 
 	m_free_slots[handle.index].store(false);
 }
@@ -114,4 +114,4 @@ void D3D12RootSignature::init(const D3D12Device& context) {
 	m_bt2dv_heap.init(context.device(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, bt2dv_heap_size, true);
 }
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

@@ -1,8 +1,8 @@
 // SUNFLOWERMOD - BEGIN - Suppress warnings
 #include "stb/stb.h"
 
-SF_SUPPRESS_WARNING_PUSH
-SF_STB_SUPRESS_WARNINGS
+OP_SUPPRESS_WARNING_PUSH
+OP_STB_SUPRESS_WARNINGS
 // SUNFLOWERMOD - END
 
 /* stb_image - v2.28 - public domain image loader - http://nothings.org/stb
@@ -413,10 +413,11 @@ extern "C" {
 //
 
 typedef struct {
-	int (*read
-	)(void* user,
-	  char* data,
-	  int size);					 // fill 'data' with 'size' bytes.  return number of bytes actually read
+	int (*read)(
+		void* user,
+		char* data,
+		int size
+	);								 // fill 'data' with 'size' bytes.  return number of bytes actually read
 	void (*skip)(void* user, int n); // skip the next 'n' bytes, or 'unget' the last -n bytes if negative
 	int (*eof)(void* user);			 // returns nonzero if we are at end of file/data
 } stbi_io_callbacks;
@@ -2060,8 +2061,14 @@ typedef struct {
 
 	// kernels
 	void (*idct_block_kernel)(stbi_uc* out, int out_stride, short data[64]);
-	void (*YCbCr_to_RGB_kernel
-	)(stbi_uc* out, const stbi_uc* y, const stbi_uc* pcb, const stbi_uc* pcr, int count, int step);
+	void (*YCbCr_to_RGB_kernel)(
+		stbi_uc* out,
+		const stbi_uc* y,
+		const stbi_uc* pcb,
+		const stbi_uc* pcr,
+		int count,
+		int step
+	);
 	stbi_uc* (*resample_row_hv_2_kernel)(stbi_uc* out, stbi_uc* in_near, stbi_uc* in_far, int w, int hs);
 } stbi__jpeg;
 
@@ -8215,5 +8222,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // SUNFLOWERMOD - BEGIN - Pop warnings supressed at top of file
-SF_SUPPRESS_WARNING_POP
+OP_SUPPRESS_WARNING_POP
 // SUNFLOWERMOD - END

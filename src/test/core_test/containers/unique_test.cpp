@@ -3,7 +3,7 @@
 #include "core/containers/unique.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
 class Foo {
 public:
@@ -17,12 +17,12 @@ public:
 	int get_value() const override { return 100; }
 };
 
-TEST_CASE("sf::core::Unique") {
-	auto foo = sf::Unique<Bar>::make();
+TEST_CASE("op::core::Unique") {
+	auto foo = op::Unique<Bar>::make();
 	CHECK(foo->get_value() == 100);
 
 	auto bar = foo;
 	CHECK(bar->get_value() == 100);
 }
 
-SF_TEST_END
+OP_TEST_END

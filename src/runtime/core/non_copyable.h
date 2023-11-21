@@ -4,7 +4,7 @@
 
 #include "core/core.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 /// Class that makes another class non-copyable.
 ///
@@ -18,9 +18,9 @@ public:
 	void operator=(NonCopyable&&) noexcept {}
 };
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
-// Export to sf namespace
-SF_NAMESPACE_BEGIN
+// Export to op namespace
+OP_NAMESPACE_BEGIN
 using core::NonCopyable;
-SF_NAMESPACE_END
+OP_NAMESPACE_END

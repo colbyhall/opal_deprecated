@@ -6,7 +6,7 @@
 #include "editor/editor.h"
 #include "gpu/gpu.h"
 
-SF_EDITOR_NAMESPACE_BEGIN
+OP_EDITOR_NAMESPACE_BEGIN
 
 class Application {
 public:
@@ -18,4 +18,4 @@ private:
 	gpu::Shared<gpu::Device> m_device;
 };
 
-SF_EDITOR_NAMESPACE_END
+OP_EDITOR_NAMESPACE_END

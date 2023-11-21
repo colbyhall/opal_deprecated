@@ -5,7 +5,7 @@
 #include "core/containers/option.h"
 #include "core/containers/slice.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 constexpr usize constexpr_strlen(const T* string) {
@@ -27,24 +27,24 @@ i32 utf8_encode(u32 c, void* dest, u32* errors);
 
 class CharsIterator {
 public:
-	SF_ALWAYS_INLINE explicit CharsIterator(Slice<char const> string)
+	OP_ALWAYS_INLINE explicit CharsIterator(Slice<char const> string)
 		: m_string(string)
 		, m_index(0)
 		, m_decoder_state(0)
 		, m_codepoint(0) {}
 
-	SF_ALWAYS_INLINE operator bool() const { return should_continue(); }
-	SF_ALWAYS_INLINE CharsIterator& operator++() {
+	OP_ALWAYS_INLINE operator bool() const { return should_continue(); }
+	OP_ALWAYS_INLINE CharsIterator& operator++() {
 		next();
 		return *this;
 	}
-	SF_ALWAYS_INLINE Char operator*() const { return get(); }
-	SF_NO_DISCARD SF_ALWAYS_INLINE usize index() const { return m_index; }
+	OP_ALWAYS_INLINE Char operator*() const { return get(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE usize index() const { return m_index; }
 
 private:
-	SF_NO_DISCARD bool should_continue() const;
+	OP_NO_DISCARD bool should_continue() const;
 	void next();
-	SF_NO_DISCARD Char get() const;
+	OP_NO_DISCARD Char get() const;
 
 	Slice<char const> m_string;
 	usize m_index;
@@ -54,16 +54,16 @@ private:
 
 class StringView {
 public:
-	SF_ALWAYS_INLINE constexpr StringView() = default;
-	SF_ALWAYS_INLINE StringView(Slice<char const> bytes) : m_bytes(bytes) {}
-	SF_ALWAYS_INLINE constexpr StringView(const char* ptr) : m_bytes(ptr, constexpr_strlen(ptr)) {}
-	SF_ALWAYS_INLINE constexpr explicit StringView(const char* ptr, usize size) : m_bytes(ptr, size) {}
+	OP_ALWAYS_INLINE constexpr StringView() = default;
+	OP_ALWAYS_INLINE StringView(Slice<char const> bytes) : m_bytes(bytes) {}
+	OP_ALWAYS_INLINE constexpr StringView(const char* ptr) : m_bytes(ptr, constexpr_strlen(ptr)) {}
+	OP_ALWAYS_INLINE constexpr explicit StringView(const char* ptr, usize size) : m_bytes(ptr, size) {}
 
-	SF_ALWAYS_INLINE operator Slice<char const>() const { return m_bytes; }
-	SF_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
+	OP_ALWAYS_INLINE operator Slice<char const>() const { return m_bytes; }
+	OP_ALWAYS_INLINE const char* operator*() const { return &m_bytes[0]; }
 
-	SF_NO_DISCARD SF_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
-	SF_NO_DISCARD SF_ALWAYS_INLINE CharsIterator chars() const { return CharsIterator(m_bytes); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE CharsIterator chars() const { return CharsIterator(m_bytes); }
 	bool operator==(const StringView& right) const;
 	bool operator!=(const StringView& right) const;
 
@@ -71,10 +71,10 @@ private:
 	Slice<char const> m_bytes;
 };
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
-// Export to sf namespace
-SF_NAMESPACE_BEGIN
+// Export to op namespace
+OP_NAMESPACE_BEGIN
 using core::CharsIterator;
 using core::StringView;
-SF_NAMESPACE_END
+OP_NAMESPACE_END

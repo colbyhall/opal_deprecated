@@ -5,7 +5,7 @@
 #include "gpu/buffer.h"
 #include "gpu/d3d12/d3d12.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 class D3D12Buffer final : public Buffer {
 public:
@@ -13,7 +13,7 @@ public:
 		: m_usage(usage)
 		, m_kind(kind)
 		, m_size(size)
-		, m_resource(sf::move(resource)) {}
+		, m_resource(op::move(resource)) {}
 
 	// Buffer
 	BufferUsage usage() const final { return m_usage; }
@@ -22,7 +22,7 @@ public:
 	void map(FunctionRef<void(Slice<u8>)> func) final;
 	// ~Buffer
 
-	SF_ALWAYS_INLINE const ComPtr<ID3D12Resource>& resource() const { return m_resource; };
+	OP_ALWAYS_INLINE const ComPtr<ID3D12Resource>& resource() const { return m_resource; };
 
 private:
 	BufferUsage m_usage;
@@ -32,4 +32,4 @@ private:
 	ComPtr<ID3D12Resource> m_resource;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

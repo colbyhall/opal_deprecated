@@ -4,16 +4,16 @@
 
 #include "core/core.h"
 
-SF_SUPPRESS_WARNINGS_STD_BEGIN
+OP_SUPPRESS_WARNINGS_STD_BEGIN
 #include "doctest_internal.h"
-SF_SUPPRESS_WARNINGS_STD_END
+OP_SUPPRESS_WARNINGS_STD_END
 
-#define SF_TEST_BEGIN                                                                                                  \
-	SF_SUPPRESS_WARNING_PUSH                                                                                           \
-	SF_SUPPRESS_WARNINGS                                                                                               \
-	using namespace sf;
+#define OP_TEST_BEGIN                                                                                                  \
+	OP_SUPPRESS_WARNING_PUSH                                                                                           \
+	OP_SUPPRESS_WARNINGS                                                                                               \
+	using namespace op;
 
-#define SF_TEST_END SF_SUPPRESS_WARNING_POP
+#define OP_TEST_END OP_SUPPRESS_WARNING_POP
 
 #define TEST_MAIN()                                                                                                    \
 	int main(int argc, char** argv) { return doctest::Context(argc, argv).run(); }

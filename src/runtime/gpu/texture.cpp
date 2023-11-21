@@ -2,7 +2,7 @@
 
 #include "gpu/texture.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 usize format_size_in_bytes(Format format) {
 	switch (format) {
@@ -18,11 +18,11 @@ usize format_size_in_bytes(Format format) {
 	case Format::D24S8_U32:
 		return 4;
 	case Format::Undefined:
-		SF_INVALID_CODE_PATH;
+		OP_INVALID_CODE_PATH;
 		break;
 	}
 
 	return 0;
 }
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

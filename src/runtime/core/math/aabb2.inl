@@ -2,11 +2,11 @@
 
 #include "core/math/aabb2.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 AABB2<T> AABB2<T>::from_center(const Vector2<T>& center, const Vector2<T>& half_size) {
-	SF_ASSERT(half_size.x >= 0 && half_size.y >= 0);
+	OP_ASSERT(half_size.x >= 0 && half_size.y >= 0);
 
 	auto result = AABB2<T>();
 	result.m_center = center;
@@ -44,4 +44,4 @@ bool AABB2<T>::encompasses(const Vector2<T>& point) const {
 	return min().max(point) == point && max().min(point) == point;
 }
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END

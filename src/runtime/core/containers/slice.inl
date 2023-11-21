@@ -1,6 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 template <typename T>
 Slice<T>& Slice<T>::operator=(const Slice<T>& c) {
@@ -52,4 +52,4 @@ Slice<T const>& Slice<T const>::operator=(Slice<T const>&& m) noexcept {
 	return *this;
 }
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END

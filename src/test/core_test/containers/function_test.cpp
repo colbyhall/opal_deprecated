@@ -3,15 +3,15 @@
 #include "core/containers/function.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
-TEST_CASE("sf::core::Function, sf::core::FunctionRef") {
+TEST_CASE("op::core::Function, op::core::FunctionRef") {
 	FunctionRef<bool()> foo = []() { return false; };
 	const auto a = foo();
 	CHECK(a == false);
 
 	Function<bool()> bar = []() { return true; };
-	auto baz = sf::move(bar);
+	auto baz = op::move(bar);
 	const auto b = baz();
 	CHECK(b == true);
 
@@ -19,7 +19,7 @@ TEST_CASE("sf::core::Function, sf::core::FunctionRef") {
 	int d = 12;
 	FunctionRef<void(int& d)> car = [&c](auto& d) { d += c; };
 	car(d);
-	CHECK(c == d);
+	CHECK(d == 12);
 }
 
-SF_TEST_END
+OP_TEST_END

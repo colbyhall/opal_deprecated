@@ -2,7 +2,7 @@
 
 #include "core/containers/wstring.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 WChar utf32_to_utf16(Char c) {
 	u32 h;
@@ -90,4 +90,4 @@ WString& WString::push(StringView string) {
 	return *this;
 }
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END

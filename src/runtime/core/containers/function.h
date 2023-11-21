@@ -5,7 +5,7 @@
 // Include the implementation early
 #include "core/containers/function.inl"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 template <typename F>
 class Function;
@@ -34,7 +34,7 @@ public:
 		typename Functor,
 		typename = std::enable_if_t<
 			!is_function_ref<std::decay_t<Functor>> && hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
-	FunctionRef(Functor&& f) : Super(sf::forward<Functor>(f)) {}
+	FunctionRef(Functor&& f) : Super(op::forward<Functor>(f)) {}
 
 	FunctionRef(const FunctionRef&) = default;
 	FunctionRef& operator=(const FunctionRef&) const = delete;
@@ -53,17 +53,17 @@ public:
 		typename Functor,
 		typename = std::enable_if_t<
 			!is_function<std::decay_t<Functor>> && hidden::func_can_bind_to_functor<F, std::decay_t<Functor>>>>
-	Function(Functor&& f) : Super(sf::forward<Functor>(f)) {}
+	Function(Functor&& f) : Super(op::forward<Functor>(f)) {}
 
 	Function(Function&& move) noexcept = default;
 
 	~Function() = default;
 };
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
-// Export to sf namespace
-SF_NAMESPACE_BEGIN
+// Export to op namespace
+OP_NAMESPACE_BEGIN
 using core::Function;
 using core::FunctionRef;
-SF_NAMESPACE_END
+OP_NAMESPACE_END

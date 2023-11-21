@@ -3,9 +3,9 @@
 #include "core/containers/map.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
-TEST_CASE("sf::core::Map") {
+TEST_CASE("op::core::Map") {
 	SUBCASE("Map::reserve") {
 		Map<int, int> map;
 		map.reserve(128);
@@ -68,4 +68,4 @@ TEST_CASE("sf::core::Map") {
 	}
 }
 
-SF_TEST_END
+OP_TEST_END

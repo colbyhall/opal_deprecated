@@ -5,19 +5,19 @@
 #include "core/non_copyable.h"
 #include "core/os/memory.h"
 
-SF_CORE_NAMESPACE_BEGIN
+OP_CORE_NAMESPACE_BEGIN
 
 template <typename Value, typename Error>
 class Result final : NonCopyable {
 public:
-	SF_ALWAYS_INLINE Result(Value&& t) : m_set(true), m_ok(true) {
+	OP_ALWAYS_INLINE Result(Value&& t) : m_set(true), m_ok(true) {
 		auto* p = &m_data[0];
-		new (p) Value(sf::forward<Value>(t));
+		new (p) Value(op::forward<Value>(t));
 	}
 
-	SF_ALWAYS_INLINE Result(Error&& e) : m_set(true), m_ok(false) {
+	OP_ALWAYS_INLINE Result(Error&& e) : m_set(true), m_ok(false) {
 		auto* p = &m_data[0];
-		new (p) Error(sf::forward<Error>(e));
+		new (p) Error(op::forward<Error>(e));
 	}
 
 	Result(Result&& other) noexcept : m_set(other.m_set), m_ok(other.m_ok), m_data(other.m_data) {
@@ -26,8 +26,8 @@ public:
 		other.m_data = {};
 	}
 	Result& operator=(Result&& other) noexcept {
-		auto to_destroy = sf::move(*this);
-		SF_UNUSED(to_destroy);
+		auto to_destroy = op::move(*this);
+		OP_UNUSED(to_destroy);
 
 		m_set = other.m_set;
 		m_ok = other.m_ok;
@@ -51,22 +51,22 @@ public:
 		}
 	}
 
-	SF_NO_DISCARD SF_ALWAYS_INLINE bool is_ok() const { return m_ok; }
-	SF_ALWAYS_INLINE operator bool() const { return is_ok(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE bool is_ok() const { return m_ok; }
+	OP_ALWAYS_INLINE operator bool() const { return is_ok(); }
 
-	SF_ALWAYS_INLINE Value unwrap() {
-		SF_ASSERT(is_ok());
+	OP_ALWAYS_INLINE Value unwrap() {
+		OP_ASSERT(is_ok());
 		m_set = false;
 
 		auto* p = reinterpret_cast<Value*>(&m_data[0]);
-		return sf::move(*p);
+		return op::move(*p);
 	}
 
-	SF_ALWAYS_INLINE Error unwrap_err() {
-		SF_ASSERT(!is_ok());
+	OP_ALWAYS_INLINE Error unwrap_err() {
+		OP_ASSERT(!is_ok());
 		m_set = false;
 		auto* p = reinterpret_cast<Error*>(&m_data[0]);
-		return sf::move(*p);
+		return op::move(*p);
 	}
 
 private:
@@ -81,9 +81,9 @@ private:
 	alignas(Internal) u8 m_data[sizeof(Internal)] = {};
 };
 
-SF_CORE_NAMESPACE_END
+OP_CORE_NAMESPACE_END
 
-// Export to sf namespace
-SF_NAMESPACE_BEGIN
+// Export to op namespace
+OP_NAMESPACE_BEGIN
 using core::Result;
-SF_NAMESPACE_END
+OP_NAMESPACE_END

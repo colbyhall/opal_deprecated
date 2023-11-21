@@ -3,9 +3,9 @@
 #include "core/containers/string.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
-TEST_CASE("sf::core::String") {
+TEST_CASE("op::core::String") {
 	String str;
 	str.push("Hello World!");
 
@@ -16,4 +16,4 @@ TEST_CASE("sf::core::String") {
 	REQUIRE(other == str);
 }
 
-SF_TEST_END
+OP_TEST_END

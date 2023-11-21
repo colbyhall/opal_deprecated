@@ -7,13 +7,13 @@
 #include "gpu/d3d12/shader.h"
 #include "gpu/d3d12/texture.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON;
 
-	SF_SUPPRESS_WARNING_PUSH
-	SF_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
+	OP_SUPPRESS_WARNING_PUSH
+	OP_MSVC_SUPPRESS_WARNING(4061) // Not all switch cases are explicitly handled
 	switch (layout) {
 	case Layout::General:
 		state = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -28,10 +28,10 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 		state = D3D12_RESOURCE_STATE_PRESENT;
 		break;
 	default:
-		SF_UNIMPLEMENTED;
+		OP_UNIMPLEMENTED;
 		break;
 	}
-	SF_SUPPRESS_WARNING_POP
+	OP_SUPPRESS_WARNING_POP
 
 	return state;
 }
@@ -150,8 +150,8 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const Graph
 RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffer& buffer, u32 stride) {
 	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
-	SF_ASSERT(impl.size() % stride == 0);
-	SF_ASSERT((impl.usage() & BufferUsage::Vertex) == BufferUsage::Vertex);
+	OP_ASSERT(impl.size() % stride == 0);
+	OP_ASSERT((impl.usage() & BufferUsage::Vertex) == BufferUsage::Vertex);
 
 	D3D12_VERTEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
@@ -166,8 +166,8 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffe
 RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer& buffer) {
 	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
-	SF_ASSERT(impl.size() % sizeof(u32) == 0);
-	SF_ASSERT((impl.usage() & BufferUsage::Index) == BufferUsage::Index);
+	OP_ASSERT(impl.size() % sizeof(u32) == 0);
+	OP_ASSERT((impl.usage() & BufferUsage::Index) == BufferUsage::Index);
 
 	D3D12_INDEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
@@ -197,4 +197,4 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_c
 	return *this;
 }
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

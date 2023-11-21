@@ -20,7 +20,7 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-#ifdef SF_PLATFORM_WINDOWS
+#ifdef OP_PLATFORM_WINDOWS
 
 static const wchar_t* window_class_name = L"gj_editor_window";
 
@@ -34,9 +34,9 @@ enum MONITOR_DPI_TYPE { MDT_EFFECTIVE_DPI, MDT_ANGULAR_DPI, MDT_RAW_DPI, MDT_DEF
 
 typedef HRESULT (*SetProcessDPIAwareness)(PROCESS_DPI_AWARENESS value);
 typedef HRESULT (*GetDPIForMonitor)(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT* dpiX, UINT* dpiY);
-#endif // #ifdef SF_PLATFORM_WINDOWS
+#endif // #ifdef OP_PLATFORM_WINDOWS
 
-SF_EDITOR_NAMESPACE_BEGIN
+OP_EDITOR_NAMESPACE_BEGIN
 
 static const char* source = R"#(
 cbuffer bufs : register(b0) {
@@ -150,17 +150,17 @@ public:
 			hInstance,
 			nullptr
 		);
-		SF_ASSERT(handle != nullptr);
+		OP_ASSERT(handle != nullptr);
 
 		::ShowWindow(handle, SW_SHOWDEFAULT);
 
 		return Window(handle);
 	}
 
-	SF_ALWAYS_INLINE Handle handle() const { return m_handle; }
+	OP_ALWAYS_INLINE Handle handle() const { return m_handle; }
 
 private:
-	SF_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) {}
+	OP_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) {}
 
 	Handle m_handle;
 };
@@ -190,7 +190,7 @@ void Application::run(FunctionRef<void()> f) {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-#ifdef SF_PLATFORM_WINDOWS
+#ifdef OP_PLATFORM_WINDOWS
 	static auto shcore = core::Library::open("shcore.dll");
 	if (shcore) {
 		auto& actual = shcore.as_mut().unwrap();
@@ -215,8 +215,8 @@ void Application::run(FunctionRef<void()> f) {
 	window_class.hIconSm = ::LoadIconW(hInstance, nullptr);
 
 	const ATOM atom = RegisterClassExW(&window_class);
-	SF_ASSERT(atom != 0);
-#endif // SF_PLATFORM_WINDOWS
+	OP_ASSERT(atom != 0);
+#endif // OP_PLATFORM_WINDOWS
 
 	auto window = Window::spawn("test", { 1280, 720 });
 	ImGui_ImplWin32_Init(window.handle());
@@ -227,23 +227,23 @@ void Application::run(FunctionRef<void()> f) {
 	dxc::Input vertex_input = { source, "vs_main", dxc::ShaderType::Vertex };
 	auto vertex_output = dxc::compile(vertex_input).unwrap();
 	auto vertex_shader =
-		m_device->create_vertex_shader(sf::move(vertex_output.binary), sf::move(vertex_output.input_parameters));
+		m_device->create_vertex_shader(op::move(vertex_output.binary), op::move(vertex_output.input_parameters));
 
 	// Compile the pixel shader using source
 	dxc::Input pixel_input = { source, "ps_main", dxc::ShaderType::Pixel };
 	auto pixel_output = dxc::compile(pixel_input).unwrap();
-	auto pixel_shader = m_device->create_pixel_shader(sf::move(pixel_output.binary));
+	auto pixel_shader = m_device->create_pixel_shader(op::move(pixel_output.binary));
 
 	// Create the graphics pipeline
 	gpu::GraphicsPipelineDefinition definition = {
-		.vertex_shader = sf::move(vertex_shader),
-		.pixel_shader = sf::move(pixel_shader),
+		.vertex_shader = op::move(vertex_shader),
+		.pixel_shader = op::move(pixel_shader),
 		.blend_enabled = true,
 		.src_color_blend_factor = gpu::BlendFactor::SrcAlpha,
 		.dst_color_blend_factor = gpu::BlendFactor::OneMinusSrcAlpha,
 	};
 	definition.color_attachments.push(gpu::Format::RGBA_U8);
-	auto pipeline = m_device->create_graphics_pipeline(sf::move(definition));
+	auto pipeline = m_device->create_graphics_pipeline(op::move(definition));
 
 	// Grab the font bitmap from imgui
 	unsigned char* pixels;
@@ -273,13 +273,13 @@ void Application::run(FunctionRef<void()> f) {
 	m_device->submit(upload_font_atlas);
 
 	for (;;) {
-#ifdef SF_PLATFORM_WINDOWS
+#ifdef OP_PLATFORM_WINDOWS
 		MSG msg;
 		while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
 		}
-#endif // SF_PLATFORM_WINDOWS
+#endif // OP_PLATFORM_WINDOWS
 
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -379,4 +379,4 @@ void Application::run(FunctionRef<void()> f) {
 	// ImGui::DestroyContext();
 }
 
-SF_EDITOR_NAMESPACE_END
+OP_EDITOR_NAMESPACE_END

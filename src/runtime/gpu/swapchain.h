@@ -4,7 +4,7 @@
 
 #include "gpu/gpu.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 class Texture;
 
@@ -16,4 +16,4 @@ public:
 	virtual ~Swapchain() = default;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END

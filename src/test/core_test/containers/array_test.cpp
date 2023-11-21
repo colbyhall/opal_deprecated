@@ -3,12 +3,12 @@
 #include "core/containers/array.h"
 #include "doctest/doctest.h"
 
-SF_TEST_BEGIN
+OP_TEST_BEGIN
 
-TEST_CASE("sf::core::Array") {
+TEST_CASE("op::core::Array") {
 	Array<int, 128> arr;
 
-	CHECK(arr.len() == 0); // sf::Array default initialization is to zero
+	CHECK(arr.len() == 0); // op::Array default initialization is to zero
 
 	SUBCASE("Adding elements") {
 		arr.push(5);
@@ -16,7 +16,7 @@ TEST_CASE("sf::core::Array") {
 		arr.push(15);
 
 		REQUIRE(arr.len() == 3); // We've added three elements
-		CHECK(arr[0] == 5); // The elements should be in the order we added them
+		CHECK(arr[0] == 5);		 // The elements should be in the order we added them
 		CHECK(arr[1] == 10);
 		CHECK(arr[2] == 15);
 	}
@@ -55,4 +55,4 @@ TEST_CASE("sf::core::Array") {
 	}
 }
 
-SF_TEST_END
+OP_TEST_END

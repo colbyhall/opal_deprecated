@@ -6,7 +6,7 @@
 #include "gpu/d3d12/texture.h"
 #include "gpu/swapchain.h"
 
-SF_GPU_NAMESPACE_BEGIN
+OP_GPU_NAMESPACE_BEGIN
 
 class D3D12Swapchain final : public Swapchain {
 public:
@@ -36,4 +36,4 @@ private:
 	u64 m_fence_value;
 };
 
-SF_GPU_NAMESPACE_END
+OP_GPU_NAMESPACE_END
