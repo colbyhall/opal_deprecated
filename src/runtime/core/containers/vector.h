@@ -7,12 +7,23 @@
 
 SF_CORE_NAMESPACE_BEGIN
 
+/**
+ * A dynamic array that can be resized at runtime.
+ *
+ * @tparam Element The type of element to store in the vector.
+ */
 template <typename Element>
 class Vector {
 public:
 	static_assert(std::is_nothrow_move_constructible_v<Element> && std::is_nothrow_move_assignable_v<Element>);
 
 	Vector() = default;
+
+	/**
+	 * Constructs a vector with the specified capacity.
+	 *
+	 * @param capacity The capacity of the vector.
+	 */
 	static Vector from(Slice<const Element> slice);
 
 	Vector(const Vector& copy) noexcept;
@@ -21,7 +32,7 @@ public:
 	Vector& operator=(Vector&& move) noexcept;
 
 	~Vector();
-
+	
 	SF_ALWAYS_INLINE usize len() const { return m_len; }
 	SF_ALWAYS_INLINE usize cap() const { return m_cap; }
 

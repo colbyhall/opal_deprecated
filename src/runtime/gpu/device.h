@@ -4,6 +4,7 @@
 
 #include "core/containers/function.h"
 #include "core/containers/unique.h"
+#include "core/containers/vector.h"
 #include "core/math/vector3.h"
 #include "gpu/gpu.h"
 

@@ -8,24 +8,36 @@
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
 		#define SF_PLATFORM_WINDOWS_UWP
 	#endif
-	#define SF_PLATFORM_WINDOWS
+	#define SF_PLATFORM_WINDOWS 1
 #else
 	#error Unsupported platform
+#endif
+#ifndef SF_PLATFORM_WINDOWS
+	#define SF_PLATFORM_WINDOWS 0
 #endif
 
 // Determine compiler
 #if defined(__clang__)
-	#define SF_COMPILER_CLANG
+	#define SF_COMPILER_CLANG 1
 #elif defined(_MSC_VER)
-	#define SF_COMPILER_MSVC
+	#define SF_COMPILER_MSVC 1
 #else
 	#error Unsupported compiler
+#endif
+#ifndef SF_COMPILER_CLANG
+	#define SF_COMPILER_CLANG 0
+#endif
+#ifndef SF_COMPILER_MSVC
+	#define SF_COMPILER_MSVC 0
+#endif
+#ifndef SF_COMPILER_GCC
+	#define SF_COMPILER_GCC 0
 #endif
 
 // Detect CPU architecture
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
 	// X86 CPU architecture
-	#define SF_CPU_X86
+	#define SF_CPU_X86 1
 	#if defined(__x86_64__) || defined(_M_X64)
 		#define SF_CPU_ADDRESS_BITS 64
 	#else
@@ -34,10 +46,13 @@
 #else
 	#error Unsupported CPU architecture
 #endif
+#ifndef SF_GPU_X86
+	#define SF_GPU_X86 0
+#endif
 
 // Pragmas to store / restore the warning state and to disable individual
 // warnings
-#ifdef SF_COMPILER_CLANG
+#if SF_COMPILER_CLANG
 	#define SF_PRAGMA(x)				 _Pragma(#x)
 	#define SF_SUPPRESS_WARNING_PUSH	 SF_PRAGMA(clang diagnostic push)
 	#define SF_SUPPRESS_WARNING_POP		 SF_PRAGMA(clang diagnostic pop)
@@ -46,7 +61,7 @@
 	#define SF_CLANG_SUPPRESS_WARNING(w)
 #endif
 
-#ifdef SF_COMPILER_MSVC
+#if SF_COMPILER_MSVC
 	#define SF_PRAGMA(x)				__pragma(x)
 	#define SF_SUPPRESS_WARNING_PUSH	SF_PRAGMA(warning(push))
 	#define SF_SUPPRESS_WARNING_POP		SF_PRAGMA(warning(pop))
@@ -56,9 +71,9 @@
 #endif
 
 // Define inline macro
-#if defined(SF_COMPILER_CLANG)
+#if SF_COMPILER_CLANG
 	#define SF_ALWAYS_INLINE __inline__ __attribute__((always_inline))
-#elif defined(SF_COMPILER_MSVC)
+#elif SF_COMPILER_MSVC
 	#define SF_ALWAYS_INLINE __forceinline
 #else
 	#error Undefined inline
@@ -72,16 +87,16 @@
 #endif
 
 // Define macro to get current function name
-#if defined(SF_COMPILER_CLANG) || defined(COMPILER_GCC)
+#if SF_COMPILER_CLANG || SF_COMPILER_GCC
 	#define SF_FUNCTION_NAME __PRETTY_FUNCTION__
-#elif defined(SF_COMPILER_MSVC)
+#elif SF_COMPILER_MSVC
 	#define SF_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined
 #endif
 
 // OS-specific includes
-#if defined(SF_PLATFORM_WINDOWS)
+#if SF_PLATFORM_WINDOWS
 	#define SF_BREAKPOINT __debugbreak()
 #else
 	#error Unknown platform
@@ -90,7 +105,7 @@
 #ifdef _DEBUG
 	#define SF_BUILD_DEBUG 1
 #else
-	#define SF_BUILD_DEBUG 1
+	#define SF_BUILD_DEBUG 0
 #endif
 
 #define SF_THREAD_LOCAL __declspec(thread)
