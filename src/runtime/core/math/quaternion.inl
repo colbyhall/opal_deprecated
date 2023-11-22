@@ -15,7 +15,7 @@ Quaternion<T> Quaternion<T>::from_axis_angle(const Vector3<T>& axis, T theta) {
 
 template <typename T>
 Quaternion<T> Quaternion<T>::from_euler(T pitch, T yaw, T roll) {
-	const auto rads_div_by_2 = (T)core::deg_to_rad / (T)2;
+	const auto rads_div_by_2 = core::deg_to_rad<T> / (T)2;
 
 	const auto pitch1 = core::fmod(pitch, (T)360);
 	const auto yaw1 = core::fmod(yaw, (T)360);

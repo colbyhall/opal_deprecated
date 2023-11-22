@@ -1,5 +1,6 @@
 // Copyright Colby Hall. All Rights Reserved.
 
+#include "core/containers/slot_map.h"
 #include "editor/application.h"
 #include "gpu/d3d12/device.h"
 #include "imgui/imgui.h"
@@ -15,6 +16,10 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 	OP_UNUSED(cmdshow);
 
 	using namespace op;
+
+	SlotMap<int> slot_map;
+	auto key = slot_map.insert(5);
+	slot_map.remove(key);
 
 	auto device = gpu::D3D12Device::create();
 

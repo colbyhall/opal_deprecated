@@ -16,6 +16,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/shared.inl
         ${CORE_ROOT}/containers/slice.h
         ${CORE_ROOT}/containers/slice.inl
+        ${CORE_ROOT}/containers/slot_map.h
+        ${CORE_ROOT}/containers/slot_map.inl
         ${CORE_ROOT}/containers/string_view.h
         ${CORE_ROOT}/containers/string_view.cpp
         ${CORE_ROOT}/containers/string.h
