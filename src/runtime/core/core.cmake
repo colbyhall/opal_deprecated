@@ -52,6 +52,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/os/library.cpp
         ${CORE_ROOT}/os/memory.h
         ${CORE_ROOT}/os/memory.cpp
+        ${CORE_ROOT}/os/time.h
+        ${CORE_ROOT}/os/time.cpp
         ${CORE_ROOT}/os/windows.h
 
         ${CORE_ROOT}/atomic.h
