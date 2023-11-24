@@ -20,16 +20,16 @@ public:
 	operator WStringView() const;
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE WChar* ptr() { return m_chars.begin(); }
-	OP_NO_DISCARD OP_ALWAYS_INLINE WChar const* ptr() const { return m_chars.cbegin(); }
-	OP_NO_DISCARD OP_ALWAYS_INLINE const WChar* operator*() const { return m_chars.cbegin(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE WChar const* ptr() const { return m_chars.begin(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE const WChar* operator*() const { return m_chars.begin(); }
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE usize len() const { return m_chars.len() > 0 ? m_chars.len() - 1 : 0; }
 	OP_NO_DISCARD OP_ALWAYS_INLINE usize cap() const { return m_chars.cap(); }
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE WChar* begin() { return m_chars.begin(); }
 	OP_NO_DISCARD OP_ALWAYS_INLINE WChar* end() { return m_chars.end(); }
-	OP_NO_DISCARD OP_ALWAYS_INLINE const WChar* cbegin() const { return m_chars.cbegin(); }
-	OP_NO_DISCARD OP_ALWAYS_INLINE const WChar* cend() const { return m_chars.cend(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE const WChar* begin() const { return m_chars.begin(); }
+	OP_NO_DISCARD OP_ALWAYS_INLINE const WChar* end() const { return m_chars.end(); }
 
 	OP_ALWAYS_INLINE WChar& operator[](usize index) { return m_chars[index]; }
 	OP_ALWAYS_INLINE WChar operator[](usize index) const { return m_chars[index]; }

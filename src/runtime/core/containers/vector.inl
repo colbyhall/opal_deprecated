@@ -103,12 +103,12 @@ OP_ALWAYS_INLINE Element* Vector<Element>::end() {
 }
 
 template <typename Element>
-OP_ALWAYS_INLINE const Element* Vector<Element>::cbegin() const {
+OP_ALWAYS_INLINE const Element* Vector<Element>::begin() const {
 	return m_ptr;
 }
 
 template <typename Element>
-OP_ALWAYS_INLINE const Element* Vector<Element>::cend() const {
+OP_ALWAYS_INLINE const Element* Vector<Element>::end() const {
 	return m_ptr + m_len;
 }
 

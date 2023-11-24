@@ -18,28 +18,28 @@ SlotMap<T>::Key SlotMap<T>::insert(T&& value) {
 
 template <typename T>
 Option<T&> SlotMap<T>::get(const Key& key) {
-	if (is_valid(key)) {
-		return m_elements[key.m_index].value;
+	if (contains(key)) {
+		return m_elements[key.m_index].value.as_mut();
 	}
 	return nullopt;
 }
 
 template <typename T>
 Option<T const&> SlotMap<T>::get(const Key& key) const {
-	if (is_valid(key)) {
-		return m_elements[key.m_index].value;
+	if (contains(key)) {
+		return m_elements[key.m_index].value.as_ref();
 	}
 	return nullopt;
 }
 
 template <typename T>
-bool SlotMap<T>::is_valid(const Key& key) const {
+bool SlotMap<T>::contains(const Key& key) const {
 	return key.m_index < m_elements.len() && m_elements[key.m_index].version == key.m_version;
 }
 
 template <typename T>
 Option<T> SlotMap<T>::remove(const Key& key) {
-	if (is_valid(key)) {
+	if (contains(key)) {
 		m_free_indices.push(key.m_index);
 		return op::move(m_elements[key.m_index].value);
 	}

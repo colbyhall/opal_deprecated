@@ -14,7 +14,7 @@
         <Expand>
             <ArrayItems>
                 <Size>m_len</Size>
-                <ValuePointer>begin()</ValuePointer>
+                <ValuePointer>m_ptr</ValuePointer>
             </ArrayItems>
         </Expand>
     </Type>
@@ -32,6 +32,20 @@
 
         <Expand>
             <ExpandedItem Condition="m_set">($T1*)(m_data)</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="op::core::Unique&lt;*&gt;">
+        <Expand>
+            <ExpandedItem>m_ptr</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="op::core::Shared&lt;*&gt;">
+        <DisplayString>{{ strong={m_counter->m_strong}, weak={m_counter->m_weak} }}</DisplayString>
+        <Expand>
+            <ExpandedItem>m_counter</ExpandedItem>
+            <ExpandedItem>m_base</ExpandedItem>
         </Expand>
     </Type>
 </AutoVisualizer>

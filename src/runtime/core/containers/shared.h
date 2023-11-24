@@ -31,7 +31,7 @@ public:
 		};
 
 		constexpr auto layout = core::Layout::single<Combined>;
-		Combined* ptr = new (core::malloc(layout)) Combined{ SharedCounter<Mode>(), Base(forward<Args>(args)...) };
+		Combined* ptr = new (core::malloc(layout)) Combined{ SharedCounter<Mode>(), Base(op::move(args)...) };
 
 		auto result = Shared(&ptr->counter, &ptr->base);
 		if constexpr (std::is_base_of_v<SharedFromThisBase, Base>) {

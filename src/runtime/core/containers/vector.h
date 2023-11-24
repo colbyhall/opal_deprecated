@@ -46,8 +46,8 @@ public:
 	OP_ALWAYS_INLINE Element* begin();
 	OP_ALWAYS_INLINE Element* end();
 
-	OP_ALWAYS_INLINE const Element* cbegin() const;
-	OP_ALWAYS_INLINE const Element* cend() const;
+	OP_ALWAYS_INLINE const Element* begin() const;
+	OP_ALWAYS_INLINE const Element* end() const;
 
 	OP_ALWAYS_INLINE Element& operator[](usize index);
 	OP_ALWAYS_INLINE const Element& operator[](usize index) const;

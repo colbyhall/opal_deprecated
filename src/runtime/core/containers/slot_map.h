@@ -25,7 +25,7 @@ public:
 
 	private:
 		friend class SlotMap<T>;
-		
+
 		u32 m_index;
 		u32 m_version;
 	};
@@ -38,7 +38,7 @@ public:
 
 	OP_NO_DISCARD Option<T const&> get(const Key& key) const;
 
-	OP_NO_DISCARD bool is_valid(const Key& key) const;
+	OP_NO_DISCARD bool contains(const Key& key) const;
 
 	Option<T> remove(const Key& key);
 

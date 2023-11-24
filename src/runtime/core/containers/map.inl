@@ -108,6 +108,7 @@ Option<Value const&> Map<Key, Value, Hasher>::find(const Key& key) const {
 template <typename Key, typename Value, typename Hasher>
 inline usize Map<Key, Value, Hasher>::key_to_layout_index(const Key& key) const {
 	Hasher hasher = {};
+	op::Hash<Hasher, Key> hash;
 	hash(hasher, key);
 	const u64 the_hash = hasher.finish();
 	return the_hash % m_buckets.len();

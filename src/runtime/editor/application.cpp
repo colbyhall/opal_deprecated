@@ -355,7 +355,7 @@ void Application::run(FunctionRef<void()> f) {
 									vertices.len() * sizeof(Vertex)
 								);
 								vertex_buffer->map([&](auto slice) {
-									core::copy(slice.begin(), vertices.cbegin(), slice.len());
+									core::copy(slice.begin(), vertices.begin(), slice.len());
 								});
 
 								rpr
