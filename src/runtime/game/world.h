@@ -49,6 +49,7 @@ public:
 private:
 	friend class EntityRefMut;
 	friend class EntityRef;
+	friend class Query;
 
 	template <typename T>
 	bool add_component(EntityId id, T&& component);
@@ -79,7 +80,7 @@ bool World::add_component(EntityId id, T&& component) {
 	entity.add_component(T::type());
 	auto new_archetype_index = find_or_create_archetype(entity.components());
 	auto& new_archetype = m_archetypes[new_archetype_index];
-	auto new_slot_index = new_archetype.pop_free_index();
+	auto new_slot_index = new_archetype.next_slot_index();
 
 	// Store the old storage state before we change it as we need it for the transfer.
 	auto old_component_storage_opt = entity.component_storage();

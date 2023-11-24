@@ -11,6 +11,8 @@ set(GAME_SRC_FILES
         ${GAME_ROOT}/game.cmake
         ${GAME_ROOT}/game.h
         ${GAME_ROOT}/game.cpp
+        ${GAME_ROOT}/query.h
+        ${GAME_ROOT}/query.cpp
         ${GAME_ROOT}/storage.h
         ${GAME_ROOT}/world.h
         ${GAME_ROOT}/world.cpp

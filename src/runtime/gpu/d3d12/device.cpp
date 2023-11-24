@@ -295,7 +295,7 @@ Shared<GraphicsPipeline> D3D12Device::create_graphics_pipeline(GraphicsPipelineD
 			size_in_bytes = 16;
 			break;
 		case ShaderPrimitive::Matrix4f32:
-			OP_INVALID_CODE_PATH;
+			OP_UNREACHABLE;
 			break;
 		}
 		input.AlignedByteOffset = (UINT)offset;

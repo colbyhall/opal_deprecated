@@ -18,7 +18,7 @@ usize format_size_in_bytes(Format format) {
 	case Format::D24S8_U32:
 		return 4;
 	case Format::Undefined:
-		OP_INVALID_CODE_PATH;
+		OP_UNREACHABLE;
 		break;
 	}
 

@@ -42,7 +42,7 @@ bool World::remove_component(EntityId id, ComponentType component) {
 	// Find the archetype that supports the remaining components.
 	auto new_archetype_index = find_or_create_archetype(entity.components());
 	auto& new_archetype = m_archetypes[new_archetype_index];
-	auto new_slot_index = new_archetype.pop_free_index();
+	auto new_slot_index = new_archetype.next_slot_index();
 
 	// Transfer all the components to the new archetype. The component we're trying to remove will be discarded in the
 	// process.
@@ -77,12 +77,12 @@ u32 World::find_or_create_archetype(Slice<ComponentType const> supported_types) 
 
 	// If no archetype was found, create a new one.
 	if (!result.is_set()) {
-		auto archetype = Archetype{};
+		auto archetype = Archetype();
 
 		// Add all the component storages required by the caller.
 		for (auto type : supported_types) {
 			auto& type_info = m_component_registry->find(type);
-			archetype.add_storage(type_info.create_storage());
+			archetype.push_storage(type_info.create_storage());
 		}
 
 		result = (u32)m_archetypes.len();

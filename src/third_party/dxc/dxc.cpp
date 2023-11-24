@@ -88,7 +88,7 @@ Result<Output, String> compile(const Input& input) {
 			error.reserve(output->GetBufferSize());
 			error.push(StringView{ static_cast<const char*>(output->GetBufferPointer()), output->GetBufferSize() });
 			OutputDebugStringA(*error);
-			OP_INVALID_CODE_PATH;
+			OP_UNREACHABLE;
 		}
 	}
 

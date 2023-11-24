@@ -1,8 +1,9 @@
 // Copyright Colby Hall. All Rights Reserved.
 
-#include "game/component.h"
+#include "game/query.h"
 #include "game/world.h"
 
+#include "core/os/time.h"
 #include "core/os/windows.h"
 
 OP_NAMESPACE_BEGIN
@@ -16,10 +17,21 @@ int main() {
 	}
 
 	auto world = game::World(component_registry);
-	auto entity = world.spawn();
-	entity.add(game::Transform{});
-	entity.add(game::Link{});
-	entity.remove(game::Link::type());
+
+	for (auto index = 0; index < 1024; index += 1) {
+		world.spawn().add(game::Transform{}).add(game::Link{});
+	}
+
+	auto query = game::Query();
+	query.read(game::Transform::type()).read(game::Link::type());
+
+	auto accum = 0;
+	query.execute(world, [&](auto& view) {
+		auto& transform = view.read<game::Transform>();
+		OP_UNUSED(transform);
+		accum += 1;
+	});
+	OP_ASSERT(accum == 1024);
 
 	return 0;
 }

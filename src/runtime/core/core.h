@@ -354,9 +354,9 @@ OP_NAMESPACE_END
 	#define OP_ENSURE(...) ((void)0)
 #endif // OP_ENABLE_ASSERTS
 
-#define OP_PANIC(msg)		 OP_ASSERT(false, msg)
-#define OP_UNIMPLEMENTED	 OP_PANIC("Unimplemented!")
-#define OP_INVALID_CODE_PATH OP_PANIC("Invalid code path!")
+#define OP_PANIC(msg)	 OP_ASSERT(false, msg)
+#define OP_UNIMPLEMENTED OP_PANIC("Unimplemented!")
+#define OP_UNREACHABLE	 OP_PANIC("Invalid code path!")
 
 #include <utility>
 

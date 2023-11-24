@@ -10,7 +10,7 @@ DXGI_FORMAT format_to_dxgi(Format format) {
 
 	switch (format) {
 	case Format::Undefined:
-		OP_INVALID_CODE_PATH;
+		OP_UNREACHABLE;
 		break;
 	case Format::R_U8:
 		dxgi_format = DXGI_FORMAT_R8_UNORM;
