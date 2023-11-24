@@ -15,10 +15,10 @@ struct Component {
 	virtual ~Component() = default;
 };
 
-class AnonymousStorage;
+class Storage;
 class ComponentTypeInfo {
 public:
-	using CreateStorageFn = Unique<AnonymousStorage> (*)(void);
+	using CreateStorageFn = Unique<Storage> (*)(void);
 
 	explicit ComponentTypeInfo(StringView name, usize size, CreateStorageFn create_storage_fn)
 		: m_name(name)
@@ -38,7 +38,7 @@ public:
 	OP_ALWAYS_INLINE StringView name() const { return m_name; }
 	OP_ALWAYS_INLINE usize size() const { return m_size; }
 	OP_ALWAYS_INLINE Slice<Property const> properties() const { return m_properties; }
-	OP_ALWAYS_INLINE Unique<AnonymousStorage> create_storage() const { return m_create_storage_fn(); }
+	OP_ALWAYS_INLINE Unique<Storage> create_storage() const { return m_create_storage_fn(); }
 
 private:
 	StringView m_name;
@@ -59,7 +59,7 @@ public:
 
 	template <typename Component>
 	ComponentRegistry& register_component(StringView name) {
-		auto create_storage_fn = []() -> Unique<AnonymousStorage> { return Unique<VectorStorage<Component>>::make(); };
+		auto create_storage_fn = []() -> Unique<Storage> { return Unique<VectorStorage<Component>>::make(); };
 		auto info = ComponentTypeInfo(name, sizeof(Component), create_storage_fn);
 		Component::fill_type_info(info);
 		m_types.insert(Component::type(), op::move(info));

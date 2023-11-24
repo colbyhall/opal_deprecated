@@ -11,8 +11,14 @@ class Entity {
 public:
 	explicit Entity() = default;
 
-	OP_ALWAYS_INLINE void set_archetype_index(u32 index) { m_archetype_index = index; }
-	OP_ALWAYS_INLINE Option<u32> archetype_index() const { return m_archetype_index; }
+	struct ComponentStorage {
+		u32 archetype_index;
+		u32 slot_index;
+	};
+	OP_ALWAYS_INLINE void set_component_storage(u32 archetype_index, u32 slot_index) {
+		m_component_storage = ComponentStorage{ archetype_index, slot_index };
+	}
+	OP_ALWAYS_INLINE Option<ComponentStorage> component_storage() const { return m_component_storage; }
 
 	OP_ALWAYS_INLINE void add_component(ComponentType type) { m_components.push(type); }
 	OP_ALWAYS_INLINE bool remove_component(ComponentType type) {
@@ -33,10 +39,10 @@ public:
 		return false;
 	}
 
-	Slice<ComponentType const> components() const { return m_components; }
+	OP_ALWAYS_INLINE Slice<ComponentType const> components() const { return m_components; }
 
 private:
-	Option<u32> m_archetype_index = nullopt;
+	Option<ComponentStorage> m_component_storage;
 	Vector<ComponentType> m_components;
 };
 using EntityId = SlotMap<Entity>::Key;

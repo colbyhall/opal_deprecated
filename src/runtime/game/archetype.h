@@ -12,7 +12,7 @@ public:
 
 	bool supports(ComponentType type) const;
 
-	void add_storage(Unique<AnonymousStorage>&& storage) { m_storages.push(op::move(storage)); }
+	void add_storage(Unique<Storage>&& storage) { m_storages.push(op::move(storage)); }
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE u32 pop_free_index() {
 		if (m_free_indices.is_empty()) {
@@ -25,17 +25,17 @@ public:
 	void store(T&& component, u32 index) {
 		for (auto& storage : m_storages) {
 			if (storage->type() == T::type()) {
-				auto& typed_storage = static_cast<Storage<T>&>(*storage);
+				auto& typed_storage = static_cast<TypedStorage<T>&>(*storage);
 				typed_storage.store(op::forward<T>(component), index);
 				return;
 			}
 		}
 	}
 
-	void transfer_to(Archetype& other, u32 index);
+	void transfer_to(Archetype& other, u32 from, u32 to);
 
 private:
-	Vector<Unique<AnonymousStorage>> m_storages;
+	Vector<Unique<Storage>> m_storages;
 	Vector<u32> m_free_indices;
 };
 

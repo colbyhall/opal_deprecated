@@ -8,18 +8,19 @@
 
 OP_GAME_NAMESPACE_BEGIN
 
-class AnonymousStorage {
+class Storage {
 public:
-	virtual bool transfer_to(AnonymousStorage& other, u32 index) = 0;
+	virtual bool transfer_to(Storage& other, u32 from, u32 to) = 0;
+	virtual bool discard(u32 index) = 0;
 	virtual ComponentType type() const = 0;
 	virtual u32 len() const = 0;
-	virtual ~AnonymousStorage() = default;
+	virtual ~Storage() = default;
 };
 
 template <typename T>
-class Storage : public AnonymousStorage {
+class TypedStorage : public Storage {
 public:
-	explicit Storage() = default;
+	explicit TypedStorage() = default;
 
 	virtual void store(T&& component, u32 index) = 0;
 	virtual Option<T> remove(u32 index) = 0;
@@ -30,25 +31,34 @@ public:
 };
 
 template <typename T>
-class VectorStorage : public Storage<T> {
+class VectorStorage : public TypedStorage<T> {
 public:
 	explicit VectorStorage() = default;
 
-	// AnonymousStorage
-	bool transfer_to(AnonymousStorage& other, u32 index) override {
-		auto& typed_storage = static_cast<Storage<T>&>(other);
-		auto component_opt = remove(index);
+	// Storage
+	bool transfer_to(Storage& other, u32 from, u32 to) override {
+		auto& typed_storage = static_cast<TypedStorage<T>&>(other);
+		auto component_opt = remove(from);
 		if (component_opt.is_set()) {
 			auto component = component_opt.unwrap();
-			typed_storage.store(op::move(component), index);
+			typed_storage.store(op::move(component), to);
 			return true;
 		}
 		return false;
 	}
 	u32 len() const override { return (u32)m_components.len(); }
-	// ~AnonymousStorage
+	bool discard(u32 index) override {
+		if (index >= m_components.len()) {
+			return false;
+		}
+		auto discarded = m_components[index].unwrap();
+		OP_UNUSED(discarded);
+		
+		return true;
+	}
+	// ~Storage
 
-	// Storage
+	// TypedStorage
 	void store(T&& component, u32 index) override {
 		if (index == m_components.len()) {
 			m_components.push(op::move(component));
@@ -62,7 +72,7 @@ public:
 		}
 		return m_components[index].unwrap();
 	}
-	// ~Storage
+	// ~TypedStorage
 
 private:
 	Vector<Option<T>> m_components;

@@ -9,11 +9,17 @@ OP_NAMESPACE_BEGIN
 
 int main() {
 	auto component_registry = game::ComponentRegistry::make();
-	OP_GAME_REGISTER_COMPONENT(*component_registry, game::Transform);
-	OP_GAME_REGISTER_COMPONENT(*component_registry, game::Link);
+	{
+		auto& registry = *component_registry;
+		OP_GAME_REGISTER_COMPONENT(registry, game::Transform);
+		OP_GAME_REGISTER_COMPONENT(registry, game::Link);
+	}
 
-	auto world = game::World{ component_registry };
-	auto id = world.spawn().add(game::Transform{}).add(game::Link{}).id();
+	auto world = game::World(component_registry);
+	auto entity = world.spawn();
+	entity.add(game::Transform{});
+	entity.add(game::Link{});
+	entity.remove(game::Link::type());
 
 	return 0;
 }
