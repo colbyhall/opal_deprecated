@@ -48,7 +48,7 @@ static D3D12_BLEND_OP convert_blend_op(BlendOp op) {
 	return D3D12_BLEND_OP_ADD;
 }
 
-Shared<Device> D3D12Device::create() {
+Shared<Device> D3D12Device::make() {
 	auto result = Shared<D3D12Device>::make();
 
 	// Initialize null resources used to fill empty bindless slots

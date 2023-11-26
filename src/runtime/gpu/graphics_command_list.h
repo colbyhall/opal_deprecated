@@ -3,7 +3,7 @@
 #pragma once
 
 #include "core/containers/function.h"
-#include "core/math/vector4.h"
+#include "core/math/color.h"
 #include "gpu/gpu.h"
 
 OP_GPU_NAMESPACE_BEGIN
@@ -128,7 +128,7 @@ public:
 	 *
 	 * TODO: color should use some LinearColor abstraction
 	 */
-	virtual RenderPassCommandRecorder& clear_color(const Vector4<f32>& color) = 0;
+	virtual RenderPassCommandRecorder& clear_color(const LinearColor& color) = 0;
 
 	/**
 	 * Specifies which pipeline following commands should use.
@@ -153,7 +153,7 @@ public:
 	 *
 	 * @see RenderPassCommandRecorder::draw_indexed
 	 */
-	virtual RenderPassCommandRecorder& set_indices(const Buffer& buffer) = 0;
+	virtual RenderPassCommandRecorder& set_indices(const Buffer& buffer, u32 stride) = 0;
 
 	/**
 	 * TODO: Wrap this into an appropriate api.

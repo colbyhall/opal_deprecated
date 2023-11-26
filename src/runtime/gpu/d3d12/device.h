@@ -50,7 +50,7 @@ public:
 	using FnSerializeRootSignature = PFN_D3D12_SERIALIZE_ROOT_SIGNATURE;
 	using FnCreateDevice = PFN_D3D12_CREATE_DEVICE;
 
-	static Shared<Device> create();
+	static Shared<Device> make();
 	explicit D3D12Device();
 
 	// Device

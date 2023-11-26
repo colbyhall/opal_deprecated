@@ -13,7 +13,7 @@ OP_CORE_NAMESPACE_BEGIN
  * @tparam T A numeric type.
  */
 template <typename T>
-struct alignas(16) Vector2 {
+struct Vector2 {
 	union {
 		struct {
 			T x, y;

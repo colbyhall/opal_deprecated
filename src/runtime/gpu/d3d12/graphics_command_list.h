@@ -48,10 +48,10 @@ public:
 	explicit D3D12RenderPassRecorderImpl(D3D12GraphicsCommandList& command_list) : m_command_list(command_list) {}
 
 	// GraphicsCommandRecorder
-	RenderPassCommandRecorder& clear_color(const Vector4<f32>& color) final;
+	RenderPassCommandRecorder& clear_color(const LinearColor& color) final;
 	RenderPassCommandRecorder& set_pipeline(const GraphicsPipeline& pipeline) final;
 	RenderPassCommandRecorder& set_vertices(const Buffer& buffer, u32 stride) final;
-	RenderPassCommandRecorder& set_indices(const Buffer& buffer) final;
+	RenderPassCommandRecorder& set_indices(const Buffer& buffer, u32 stride) final;
 	RenderPassCommandRecorder& push_constants(const void* ptr) final;
 	RenderPassCommandRecorder& draw(usize vertex_count, usize first_vertex = 0) final;
 	RenderPassCommandRecorder& draw_index(usize index_count, usize first_index = 0) final;

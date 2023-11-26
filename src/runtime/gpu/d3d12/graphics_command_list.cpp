@@ -130,7 +130,7 @@ GraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const Vector4<f32>& color) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const LinearColor& color) {
 	const auto handle = m_command_list.bound_color_buffer.as_ref().unwrap();
 	const f32 clear_color0[] = { color.r, color.g, color.g, color.a };
 	m_command_list.command_list->ClearRenderTargetView(handle, clear_color0, 0, nullptr);
@@ -163,7 +163,7 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffe
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer& buffer) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer& buffer, u32 stride) {
 	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
 	OP_ASSERT(impl.size() % sizeof(u32) == 0);
@@ -172,7 +172,20 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer
 	D3D12_INDEX_BUFFER_VIEW view = {};
 	view.BufferLocation = (UINT)impl.resource()->GetGPUVirtualAddress();
 	view.SizeInBytes = (UINT)(impl.size());
-	view.Format = DXGI_FORMAT_R32_UINT; // All index buffers must be of u32
+
+	// Currently the only supported index format is 16 or 32 bit
+	auto format = DXGI_FORMAT_UNKNOWN;
+	switch (stride) {
+	case 2:
+		format = DXGI_FORMAT_R16_UINT;
+		break;
+	case 4:
+		format = DXGI_FORMAT_R32_UINT;
+		break;
+	}
+	OP_ASSERT(format != DXGI_FORMAT_UNKNOWN);
+
+	view.Format = format;
 	m_command_list.command_list->IASetIndexBuffer(&view);
 	m_command_list.buffers_in_use.push(buffer.to_shared());
 
