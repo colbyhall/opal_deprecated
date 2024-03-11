@@ -112,16 +112,15 @@ class Window {
 public:
 	using Handle = void*;
 
-	static Window spawn(StringView title, const Vector2<u32>& size) {
+	static Window spawn(StringView title, const Vector2<u32>& size)
+	{
 		const auto dpi = (f32)::GetDpiForSystem() / 96.f;
 		HINSTANCE hInstance = ::GetModuleHandleA(nullptr);
 
 		const DWORD dwStyle = WS_OVERLAPPEDWINDOW;
 
-		RECT adjusted_rect = { .left = 0,
-							   .top = 0,
-							   .right = (LONG)((f32)size.width * dpi),
-							   .bottom = (LONG)((f32)size.height * dpi) };
+		RECT adjusted_rect
+			= { .left = 0, .top = 0, .right = (LONG)((f32)size.width * dpi), .bottom = (LONG)((f32)size.height * dpi) };
 		::AdjustWindowRect(&adjusted_rect, dwStyle, 0);
 
 		const int width = adjusted_rect.right - adjusted_rect.left;
@@ -160,12 +159,13 @@ public:
 	OP_ALWAYS_INLINE Handle handle() const { return m_handle; }
 
 private:
-	OP_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) {}
+	OP_ALWAYS_INLINE explicit Window(Handle handle) : m_handle(handle) { }
 
 	Handle m_handle;
 };
 
-static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
 
 	// gpu::Swapchain* const swapchain = (gpu::Swapchain*)::GetWindowLongPtrA(hWnd, GWLP_USERDATA);
@@ -180,9 +180,10 @@ static LRESULT CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
 	return ::DefWindowProcW(hWnd, Msg, wParam, lParam);
 }
 
-Application::Application(const gpu::Device& device) : m_device(device.to_shared()) {}
+Application::Application(const gpu::Device& device) : m_device(device.to_shared()) { }
 
-void Application::run(FunctionRef<void()> f) {
+void Application::run(FunctionRef<void()> f)
+{
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
@@ -226,8 +227,8 @@ void Application::run(FunctionRef<void()> f) {
 	// Compile the vertex shader using source
 	dxc::Input vertex_input = { source, "vs_main", dxc::ShaderType::Vertex };
 	auto vertex_output = dxc::compile(vertex_input).unwrap();
-	auto vertex_shader =
-		m_device->create_vertex_shader(op::move(vertex_output.binary), op::move(vertex_output.input_parameters));
+	auto vertex_shader
+		= m_device->create_vertex_shader(op::move(vertex_output.binary), op::move(vertex_output.input_parameters));
 
 	// Compile the pixel shader using source
 	dxc::Input pixel_input = { source, "ps_main", dxc::ShaderType::Pixel };
@@ -309,8 +310,11 @@ void Application::run(FunctionRef<void()> f) {
 						const auto bounds = draw_data->DisplaySize;
 
 						const auto projection = Matrix4<f32>::orthographic(bounds.x, bounds.y, 0.1f, 1000.f);
-						const auto view =
-							Matrix4<f32>::transform({ -bounds.x / 2, -bounds.y / 2, 0 }, Quaternion<f32>::identity, 1);
+						const auto view = Matrix4<f32>::transform(
+							{ -bounds.x / 2, -bounds.y / 2, 0 },
+							Quaternion<f32>::identity,
+							1
+						);
 						const auto local_to_projection = projection * view;
 
 						rpr
@@ -340,11 +344,11 @@ void Application::run(FunctionRef<void()> f) {
 										auto clip_rect = draw_cmd.ClipRect;
 										clip_rect.y = bounds.y - draw_cmd.ClipRect.y;
 										clip_rect.w = bounds.y - draw_cmd.ClipRect.w;
-										vertices.push(Vertex{ clip_rect,
-															  { vtx.pos.x, bounds.y - vtx.pos.y },
-															  vtx.uv,
-															  vtx.col,
-															  (u32) reinterpret_cast<usize>(draw_cmd.GetTexID()) });
+										vertices.push(Vertex { clip_rect,
+															   { vtx.pos.x, bounds.y - vtx.pos.y },
+															   vtx.uv,
+															   vtx.col,
+															   (u32) reinterpret_cast<usize>(draw_cmd.GetTexID()) });
 									}
 								}
 

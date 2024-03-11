@@ -13,7 +13,9 @@ public:
 		: m_usage(usage)
 		, m_kind(kind)
 		, m_size(size)
-		, m_resource(op::move(resource)) {}
+		, m_resource(op::move(resource))
+	{
+	}
 
 	// Buffer
 	BufferUsage usage() const final { return m_usage; }

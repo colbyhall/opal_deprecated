@@ -6,10 +6,12 @@ set(STB_ROOT ${THIRD_PARTY_ROOT}/stb)
 # Source files
 set(STB_SRC_FILES
         ${STB_ROOT}/stb.cmake
-		${STB_ROOT}/stb.h
+        ${STB_ROOT}/stb.h
         ${STB_ROOT}/stb_image.h
-        ${STB_ROOT}/stb_image.cpp
-        )
+        ${STB_ROOT}/stb_implementation.cpp
+        ${STB_ROOT}/stb_rect_pack.h
+        ${STB_ROOT}/stb_truetype.h
+)
 
 # Group source files
 source_group(TREE ${STB_ROOT} FILES ${STB_SRC_FILES})

@@ -11,7 +11,9 @@ class D3D12GraphicsPipeline final : public GraphicsPipeline {
 public:
 	explicit D3D12GraphicsPipeline(GraphicsPipelineDefinition&& definition, ComPtr<ID3D12PipelineState>&& pipeline)
 		: m_definition(op::forward<GraphicsPipelineDefinition>(definition))
-		, m_pipeline(op::forward<ComPtr<ID3D12PipelineState>>(pipeline)) {}
+		, m_pipeline(op::forward<ComPtr<ID3D12PipelineState>>(pipeline))
+	{
+	}
 
 	// GraphicsPipeline
 	const GraphicsPipelineDefinition& definition() const final { return m_definition; }

@@ -60,6 +60,7 @@ set(CORE_SRC_FILES
 
         ${CORE_ROOT}/atomic.h
         ${CORE_ROOT}/atomic.inl
+		${CORE_ROOT}/concepts.h
         ${CORE_ROOT}/core.cmake
         ${CORE_ROOT}/core.cpp
         ${CORE_ROOT}/core.h

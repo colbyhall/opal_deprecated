@@ -12,7 +12,9 @@ class D3D12VertexShader final : public VertexShader {
 public:
 	explicit D3D12VertexShader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters)
 		: m_binary(op::move(binary))
-		, m_input_parameters(op::move(input_parameters)) {}
+		, m_input_parameters(op::move(input_parameters))
+	{
+	}
 
 	// VertexShader
 	Slice<u8 const> binary() const final { return m_binary; }
@@ -26,7 +28,7 @@ private:
 
 class D3D12PixelShader : public PixelShader {
 public:
-	explicit D3D12PixelShader(Vector<u8>&& binary) : m_binary(op::move(binary)) {}
+	explicit D3D12PixelShader(Vector<u8>&& binary) : m_binary(op::move(binary)) { }
 
 	// PixelShader
 	Slice<u8 const> binary() const final { return m_binary; }

@@ -5,7 +5,8 @@
 
 OP_GPU_NAMESPACE_BEGIN
 
-DXGI_FORMAT format_to_dxgi(Format format) {
+DXGI_FORMAT format_to_dxgi(Format format)
+{
 	DXGI_FORMAT dxgi_format = DXGI_FORMAT_UNKNOWN;
 
 	switch (format) {
@@ -45,7 +46,8 @@ D3D12Texture::D3D12Texture(
 	: m_context(context.to_shared())
 	, m_usage(usage)
 	, m_format(format)
-	, m_size(size) {
+	, m_size(size)
+{
 	OP_ASSERT(size.x > 0);
 	OP_ASSERT(size.y > 0);
 	OP_ASSERT(size.z > 0);
@@ -132,7 +134,8 @@ D3D12Texture::D3D12Texture(
 	}
 }
 
-D3D12Texture::~D3D12Texture() {
+D3D12Texture::~D3D12Texture()
+{
 	const auto& context = static_cast<const D3D12Device&>(*m_context);
 	auto& root_signature = context.root_signature();
 

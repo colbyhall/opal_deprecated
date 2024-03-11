@@ -28,7 +28,7 @@ Duration Instant::duration_since(Instant earlier) const {
 		OP_ASSERT(result);
 		g_timer_frequency = freq.QuadPart;
 	}
-	const auto& freq = g_timer_frequency.as_ref().unwrap();
+	const auto freq = g_timer_frequency.unwrap();
 
 	auto duration = m_tick - earlier.m_tick;
 	const auto secs = duration / freq;

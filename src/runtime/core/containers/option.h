@@ -2,18 +2,25 @@
 
 #pragma once
 
+#include "core/concepts.h"
 #include "core/containers/non_null.h"
 #include "core/non_copyable.h"
 #include "core/os/memory.h"
-#include "core/type_traits.h"
 
 OP_CORE_NAMESPACE_BEGIN
 
 // Alias nullptr for readability
 constexpr NullPtr nullopt = nullptr;
 
-template <typename T, typename Enable = void>
-class Option {
+template <class T>
+inline constexpr bool is_not_trivially_copyable_v = !__is_trivially_copyable(T) && !std::is_reference_v<T>;
+
+template <typename T>
+class Option;
+
+template <typename T>
+	requires is_not_trivially_copyable_v<T>
+class Option<T> {
 public:
 	// Constructors
 	Option() = default;
@@ -27,12 +34,13 @@ public:
 		new (p) T(t);
 	}
 
-	// Non trivially copyable Option's do not allow the use of the copy
-	// operators
-	Option(const Option<T>& copy) = delete;
-	Option& operator=(const Option<T>& copy) = delete;
+	OP_ALWAYS_INLINE Option(const Option<T>& copy) { OP_UNIMPLEMENTED; }
 
-	// Move operators
+	OP_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
+		OP_UNIMPLEMENTED;
+		return *this;
+	}
+
 	OP_ALWAYS_INLINE Option(Option<T>&& move) noexcept : m_set(move.m_set) {
 		core::copy(m_data, move.m_data, sizeof(T));
 		move.m_set = false;
@@ -60,6 +68,14 @@ public:
 		return *this;
 	}
 
+	OP_ALWAYS_INLINE ~Option() {
+		if (m_set) {
+			auto* p = reinterpret_cast<T*>(&m_data[0]);
+			p->~T();
+			m_set = false;
+		}
+	}
+
 	OP_NO_DISCARD OP_ALWAYS_INLINE bool is_set() const { return m_set; }
 	OP_ALWAYS_INLINE operator bool() const { return is_set(); }
 
@@ -69,6 +85,15 @@ public:
 
 		auto* p = reinterpret_cast<T*>(&m_data[0]);
 		return op::move(*p);
+	}
+
+	OP_ALWAYS_INLINE T unwrap_or_default()
+		requires std::is_default_constructible_v<T>
+	{
+		if (is_set()) {
+			return unwrap();
+		}
+		return T{};
 	}
 
 	OP_ALWAYS_INLINE Option<T&> as_mut() {
@@ -89,27 +114,39 @@ public:
 		return Option<T const&>();
 	}
 
-	OP_ALWAYS_INLINE ~Option() {
-		if (m_set) {
-			auto* p = reinterpret_cast<T*>(&m_data[0]);
-			p->~T();
-			m_set = false;
-		}
-	}
-
 private:
 	bool m_set = false;
 	alignas(T) u8 m_data[sizeof(T)] = {};
 };
 
-template <typename T>
-class Option<T, std::enable_if_t<std::is_trivially_copyable_v<T>>> {
+template <TriviallyCopyable T>
+class Option<T> {
 public:
 	Option() = default;
 	OP_ALWAYS_INLINE constexpr Option(NullPtr) : m_set(false), m_data() {}
 	OP_ALWAYS_INLINE Option(const T& t) : m_set(true), m_data() {
 		auto* p = m_data;
 		new (p) T(t);
+	}
+
+	OP_ALWAYS_INLINE Option(const Option<T>& copy) {
+		core::copy(m_data, copy.m_data, sizeof(m_data));
+		m_set = copy.m_set;
+	}
+
+	OP_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
+		core::copy(m_data, copy.m_data, sizeof(m_data));
+		m_set = copy.m_set;
+
+		return *this;
+	}
+
+	OP_ALWAYS_INLINE ~Option() {
+		if (m_set) {
+			auto* p = reinterpret_cast<T*>(&m_data[0]);
+			p->~T();
+			m_set = false;
+		}
 	}
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE bool is_set() const { return m_set; }
@@ -142,25 +179,17 @@ public:
 		}
 	}
 
-	OP_ALWAYS_INLINE ~Option() {
-		if (m_set) {
-			auto* p = reinterpret_cast<T*>(&m_data[0]);
-			p->~T();
-			m_set = false;
-		}
-	}
-
 private:
 	bool m_set = false;
 	alignas(T) u8 m_data[sizeof(T)] = {};
 };
 
-template <typename T>
-class Option<T&> {
+template <Reference T>
+class Option<T> {
 public:
 	explicit Option() = default;
 	OP_ALWAYS_INLINE constexpr Option(NullPtr) : m_ptr(nullptr) {}
-	OP_ALWAYS_INLINE constexpr Option(T& t) : m_ptr(&t) {}
+	OP_ALWAYS_INLINE constexpr Option(T t) : m_ptr(&t) {}
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
 	OP_ALWAYS_INLINE operator bool() const { return is_set(); }
@@ -171,7 +200,7 @@ public:
 	}
 
 private:
-	T* m_ptr = nullptr;
+	std::remove_reference_t<T>* m_ptr = nullptr;
 };
 
 OP_CORE_NAMESPACE_END

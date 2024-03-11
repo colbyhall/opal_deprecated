@@ -57,7 +57,7 @@ Result<File, File::Error> File::open(const StringView& path, Flags flags) {
 		case ERROR_FILE_NOT_FOUND:
 			return Error::NotFound;
 		default:
-			break;
+			return Error::NotFound;
 		}
 	}
 
@@ -93,10 +93,7 @@ void File::set_eof() {
 }
 
 usize File::read(Slice<u8> buffer) {
-	OP_ASSERT(
-		(m_flags & Flags::Read) == Flags::Write,
-		"Can only read a file that has been open with File::Flags::Read"
-	);
+	OP_ASSERT((m_flags & Flags::Read) == Flags::Read, "Can only read a file that has been open with File::Flags::Read");
 
 	DWORD amount_read;
 	const bool ok = ::ReadFile(m_handle, buffer.begin(), (DWORD)buffer.len(), &amount_read, nullptr);
@@ -222,6 +219,30 @@ String cwd() {
 }
 
 #endif
+
+Result<Vector<u8>, File::Error> read_to_bytes(const StringView& path) {
+	using Flags = File::Flags;
+
+	// Open the file to read
+	auto result = File::open(path, Flags::Read);
+	if (!result.is_ok()) return result.unwrap_err();
+	File file = result.unwrap();
+
+	// Allocate a buffer that is the size of the file
+	const auto size = file.size();
+	Vector<u8> bytes;
+	bytes.reserve(size + 1);
+
+	// Fill out the array with zeroed data to read into
+	for (usize i = 0; i < size; ++i) {
+		bytes.push(0);
+	}
+
+	// Read the file into the buffer
+	file.read(Slice{ bytes.begin(), bytes.len() });
+
+	return op::move(bytes);
+}
 
 Result<String, File::Error> read_to_string(const StringView& path) {
 	using Flags = File::Flags;

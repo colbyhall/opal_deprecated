@@ -26,14 +26,18 @@ struct D3D12QueuedWork {
 		Shared<GraphicsCommandList>&& in_command_list
 	)
 		: fence(in_fence)
-		, command_list(op::forward<Shared<GraphicsCommandList>>(in_command_list)) {}
+		, command_list(op::forward<Shared<GraphicsCommandList>>(in_command_list))
+	{
+	}
 
 	OP_ALWAYS_INLINE D3D12QueuedWork(D3D12QueuedWork&& move) noexcept
 		: fence(move.fence)
-		, command_list(op::move(move.command_list)) {
+		, command_list(op::move(move.command_list))
+	{
 		move.fence.Reset();
 	}
-	OP_ALWAYS_INLINE D3D12QueuedWork& operator=(D3D12QueuedWork&& move) noexcept {
+	OP_ALWAYS_INLINE D3D12QueuedWork& operator=(D3D12QueuedWork&& move) noexcept
+	{
 		auto to_destroy = op::move(*this);
 		OP_UNUSED(to_destroy);
 

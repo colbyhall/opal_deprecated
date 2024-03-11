@@ -3,14 +3,18 @@
 OP_CORE_NAMESPACE_BEGIN
 
 template <typename Base>
-Unique<Base>::Unique(const Unique<Base>& copy) noexcept {
+Unique<Base>::Unique(const Unique<Base>& copy) noexcept
+	requires std::is_copy_constructible_v<Base>
+{
 	static_assert(!std::is_abstract_v<Base>, "Can ony perform copy with a concrete class");
 	void* ptr = core::malloc(core::Layout::single<Base>);
 	m_ptr = new (ptr) Base(*copy);
 }
 
 template <typename Base>
-Unique<Base>& Unique<Base>::operator=(const Unique<Base>& copy) noexcept {
+Unique<Base>& Unique<Base>::operator=(const Unique<Base>& copy) noexcept
+	requires std::is_copy_constructible_v<Base>
+{
 	static_assert(!std::is_abstract_v<Base>, "Can ony perform copy with a concrete class");
 	Unique<Base> to_destroy = core::move(*this);
 	OP_UNUSED(to_destroy);

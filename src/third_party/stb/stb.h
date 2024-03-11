@@ -9,4 +9,5 @@
 	OP_SUPPRESS_WARNINGS                                                                                               \
 	OP_MSVC_SUPPRESS_WARNING(4242)                                                                                     \
 	OP_MSVC_SUPPRESS_WARNING(4244)                                                                                     \
-	OP_MSVC_SUPPRESS_WARNING(5262)
+	OP_MSVC_SUPPRESS_WARNING(5262)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5039)

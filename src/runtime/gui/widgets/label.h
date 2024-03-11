@@ -7,7 +7,7 @@ OP_GUI_NAMESPACE_BEGIN
 
 class Label {
 public:
-	explicit Label(StringView text) : m_text(text) {}
+	explicit Label(StringView text) : m_text(text) { }
 
 	void render(Builder& builder);
 

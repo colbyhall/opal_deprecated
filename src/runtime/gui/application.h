@@ -22,7 +22,7 @@ class Builder;
  */
 class Application {
 public:
-	explicit Application(const gpu::Device& device) : m_device(device.to_shared()) {}
+	explicit Application(const gpu::Device& device) : m_device(device.to_shared()) { }
 
 	/**
 	 * Sets the minimum size the window can be resized to.
@@ -30,7 +30,8 @@ public:
 	 * @param size The minimum size the window can be resized to.
 	 * @return A reference to this object.
 	 */
-	OP_ALWAYS_INLINE Application& set_min_size(const Vector2<u32>& size) {
+	OP_ALWAYS_INLINE Application& set_min_size(const Vector2<u32>& size)
+	{
 		m_min_size = size;
 		return *this;
 	}
@@ -41,7 +42,8 @@ public:
 	 * @param size The maximum size the window can be resized to.
 	 * @return A reference to this object.
 	 */
-	OP_ALWAYS_INLINE Application& set_max_size(const Vector2<u32>& size) {
+	OP_ALWAYS_INLINE Application& set_max_size(const Vector2<u32>& size)
+	{
 		m_max_size = size;
 		return *this;
 	}
@@ -52,7 +54,8 @@ public:
 	 * @param size The size of the window.
 	 * @return A reference to this object.
 	 */
-	OP_ALWAYS_INLINE Application& set_size(const Vector2<u32>& size) {
+	OP_ALWAYS_INLINE Application& set_size(const Vector2<u32>& size)
+	{
 		m_size = size;
 		return *this;
 	}

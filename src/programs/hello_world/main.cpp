@@ -23,36 +23,38 @@ int main() {
 		world.spawn().add(game::Transform{}).add(game::Link{});
 	}
 
-	auto last_frame = Instant::now();
+	auto last_frame_start = Instant::now();
 	auto time = 0.f;
+	auto accum = 0.f;
+	auto frame_count = 0;
 
 	auto application = gui::Application(device);
 	application.set_size({ 1280, 720 });
 	application.run([&](auto& b) {
-		auto start_this_frame = Instant::now();
-		auto dt = start_this_frame.duration_since(last_frame).as_secs_f32();
-		last_frame = start_this_frame;
-
+		auto frame_start = Instant::now();
+		auto dt = frame_start.duration_since(last_frame_start).as_secs_f32();
+		last_frame_start = frame_start;
 		time += dt;
+		accum += dt;
+		if (accum >= 1.f) {
+			accum -= 1.f;
 
-		auto& canvas = b.canvas();
+			char buffer[1024];
+			snprintf(buffer, 1024, "FPS: %d\n", frame_count);
+			OutputDebugStringA(buffer);
 
-		const Vector2<f32> min = { 360.f + core::cos(time * 0.3f) * 360.f,
-								   128.f + core::abs(core::sin(time * 2.f)) * 16.f };
-		const auto max = min + 128.f;
+			frame_count = 0;
+		}
 
-		canvas.push(gui::Rectangle(AABB2<f32>::from_min_max(min, max), LinearColor::green()));
+		frame_count += 1;
 
-		auto query = game::Query();
-		query.read(game::Transform::type()).read(game::Link::type());
-
-		auto accum = 0;
-		query.execute(world, [&](auto& view) {
-			auto& transform = view.read<game::Transform>();
-			OP_UNUSED(transform);
-			accum += 1;
-		});
-		OP_ASSERT(accum == 1024);
+		const auto size = core::cos(time) * 10.f + 20.f;
+		b.canvas().push(gui::Text(
+			AABB2<f32>::from_min_max(0.f, { 1280, 720 }),
+			String::from("Hello, World!\nWhat is up."),
+			size,
+			LinearColor::green()
+		));
 	});
 
 	return 0;

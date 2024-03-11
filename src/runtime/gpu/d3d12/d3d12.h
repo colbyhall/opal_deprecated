@@ -40,7 +40,8 @@ OP_GPU_NAMESPACE_BEGIN
 
 // From DXSampleHelper.h
 // Source: https://github.com/Microsoft/DirectX-Graphics-Samples
-OP_ALWAYS_INLINE void throw_if_failed(HRESULT hr) {
+OP_ALWAYS_INLINE void throw_if_failed(HRESULT hr)
+{
 	if (FAILED(hr)) {
 		OP_PANIC("D3D12 Crash");
 	}

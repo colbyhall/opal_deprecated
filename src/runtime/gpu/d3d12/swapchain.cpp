@@ -6,7 +6,8 @@
 
 OP_GPU_NAMESPACE_BEGIN
 
-D3D12Swapchain::D3D12Swapchain(const D3D12Device& device, void* window_handle) : m_device(device.to_shared()) {
+D3D12Swapchain::D3D12Swapchain(const D3D12Device& device, void* window_handle) : m_device(device.to_shared())
+{
 	OP_ASSERT(window_handle != nullptr);
 
 	m_hwnd = (HWND)window_handle;
@@ -59,7 +60,8 @@ D3D12Swapchain::D3D12Swapchain(const D3D12Device& device, void* window_handle) :
 
 const Texture& D3D12Swapchain::backbuffer() const { return *m_backbuffers[m_current]; }
 
-void D3D12Swapchain::present() {
+void D3D12Swapchain::present()
+{
 	throw_if_failed(m_swapchain->Present(1, 0));
 	wait_for_previous();
 
@@ -67,7 +69,8 @@ void D3D12Swapchain::present() {
 	device.command_allocator()->Reset();
 }
 
-void D3D12Swapchain::wait_for_previous() {
+void D3D12Swapchain::wait_for_previous()
+{
 	auto& device = static_cast<D3D12Device&>(*m_device);
 
 	const auto fence_value = m_fence_value;
@@ -85,7 +88,8 @@ void D3D12Swapchain::wait_for_previous() {
 	m_current = (u8)m_swapchain->GetCurrentBackBufferIndex();
 }
 
-void D3D12Swapchain::resize() {
+void D3D12Swapchain::resize()
+{
 	m_backbuffers.reset();
 
 	RECT rect;

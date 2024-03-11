@@ -10,7 +10,8 @@
 
 OP_GPU_NAMESPACE_BEGIN
 
-static D3D12_BLEND convert_blend_factor(BlendFactor factor) {
+static D3D12_BLEND convert_blend_factor(BlendFactor factor)
+{
 	switch (factor) {
 	case BlendFactor::Zero:
 		return D3D12_BLEND_ZERO;
@@ -32,7 +33,8 @@ static D3D12_BLEND convert_blend_factor(BlendFactor factor) {
 	return D3D12_BLEND_ZERO;
 }
 
-static D3D12_BLEND_OP convert_blend_op(BlendOp op) {
+static D3D12_BLEND_OP convert_blend_op(BlendOp op)
+{
 	switch (op) {
 	case BlendOp::Add:
 		return D3D12_BLEND_OP_ADD;
@@ -48,7 +50,8 @@ static D3D12_BLEND_OP convert_blend_op(BlendOp op) {
 	return D3D12_BLEND_OP_ADD;
 }
 
-Shared<Device> D3D12Device::make() {
+Shared<Device> D3D12Device::make()
+{
 	auto result = Shared<D3D12Device>::make();
 
 	// Initialize null resources used to fill empty bindless slots
@@ -57,7 +60,8 @@ Shared<Device> D3D12Device::make() {
 	return result;
 }
 
-D3D12Device::D3D12Device() {
+D3D12Device::D3D12Device()
+{
 	m_d3d12 = core::Library::open("d3d12.dll");
 	auto& d3d12 = m_d3d12.as_mut().unwrap();
 
@@ -96,9 +100,9 @@ D3D12Device::D3D12Device() {
 			// Check to see if the adapter can create a D3D12 device without
 			// actually creating it. The adapter with the largest dedicated
 			// video memory is favored.
-			if ((dxgiAdapterDesc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0 &&
-				SUCCEEDED((m_create_device)(adapter1.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr)) &&
-				dxgiAdapterDesc1.DedicatedVideoMemory > max_dedicated_video_memory) {
+			if ((dxgiAdapterDesc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0
+				&& SUCCEEDED((m_create_device)(adapter1.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr))
+				&& dxgiAdapterDesc1.DedicatedVideoMemory > max_dedicated_video_memory) {
 				max_dedicated_video_memory = dxgiAdapterDesc1.DedicatedVideoMemory;
 				throw_if_failed(adapter1.As(&adapter4));
 			}
@@ -172,11 +176,13 @@ D3D12Device::D3D12Device() {
 	m_root_signature.init(*this);
 }
 
-Unique<Swapchain> D3D12Device::create_swapchain(void* handle) const {
+Unique<Swapchain> D3D12Device::create_swapchain(void* handle) const
+{
 	return Unique<D3D12Swapchain>::make(*this, handle);
 }
 
-Shared<Buffer> D3D12Device::create_buffer(BufferUsage usage, Heap kind, usize size) const {
+Shared<Buffer> D3D12Device::create_buffer(BufferUsage usage, Heap kind, usize size) const
+{
 	D3D12_HEAP_PROPERTIES heap = {};
 	switch (kind) {
 	case Heap::Storage:
@@ -218,11 +224,13 @@ Shared<Buffer> D3D12Device::create_buffer(BufferUsage usage, Heap kind, usize si
 	return Shared<D3D12Buffer>::make(usage, kind, size, op::move(resource));
 }
 
-Shared<Texture> D3D12Device::create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const {
+Shared<Texture> D3D12Device::create_texture(TextureUsage usage, Format format, const Vector3<u32>& size) const
+{
 	return Shared<D3D12Texture>::make(*this, usage, format, size);
 }
 
-Shared<GraphicsCommandList> D3D12Device::record_graphics(FunctionRef<void(GraphicsCommandRecorder&)> callable) const {
+Shared<GraphicsCommandList> D3D12Device::record_graphics(FunctionRef<void(GraphicsCommandRecorder&)> callable) const
+{
 	ComPtr<ID3D12GraphicsCommandList> command_list;
 	throw_if_failed(m_device->CreateCommandList(
 		0,
@@ -253,7 +261,8 @@ Shared<GraphicsCommandList> D3D12Device::record_graphics(FunctionRef<void(Graphi
 	return result;
 }
 
-Shared<GraphicsPipeline> D3D12Device::create_graphics_pipeline(GraphicsPipelineDefinition&& definition) const {
+Shared<GraphicsPipeline> D3D12Device::create_graphics_pipeline(GraphicsPipelineDefinition&& definition) const
+{
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
 	desc.pRootSignature = m_root_signature.the().Get();
 
@@ -404,18 +413,21 @@ Shared<GraphicsPipeline> D3D12Device::create_graphics_pipeline(GraphicsPipelineD
 }
 
 Shared<VertexShader>
-D3D12Device::create_vertex_shader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) const {
+D3D12Device::create_vertex_shader(Vector<u8>&& binary, Vector<InputParameter>&& input_parameters) const
+{
 	return Shared<D3D12VertexShader>::make(
 		op::forward<Vector<u8>>(binary),
 		op::forward<Vector<InputParameter>>(input_parameters)
 	);
 }
 
-Shared<PixelShader> D3D12Device::create_pixel_shader(Vector<u8>&& binary) const {
+Shared<PixelShader> D3D12Device::create_pixel_shader(Vector<u8>&& binary) const
+{
 	return Shared<D3D12PixelShader>::make(op::forward<Vector<u8>>(binary));
 }
 
-void D3D12Device::submit(const GraphicsCommandList& command_list) const {
+void D3D12Device::submit(const GraphicsCommandList& command_list) const
+{
 	auto& casted_command_list = static_cast<const D3D12GraphicsCommandList&>(command_list);
 	ID3D12CommandList* ppCommandLists[] = { casted_command_list.command_list.Get() };
 	m_queue->ExecuteCommandLists(1, ppCommandLists);
@@ -429,7 +441,8 @@ void D3D12Device::submit(const GraphicsCommandList& command_list) const {
 	m_queued_work.push(D3D12QueuedWork(fence, command_list.to_shared()));
 }
 
-void D3D12Device::flush_queue() const {
+void D3D12Device::flush_queue() const
+{
 	for (i32 i = static_cast<i32>(m_queued_work.len()) - 1; i >= 0; --i) {
 		const auto value = m_queued_work[i].fence->GetCompletedValue();
 

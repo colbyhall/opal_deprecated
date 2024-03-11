@@ -11,7 +11,7 @@ OP_CORE_NAMESPACE_BEGIN
  *
  * @tparam T A numeric type.
  */
-template <typename T>
+template <Number T>
 class AABB2 {
 public:
 	AABB2() = default;

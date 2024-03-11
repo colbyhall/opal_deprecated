@@ -2,11 +2,13 @@
 
 #include "gui/application.h"
 #include "gui/builder.h"
+#include "gui/draw/font.h"
 
 #include "core/containers/shared.h"
 #include "core/containers/string_view.h"
 #include "core/containers/wstring.h"
 #include "core/math/matrix4.h"
+#include "core/os/file_system.h"
 
 #include "dxc/dxc.h"
 #include "gpu/buffer.h"
@@ -266,10 +268,11 @@ float4 ps_main(PSInput input) : SV_TARGET {
 	if (true) { // if (in_scissor) {
 		float4 output = input.color;
 
-		if (input.tex2d != 0) {
-			float alpha = texture2d_table[input.tex2d].Sample(sampler_table, input.uv, 0).x;
-			output.w = alpha;
+		if (input.tex2d == 0) {
+			return input.color;
 		}
+		float dist_alpha_mask = texture2d_table[input.tex2d].Sample(sampler_table, input.uv, 0).x;
+		output.w *= smoothstep(0.65, 0.7, dist_alpha_mask);
 
 		return output;
 	}
@@ -306,6 +309,9 @@ void Application::run(FunctionRef<void(Builder&)> callable) {
 	definition.color_attachments.push(gpu::Format::RGBA_U8);
 	auto pipeline = m_device->create_graphics_pipeline(op::move(definition));
 
+	auto consola_ttf = core::read_to_bytes("../res/consola.ttf").unwrap();
+	auto consola = Font::from_bytes(device, op::move(consola_ttf)).unwrap();
+
 	window->set_visible(true);
 	while (true) {
 		// Poll the OS for window events. This is required for the window to be responsive.
@@ -321,7 +327,7 @@ void Application::run(FunctionRef<void(Builder&)> callable) {
 			break;
 		}
 
-		auto builder = Builder();
+		auto builder = Builder(consola);
 		callable(builder);
 
 		auto command_list = device.record_graphics([&](auto& gcr) {
@@ -365,7 +371,7 @@ void Application::run(FunctionRef<void(Builder&)> callable) {
 							// Use the graphics pipeline created earlier
 							.set_pipeline(pipeline)
 							// Clear the screen to black
-							.clear_color(LinearColor::white());
+							.clear_color(LinearColor::black());
 
 						rpr
 							// Use the newly created vertex and index buffers
@@ -373,8 +379,6 @@ void Application::run(FunctionRef<void(Builder&)> callable) {
 							.set_indices(index_buffer, sizeof(TessellatedCanvas::Index))
 							// Draw the mesh
 							.draw_index(mesh.indices.len(), 0);
-
-						// COLBY!!!! Need to upload the vertex and index buffer and then draw the mesh
 					}
 				)
 				.texture_barrier(backbuffer, gpu::Layout::ColorAttachment, gpu::Layout::Present);

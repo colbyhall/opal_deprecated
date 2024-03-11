@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "core/concepts.h"
 #include "core/containers/option.h"
 #include "core/containers/slice.h"
 
@@ -12,11 +13,9 @@ OP_CORE_NAMESPACE_BEGIN
  *
  * @tparam Element The type of element to store in the vector.
  */
-template <typename Element>
+template <Copyable Element>
 class Vector {
 public:
-	static_assert(std::is_nothrow_move_constructible_v<Element> && std::is_nothrow_move_assignable_v<Element>);
-
 	Vector() = default;
 
 	/**
@@ -52,8 +51,14 @@ public:
 	OP_ALWAYS_INLINE Element& operator[](usize index);
 	OP_ALWAYS_INLINE const Element& operator[](usize index) const;
 
-	OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element&> last();
-	OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element const&> last() const;
+	OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element&> last() {
+		if (len() > 0) return m_ptr[len() - 1];
+		return nullopt;
+	}
+	OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element const&> last() const {
+		if (len() > 0) return m_ptr[len() - 1];
+		return nullopt;
+	}
 
 	OP_ALWAYS_INLINE void reserve(usize amount);
 

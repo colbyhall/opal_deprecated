@@ -6,7 +6,7 @@
 
 OP_CORE_NAMESPACE_BEGIN
 
-template <typename T>
+template <Number T>
 struct Quaternion {
 	T i, j, k, w;
 

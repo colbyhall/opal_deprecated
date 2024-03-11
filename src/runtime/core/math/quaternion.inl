@@ -2,10 +2,10 @@
 
 OP_CORE_NAMESPACE_BEGIN
 
-template <typename T>
+template <Number T>
 const Quaternion<T> Quaternion<T>::identity = {};
 
-template <typename T>
+template <Number T>
 Quaternion<T> Quaternion<T>::from_axis_angle(const Vector3<T>& axis, T theta) {
 	const auto half_theta = theta / (T)2;
 	const auto s = core::sin(half_theta);
@@ -13,7 +13,7 @@ Quaternion<T> Quaternion<T>::from_axis_angle(const Vector3<T>& axis, T theta) {
 	return Quaternion{ s * axis.x, s * axis.y, s * axis.z, c };
 }
 
-template <typename T>
+template <Number T>
 Quaternion<T> Quaternion<T>::from_euler(T pitch, T yaw, T roll) {
 	const auto rads_div_by_2 = core::deg_to_rad<T> / (T)2;
 
@@ -36,21 +36,21 @@ Quaternion<T> Quaternion<T>::from_euler(T pitch, T yaw, T roll) {
 					   cr * cp * cy + sr * sp * sy };
 }
 
-template <typename T>
+template <Number T>
 Option<Quaternion<T>> Quaternion<T>::normalized() const {
 	if (is_near_zero()) return Option<Quaternion>{};
 	const auto inverse = (T)1 / len();
 	return Quaternion{ i * inverse, j * inverse, k * inverse, w * inverse };
 }
 
-template <typename T>
+template <Number T>
 Vector3<T> Quaternion<T>::rotate(const Vector3<T>& xyz) const {
 	const Vector3<T> this_xyz = { i, j, k };
 	const auto t = this_xyz.cross(xyz) * (T)2;
 	return xyz + (t * w) + this_xyz.cross(t);
 }
 
-template <typename T>
+template <Number T>
 Quaternion<T> Quaternion<T>::operator*(const Quaternion<T>& rhs) const {
 	const auto result = Quaternion<T>{ (((w * rhs.i) + (i * rhs.w)) + (j * rhs.k)) - (k * rhs.j),
 									   (((w * rhs.j) + (j * rhs.w)) + (k * rhs.i)) - (i * rhs.k),

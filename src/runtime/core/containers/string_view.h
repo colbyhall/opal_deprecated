@@ -75,6 +75,7 @@ OP_CORE_NAMESPACE_END
 
 // Export to op namespace
 OP_NAMESPACE_BEGIN
+using core::Char;
 using core::CharsIterator;
 using core::StringView;
 OP_NAMESPACE_END

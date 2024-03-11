@@ -15,8 +15,10 @@ public:
 		return Unique<Base>(Base(forward<Args>(args)...));
 	}
 
-	Unique(const Unique<Base>& copy) noexcept;
-	Unique& operator=(const Unique<Base>& copy) noexcept;
+	Unique(const Unique<Base>& copy) noexcept
+		requires std::is_copy_constructible_v<Base>;
+	Unique& operator=(const Unique<Base>& copy) noexcept
+		requires std::is_copy_constructible_v<Base>;
 	template <typename Derived = Base>
 	Unique(Unique<Derived>&& move) noexcept : m_ptr(move.m_ptr) {
 		static_assert(std::is_base_of_v<Base, Derived>, "Base is not a base of Derived");

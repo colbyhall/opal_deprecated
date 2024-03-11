@@ -9,6 +9,8 @@
 
 OP_GUI_NAMESPACE_BEGIN
 
+class Font;
+
 struct Rectangle {
 	AABB2<f32> bounds;
 	LinearColor color;
@@ -16,6 +18,7 @@ struct Rectangle {
 struct Text {
 	AABB2<f32> bounds;
 	String text;
+	f32 size;
 	LinearColor color;
 };
 
@@ -35,7 +38,7 @@ struct TessellatedCanvas {
 
 class Canvas {
 public:
-	explicit Canvas() = default;
+	explicit Canvas(const Font& font) : m_font(font) {}
 
 	Canvas& push(Rectangle&& rectangle);
 	Canvas& push(Text&& text);
@@ -48,6 +51,8 @@ public:
 	TessellatedCanvas tessellate() const;
 
 private:
+	const Font& m_font;
+
 	enum class Shape { Rectangle, Text };
 	Vector<Rectangle> m_rectangles;
 	Vector<Text> m_texts;

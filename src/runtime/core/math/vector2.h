@@ -12,7 +12,7 @@ OP_CORE_NAMESPACE_BEGIN
  *
  * @tparam T A numeric type.
  */
-template <typename T>
+template <Number T>
 struct Vector2 {
 	union {
 		struct {

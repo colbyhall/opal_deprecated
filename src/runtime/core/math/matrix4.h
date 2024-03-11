@@ -7,7 +7,7 @@
 
 OP_CORE_NAMESPACE_BEGIN
 
-template <typename T>
+template <Number T>
 struct alignas(16) Matrix4 {
 	union {
 		struct {

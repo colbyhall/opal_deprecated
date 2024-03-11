@@ -14,6 +14,7 @@ public:
 class Bar : public Foo {
 public:
 	Bar() = default;
+	Bar(const Bar&) {}
 	int get_value() const override { return 100; }
 };
 

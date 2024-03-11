@@ -48,6 +48,7 @@ private:
 };
 OP_ENUM_CLASS_BITFIELD(File::Flags)
 
+Result<Vector<u8>, File::Error> read_to_bytes(const StringView& path);
 Result<String, File::Error> read_to_string(const StringView& path);
 
 struct DirectoryItem {

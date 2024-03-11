@@ -4,7 +4,8 @@
 
 OP_GPU_NAMESPACE_BEGIN
 
-usize format_size_in_bytes(Format format) {
+usize format_size_in_bytes(Format format)
+{
 	switch (format) {
 	case Format::R_U8:
 		return 1;

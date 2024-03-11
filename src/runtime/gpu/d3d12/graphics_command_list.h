@@ -12,7 +12,9 @@ OP_GPU_NAMESPACE_BEGIN
 class D3D12GraphicsCommandList final : public GraphicsCommandList {
 public:
 	explicit D3D12GraphicsCommandList(const ComPtr<ID3D12GraphicsCommandList>& in_command_list)
-		: command_list(in_command_list) {}
+		: command_list(in_command_list)
+	{
+	}
 
 	ComPtr<ID3D12GraphicsCommandList> command_list;
 
@@ -25,7 +27,7 @@ public:
 
 class D3D12GraphicsCommandRecorderImpl final : public GraphicsCommandRecorder {
 public:
-	explicit D3D12GraphicsCommandRecorderImpl(D3D12GraphicsCommandList& command_list) : m_command_list(command_list) {}
+	explicit D3D12GraphicsCommandRecorderImpl(D3D12GraphicsCommandList& command_list) : m_command_list(command_list) { }
 
 	// GraphicsCommandRecorder
 	GraphicsCommandRecorder& copy_buffer_to_texture(const Texture& dst, const Buffer& src) final;
@@ -45,7 +47,7 @@ private:
 
 class D3D12RenderPassRecorderImpl final : public RenderPassCommandRecorder {
 public:
-	explicit D3D12RenderPassRecorderImpl(D3D12GraphicsCommandList& command_list) : m_command_list(command_list) {}
+	explicit D3D12RenderPassRecorderImpl(D3D12GraphicsCommandList& command_list) : m_command_list(command_list) { }
 
 	// GraphicsCommandRecorder
 	RenderPassCommandRecorder& clear_color(const LinearColor& color) final;

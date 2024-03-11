@@ -9,7 +9,8 @@
 
 OP_GPU_NAMESPACE_BEGIN
 
-static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
+static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout)
+{
 	D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON;
 
 	OP_SUPPRESS_WARNING_PUSH
@@ -36,8 +37,8 @@ static D3D12_RESOURCE_STATES layout_to_resource_states(Layout layout) {
 	return state;
 }
 
-GraphicsCommandRecorder&
-D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const Texture& dst, const Buffer& src) {
+GraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const Texture& dst, const Buffer& src)
+{
 	const auto& dst_interface = static_cast<const D3D12Texture&>(dst);
 	D3D12_TEXTURE_COPY_LOCATION dst_location = {};
 	dst_location.pResource = dst_interface.resource().Get();
@@ -51,8 +52,8 @@ D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const Texture& dst, con
 	src_location.PlacedFootprint.Footprint.Width = dst_interface.size().x;
 	src_location.PlacedFootprint.Footprint.Height = dst_interface.size().y;
 	src_location.PlacedFootprint.Footprint.Depth = dst_interface.size().z;
-	src_location.PlacedFootprint.Footprint.RowPitch =
-		(UINT)(format_size_in_bytes(dst_interface.format()) * dst_interface.size().x);
+	src_location.PlacedFootprint.Footprint.RowPitch
+		= (UINT)(format_size_in_bytes(dst_interface.format()) * dst_interface.size().x);
 
 	m_command_list.command_list->CopyTextureRegion(&dst_location, 0, 0, 0, &src_location, nullptr);
 
@@ -63,7 +64,8 @@ D3D12GraphicsCommandRecorderImpl::copy_buffer_to_texture(const Texture& dst, con
 }
 
 GraphicsCommandRecorder&
-D3D12GraphicsCommandRecorderImpl::texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout) {
+D3D12GraphicsCommandRecorderImpl::texture_barrier(const Texture& texture, Layout old_layout, Layout new_layout)
+{
 	const auto& impl = static_cast<const D3D12Texture&>(texture);
 
 	D3D12_RESOURCE_BARRIER barrier = {};
@@ -83,7 +85,8 @@ GraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
 	const Texture& color,
 	Option<Texture const&> depth,
 	FunctionRef<void(RenderPassCommandRecorder&)> callable
-) {
+)
+{
 	m_command_list.textures_in_use.push(color.to_shared());
 
 	const D3D12_CPU_DESCRIPTOR_HANDLE* depth_handle = nullptr;
@@ -130,7 +133,8 @@ GraphicsCommandRecorder& D3D12GraphicsCommandRecorderImpl::render_pass(
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const LinearColor& color) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const LinearColor& color)
+{
 	const auto handle = m_command_list.bound_color_buffer.as_ref().unwrap();
 	const f32 clear_color0[] = { color.r, color.g, color.g, color.a };
 	m_command_list.command_list->ClearRenderTargetView(handle, clear_color0, 0, nullptr);
@@ -138,7 +142,8 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::clear_color(const Linear
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const GraphicsPipeline& pipeline) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const GraphicsPipeline& pipeline)
+{
 	auto& impl = static_cast<const D3D12GraphicsPipeline&>(pipeline);
 
 	m_command_list.command_list->SetPipelineState(impl.the().Get());
@@ -147,7 +152,8 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_pipeline(const Graph
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffer& buffer, u32 stride) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffer& buffer, u32 stride)
+{
 	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
 	OP_ASSERT(impl.size() % stride == 0);
@@ -163,7 +169,8 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_vertices(const Buffe
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer& buffer, u32 stride) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer& buffer, u32 stride)
+{
 	auto& impl = static_cast<const D3D12Buffer&>(buffer);
 
 	OP_ASSERT(impl.size() % sizeof(u32) == 0);
@@ -192,19 +199,22 @@ RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::set_indices(const Buffer
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::push_constants(const void* ptr) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::push_constants(const void* ptr)
+{
 	m_command_list.command_list->SetGraphicsRoot32BitConstants(0, 16, ptr, 0);
 
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw(usize vertex_count, usize first_vertex) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw(usize vertex_count, usize first_vertex)
+{
 	m_command_list.command_list->DrawInstanced((UINT)vertex_count, 1, (UINT)first_vertex, 0);
 
 	return *this;
 }
 
-RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_count, usize first_index) {
+RenderPassCommandRecorder& D3D12RenderPassRecorderImpl::draw_index(usize index_count, usize first_index)
+{
 	m_command_list.command_list->DrawIndexedInstanced((UINT)index_count, 1, (UINT)first_index, 0, 0);
 
 	return *this;

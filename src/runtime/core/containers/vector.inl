@@ -4,7 +4,7 @@
 
 OP_CORE_NAMESPACE_BEGIN
 
-template <typename Element>
+template <Copyable Element>
 Vector<Element> Vector<Element>::from(Slice<const Element> slice) {
 	Vector<Element> result;
 
@@ -18,7 +18,7 @@ Vector<Element> Vector<Element>::from(Slice<const Element> slice) {
 	return result;
 }
 
-template <typename Element>
+template <Copyable Element>
 Vector<Element>::Vector(const Vector& copy) noexcept : m_len(copy.m_len) {
 	reserve(copy.m_cap);
 	for (usize i = 0; i < m_len; ++i) {
@@ -26,7 +26,7 @@ Vector<Element>::Vector(const Vector& copy) noexcept : m_len(copy.m_len) {
 	}
 }
 
-template <typename Element>
+template <Copyable Element>
 Vector<Element>& Vector<Element>::operator=(const Vector& copy) noexcept {
 	auto to_destroy = op::move(*this);
 	OP_UNUSED(to_destroy);
@@ -40,7 +40,7 @@ Vector<Element>& Vector<Element>::operator=(const Vector& copy) noexcept {
 	return *this;
 }
 
-template <typename Element>
+template <Copyable Element>
 Vector<Element>::Vector(Vector&& move) noexcept : m_ptr(move.m_ptr)
 												, m_len(move.m_len)
 												, m_cap(move.m_cap) {
@@ -49,7 +49,7 @@ Vector<Element>::Vector(Vector&& move) noexcept : m_ptr(move.m_ptr)
 	move.m_cap = 0;
 }
 
-template <typename Element>
+template <Copyable Element>
 Vector<Element>& Vector<Element>::operator=(Vector&& move) noexcept {
 	auto to_destroy = op::move(*this);
 	OP_UNUSED(to_destroy);
@@ -64,7 +64,7 @@ Vector<Element>& Vector<Element>::operator=(Vector&& move) noexcept {
 	return *this;
 }
 
-template <typename Element>
+template <Copyable Element>
 Vector<Element>::~Vector() {
 	for (usize i = 0; i < m_len; ++i) {
 		Element& item = m_ptr[i];
@@ -77,66 +77,54 @@ Vector<Element>::~Vector() {
 	}
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE bool Vector<Element>::is_valid_index(usize index) const {
 	return index < len();
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE Vector<Element>::operator Slice<Element>() {
 	return { m_ptr, m_len };
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE Vector<Element>::operator Slice<Element const>() const {
 	return { m_ptr, m_len };
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE Element* Vector<Element>::begin() {
 	return m_ptr;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE Element* Vector<Element>::end() {
 	return m_ptr + m_len;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE const Element* Vector<Element>::begin() const {
 	return m_ptr;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE const Element* Vector<Element>::end() const {
 	return m_ptr + m_len;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE Element& Vector<Element>::operator[](usize index) {
 	OP_ASSERT(is_valid_index(index), "Index out of bounds");
 	return m_ptr[index];
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE const Element& Vector<Element>::operator[](usize index) const {
 	OP_ASSERT(is_valid_index(index), "Index out of bounds");
 	return m_ptr[index];
 }
 
-template <typename Element>
-OP_ALWAYS_INLINE Option<Element&> Vector<Element>::last() {
-	if (len() > 0) return m_ptr[len() - 1];
-	return nullptr;
-}
-
-template <typename Element>
-OP_ALWAYS_INLINE Option<Element const&> Vector<Element>::last() const {
-	if (len() > 0) return m_ptr[len() - 1];
-	return nullptr;
-}
-
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE void Vector<Element>::reserve(usize amount) {
 	const auto desired = m_cap + amount;
 	const auto old_cap = m_cap;
@@ -154,7 +142,7 @@ OP_ALWAYS_INLINE void Vector<Element>::reserve(usize amount) {
 	}
 }
 
-template <typename Element>
+template <Copyable Element>
 void Vector<Element>::insert(usize index, Element&& item) {
 	OP_ASSERT(index <= m_len);
 	if (len() == cap()) reserve(1);
@@ -169,26 +157,26 @@ void Vector<Element>::insert(usize index, Element&& item) {
 	m_len += 1;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE void Vector<Element>::insert(usize index, const Element& item) {
 	Element copy = item;
 	insert(index, op::move(copy));
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE usize Vector<Element>::push(Element&& item) {
 	const auto index = len();
 	insert(index, op::move(item));
 	return index;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE usize Vector<Element>::push(const Element& item) {
 	Element copy = item;
 	return push(op::move(copy));
 }
 
-template <typename Element>
+template <Copyable Element>
 Element Vector<Element>::remove(usize index) {
 	OP_ASSERT(is_valid_index(index), "Index out of bounds");
 
@@ -211,7 +199,7 @@ Element Vector<Element>::remove(usize index) {
 	return result;
 }
 
-template <typename Element>
+template <Copyable Element>
 OP_ALWAYS_INLINE Option<Element> Vector<Element>::pop() {
 	if (m_len > 0) {
 		m_len -= 1;
@@ -220,7 +208,7 @@ OP_ALWAYS_INLINE Option<Element> Vector<Element>::pop() {
 	return nullptr;
 }
 
-template <typename Element>
+template <Copyable Element>
 void Vector<Element>::reset() {
 	const i32 count = static_cast<i32>(len());
 	for (i32 i = count - 1; i >= 0; i -= 1) {
