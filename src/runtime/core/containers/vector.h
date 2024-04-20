@@ -13,7 +13,7 @@ OP_CORE_NAMESPACE_BEGIN
  *
  * @tparam Element The type of element to store in the vector.
  */
-template <Copyable Element>
+template <Movable Element>
 class Vector {
 public:
 	Vector() = default;

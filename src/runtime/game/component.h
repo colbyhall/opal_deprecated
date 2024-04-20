@@ -12,7 +12,7 @@
 OP_GAME_NAMESPACE_BEGIN
 
 struct Component {
-	virtual ~Component() = default;
+	// virtual ~Component() {}
 };
 
 class Storage;

@@ -182,7 +182,8 @@
 	OP_MSVC_SUPPRESS_WARNING(5219)                                                                                     \
 	OP_MSVC_SUPPRESS_WARNING(4826)                                                                                     \
 	OP_MSVC_SUPPRESS_WARNING(5264)                                                                                     \
-	OP_MSVC_SUPPRESS_WARNING(4127)
+	OP_MSVC_SUPPRESS_WARNING(4127)                                                                                     \
+	OP_MSVC_SUPPRESS_WARNING(5267)
 
 // Begin the op namespace
 #define OP_NAMESPACE_BEGIN                                                                                             \

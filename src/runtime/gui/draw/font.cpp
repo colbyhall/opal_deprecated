@@ -13,6 +13,8 @@ OP_STB_SUPRESS_WARNINGS
 #include "stb/stb_truetype.h"
 OP_SUPPRESS_WARNING_POP
 
+#include "core/os/windows.h"
+
 OP_GUI_NAMESPACE_BEGIN
 
 Option<Font> Font::from_bytes(const gpu::Device& device, Vector<u8>&& bytes) {

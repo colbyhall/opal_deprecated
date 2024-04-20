@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "core/concepts.h"
 #include "core/os/memory.h"
-#include "core/type_traits.h"
 
 OP_CORE_NAMESPACE_BEGIN
 
@@ -11,6 +11,7 @@ template <typename Base>
 class Unique {
 public:
 	template <typename... Args>
+		requires std::is_constructible_v<Base, Args&&...> && Movable<Base>
 	static OP_ALWAYS_INLINE Unique make(Args&&... args) {
 		return Unique<Base>(Base(forward<Args>(args)...));
 	}

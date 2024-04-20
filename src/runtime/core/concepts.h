@@ -38,6 +38,9 @@ template <typename T>
 concept Copyable = std::copyable<T>;
 
 template <typename T>
+concept Movable = std::movable<T>;
+
+template <typename T>
 concept Reference = std::is_reference_v<T>;
 
 template <typename T>

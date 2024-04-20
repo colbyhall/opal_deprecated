@@ -6,7 +6,7 @@
 #include "core/containers/unique.h"
 #include "core/containers/vector.h"
 #include "core/math/vector3.h"
-#include "gpu/gpu.h"
+#include "gpu/shader.h"
 
 OP_GPU_NAMESPACE_BEGIN
 

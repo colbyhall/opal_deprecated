@@ -68,6 +68,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/hash.h
         ${CORE_ROOT}/hash.cpp
         ${CORE_ROOT}/initializer_list.h
+        ${CORE_ROOT}/interface.h
         ${CORE_ROOT}/non_copyable.h
         ${CORE_ROOT}/type_traits.h
 )

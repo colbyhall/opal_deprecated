@@ -49,12 +49,10 @@ int main() {
 		frame_count += 1;
 
 		const auto size = core::cos(time) * 10.f + 20.f;
-		b.canvas().push(gui::Text(
-			AABB2<f32>::from_min_max(0.f, { 1280, 720 }),
-			String::from("Hello, World!\nWhat is up."),
-			size,
-			LinearColor::green()
-		));
+		b.canvas().push(gui::Text{ .bounds = AABB2<f32>::from_min_max(0.f, { 1280, 720 }),
+								   .text = String::from("Hello, World!\nWhat is up."),
+								   .size = size,
+								   .color = LinearColor::green() });
 	});
 
 	return 0;

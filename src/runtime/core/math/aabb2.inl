@@ -4,7 +4,7 @@
 
 OP_CORE_NAMESPACE_BEGIN
 
-template <typename T>
+template <Number T>
 AABB2<T> AABB2<T>::from_center(const Vector2<T>& center, const Vector2<T>& half_size) {
 	OP_ASSERT(half_size.x >= 0 && half_size.y >= 0);
 
@@ -14,7 +14,7 @@ AABB2<T> AABB2<T>::from_center(const Vector2<T>& center, const Vector2<T>& half_
 	return result;
 }
 
-template <typename T>
+template <Number T>
 AABB2<T> AABB2<T>::from_min_max(const Vector2<T>& min, const Vector2<T>& max) {
 	const auto center = min + max * (T)0.5;
 	const auto half_size = (max - min) * (T)0.5;
@@ -25,7 +25,7 @@ AABB2<T> AABB2<T>::from_min_max(const Vector2<T>& min, const Vector2<T>& max) {
 	return result;
 }
 
-template <typename T>
+template <Number T>
 Option<AABB2<T>> AABB2<T>::overlaps(const AABB2<T>& other) const {
 	// Calculate the AABB resulting from the intersection of the two AABBs
 	const auto result_min = min().max(other.min());
@@ -39,7 +39,7 @@ Option<AABB2<T>> AABB2<T>::overlaps(const AABB2<T>& other) const {
 	return AABB2<T>::from_min_max(result_min, result_max);
 }
 
-template <typename T>
+template <Number T>
 bool AABB2<T>::encompasses(const Vector2<T>& point) const {
 	return min().max(point) == point && max().min(point) == point;
 }

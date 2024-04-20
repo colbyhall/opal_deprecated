@@ -2,17 +2,17 @@
 
 OP_CORE_NAMESPACE_BEGIN
 
-template <typename T>
+template <Number T>
 const Matrix4<T> Matrix4<T>::identity =
 	Matrix4<T>::from_columns({ 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 });
 
-template <typename T>
+template <Number T>
 constexpr Matrix4<T>
 Matrix4<T>::from_columns(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w) {
 	return { x, y, z, w };
 }
 
-template <typename T>
+template <Number T>
 constexpr Matrix4<T>
 Matrix4<T>::from_rows(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w) {
 	const Vector4<T> x_col = { x.x, y.x, z.x, w.x };
@@ -22,7 +22,7 @@ Matrix4<T>::from_rows(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>
 	return { x_col, y_col, z_col, w_col };
 }
 
-template <typename T>
+template <Number T>
 constexpr Matrix4<T> Matrix4<T>::orthographic(T width, T height, T near, T far) {
 	// 0 - 1 z clipping
 	auto result = Matrix4::identity;
@@ -35,7 +35,7 @@ constexpr Matrix4<T> Matrix4<T>::orthographic(T width, T height, T near, T far) 
 	return result;
 }
 
-template <typename T>
+template <Number T>
 Matrix4<T> Matrix4<T>::perspective(T fov, T aspect_ratio, T near, T far) {
 	const auto cotan = (T)1 / core::tan((fov * core::deg_to_rad) / (T)2);
 
@@ -52,7 +52,7 @@ Matrix4<T> Matrix4<T>::perspective(T fov, T aspect_ratio, T near, T far) {
 	return result;
 }
 
-template <typename T>
+template <Number T>
 Matrix4<T> Matrix4<T>::transform(const Vector3<T>& position, const Quaternion<T>& rotation, const Vector3<T>& scale) {
 	Matrix4 result;
 	result.x = { rotation.rotate(Vector3<T>::forward) * scale.x, 0 };
@@ -62,7 +62,7 @@ Matrix4<T> Matrix4<T>::transform(const Vector3<T>& position, const Quaternion<T>
 	return result;
 }
 
-template <typename T>
+template <Number T>
 Option<Matrix4<T>> Matrix4<T>::inverse() const {
 	Matrix4 result = {};
 	result.elements[0] = elements[5] * elements[10] * elements[15] - elements[5] * elements[11] * elements[14] -
@@ -143,7 +143,7 @@ Option<Matrix4<T>> Matrix4<T>::inverse() const {
 	return result;
 }
 
-template <typename T>
+template <Number T>
 Vector4<T> Matrix4<T>::row(usize index) const {
 	OP_ASSERT(index < 4);
 	switch (index) {
@@ -159,7 +159,7 @@ Vector4<T> Matrix4<T>::row(usize index) const {
 	return {};
 }
 
-template <typename T>
+template <Number T>
 Matrix4<T> Matrix4<T>::operator*(const Matrix4<T>& rhs) const {
 	Vector4<T> row_x = {};
 	const auto row0 = row(0);
@@ -192,7 +192,7 @@ Matrix4<T> Matrix4<T>::operator*(const Matrix4<T>& rhs) const {
 	return Matrix4::from_rows(row_x, row_y, row_z, row_w);
 }
 
-template <typename T>
+template <Number T>
 Vector4<T> Matrix4<T>::operator*(const Vector4<T>& rhs) const {
 	const auto x = row(0).dot(rhs);
 	const auto y = row(1).dot(rhs);
