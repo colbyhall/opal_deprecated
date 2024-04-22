@@ -27,37 +27,27 @@ if (("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUA
     # 64 bit architecture
     set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE "x64")
 
-    # Set general compiler flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /Zc:__cplusplus /Gm- /MP /nologo /diagnostics:classic /FC /fp:except- /Zc:inline")
+	# Set general compiler flags
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-exceptions -fno-rtti -fno-threadsafe-statics")
 
-    # Optionally generate debug symbols
-    if (GENERATE_DEBUG_SYMBOLS)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-    endif ()
+	# Optionally generate debug symbols
+	if (GENERATE_DEBUG_SYMBOLS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+	endif ()
 
-    # Enable warnings
-    if (ENABLE_ALL_WARNINGS)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
-    endif ()
+	# Enable warnings
+	if (ENABLE_ALL_WARNINGS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+	endif ()
 
-    # Remove any existing compiler flag that enables RTTI
-    string(REPLACE "/GR" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	# Set compiler flags for various configurations
+	set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+	set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+	set(CMAKE_CXX_FLAGS_DISTRIBUTION "-O2")
+	set(CMAKE_CXX_FLAGS_RELEASEASAN "-fsanitize=address -O0")
+	set(CMAKE_CXX_FLAGS_RELEASEUBSAN "-fsanitize=undefined,float-divide-by-zero -fno-sanitize-recover=all")
+	set(CMAKE_CXX_FLAGS_RELEASECOVERAGE "-fprofile-instr-generate -fcoverage-mapping")
 
-    # Set compiler flag for disabling RTTI
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
-
-    if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "ARM")
-        # On ARM the exception handling flag is missing which causes warnings
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
-    endif ()
-
-    # Set compiler flags for various configurations
-    set(CMAKE_CXX_FLAGS_DEBUG "/GS /Od /Ob0 /RTC1")
-    set(CMAKE_CXX_FLAGS_RELEASE "/GS- /Gy /O2 /Oi /Ot")
-    set(CMAKE_CXX_FLAGS_DISTRIBUTION "/GS- /Gy /O2 /Oi /Ot")
-    set(CMAKE_CXX_FLAGS_RELEASEASAN "-fsanitize=address /Od")
-    set(CMAKE_CXX_FLAGS_RELEASgjBSAN "-fsanitize=undefined,implicit-conversion,float-divide-by-zero,local-bounds -fno-sanitize-recover=all")
-    set(CMAKE_CXX_FLAGS_RELEASECOVERAGE "-fprofile-instr-generate -fcoverage-mapping")
 
     if (NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "ARM64") AND NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "ARM"))
         # On ARM, whole program optimization triggers an internal compiler error during code gen, so we don't turn it on
@@ -66,7 +56,7 @@ if (("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUA
     endif ()
 
     # Set linker flags
-    set(CMAKE_EXE_LINKER_FLAGS "/ignore:4221 /DEBUG:FASTLINK") # /SUBSYSTEM:WINDOWS
+    # set(CMAKE_EXE_LINKER_FLAGS "/ignore:4221 /DEBUG:FASTLINK") # /SUBSYSTEM:WINDOWS
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:fast") # Clang doesn't use fast math because it cannot be turned off inside a single compilation unit
@@ -77,7 +67,7 @@ if (("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" OR "${CMAKE_SYSTEM_NAME}" STREQUA
         set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "/LTCG")
 
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /showFilenames")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         set(CMAKE_CXX_FLAGS "-Qunused-arguments ${CMAKE_CXX_FLAGS}") # Clang emits warnings about unused arguments such as /MP and /GL
 
         set(CMAKE_EXE_LINKER_FLAGS_RELEASEASAN "/SUBSYSTEM:CONSOLE /LIBPATH:${CLANG_LIB_PATH} clang_rt.asan-x86_64.lib -wholearchive:clang_rt.asan-x86_64.lib clang_rt.asan_cxx-x86_64.lib -wholearchive:clang_rt.asan_cxx-x86_64.lib")

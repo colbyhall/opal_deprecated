@@ -71,6 +71,7 @@ struct RefStorage {
 	RefStorage& operator=(RefStorage&& s) noexcept {
 		m_ptr = s.m_ptr;
 		s.m_ptr = nullptr;
+		return *this;
 	}
 
 	// IStorage
@@ -108,6 +109,7 @@ struct UniqueStorage {
 	UniqueStorage& operator=(UniqueStorage&& s) noexcept {
 		m_ptr = s.m_ptr;
 		s.m_ptr = nullptr;
+		return *this;
 	}
 	~UniqueStorage() {
 		if (m_ptr) {

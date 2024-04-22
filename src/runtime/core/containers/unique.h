@@ -13,7 +13,7 @@ public:
 	template <typename... Args>
 		requires std::is_constructible_v<Base, Args&&...> && Movable<Base>
 	static OP_ALWAYS_INLINE Unique make(Args&&... args) {
-		return Unique<Base>(Base(forward<Args>(args)...));
+		return Unique<Base>(Base(std::forward<Args>(args)...));
 	}
 
 	Unique(const Unique<Base>& copy) noexcept

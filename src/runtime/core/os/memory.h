@@ -4,10 +4,6 @@
 
 #include "core/containers/non_null.h"
 
-OP_SUPPRESS_WARNINGS_STD_BEGIN
-#include <new>
-OP_SUPPRESS_WARNINGS_STD_END
-
 OP_CORE_NAMESPACE_BEGIN
 OP_MSVC_SUPPRESS_WARNING(4268)
 
@@ -16,7 +12,7 @@ struct Layout {
 	usize alignment;
 
 	template <typename T>
-	static constexpr Layout single = { sizeof(T), alignof(T) };
+	static const Layout single;
 
 	template <typename T>
 	static inline constexpr Layout array(usize len) {
@@ -24,12 +20,15 @@ struct Layout {
 	}
 };
 
+template <typename T>
+const Layout Layout::single = Layout{ sizeof(T), alignof(T) };
+
 NonNull<void> malloc(const Layout& layout);
 
 template <typename T>
 OP_ALWAYS_INLINE NonNull<T> malloc(usize len = 1) {
 	static_assert(std::is_trivial_v<T>, "Value must be a trivial type to malloc");
-	return op::core::malloc(Layout::array<T>(len)).as<T>();
+	return op::core::malloc(Layout::array<T>(len)).template as<T>();
 }
 
 NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout);

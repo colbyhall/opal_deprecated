@@ -88,6 +88,9 @@ OP_NO_DISCARD f64 sqrt(f64 x);
 OP_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
 OP_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
 
+OP_NO_DISCARD f32 powf(f32 x, f32 y);
+OP_NO_DISCARD f64 pow(f64 x, f64 y);
+
 template <Number T>
 OP_ALWAYS_INLINE T abs(T x) {
 	return x < 0 ? -x : x;

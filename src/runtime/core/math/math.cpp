@@ -1,6 +1,7 @@
 // Copyright Colby Hall. All Rights Reserved.
 
 #include "core/math/math.h"
+#include "math.h"
 
 OP_SUPPRESS_WARNINGS_STD_BEGIN
 #include <cmath>
@@ -34,5 +35,8 @@ f64 sqrt(f64 x) { return std::sqrt(x); }
 
 f32 fmod(f32 numerator, f32 denominator) { return std::fmod(numerator, denominator); }
 f64 fmod(f64 numerator, f64 denominator) { return std::fmod(numerator, denominator); }
+
+f32 powf(f32 x, f32 y) { return std::powf(x, y); }
+f64 pow(f64 x, f64 y) { return std::pow(x, y); }
 
 OP_CORE_NAMESPACE_END

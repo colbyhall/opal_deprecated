@@ -18,8 +18,6 @@ OP_MSVC_SUPPRESS_WARNING(5220)
 OP_MSVC_SUPPRESS_WARNING(4986)
 OP_MSVC_SUPPRESS_WARNING(4062)
 
-#include "core/os/windows.h"
-
 #include "dxc/inc/d3d12shader.h"
 #include "dxc/inc/dxcapi.h"
 
@@ -142,6 +140,8 @@ Result<Output, String> compile(const Input& input) {
 					break;
 				}
 				break;
+			default:
+				OP_UNREACHABLE;
 			}
 
 			gpu::InputParameter input_parameter = { param_desc.SemanticIndex, op::move(semantic_name), primitive };

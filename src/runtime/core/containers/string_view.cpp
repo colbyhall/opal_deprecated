@@ -42,10 +42,10 @@ i32 utf8_encode(u32 c, void* dest, u32* errors) {
 	char* p = (char*)dest;
 
 	char head = (char)(0xf0e0c000 >> (len << 3));
-	p[len] = 0x80 | c & 0x3f;
-	p[len >> 1] = 0x80 | c >> 12 & 0x3f;
-	p[1 << len >> 2] = 0x80 | c >> 6 & 0x3f;
-	p[0] = head | c >> len * 6 & ~head >> 1;
+	p[int(len)] = (char)(0x80 | (c & 0x3f));
+	p[int(len >> 1)] = (char)(0x80 | (c >> 12 & 0x3f));
+	p[int((1 << len) >> 2)] = (char)(0x80 | (c >> 6 & 0x3f));
+	p[0] = (char)(head | (c >> (len * 6) & ~(head >> 1)));
 	return len + 1;
 }
 

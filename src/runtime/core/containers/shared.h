@@ -4,7 +4,6 @@
 
 #include "core/atomic.h"
 #include "core/containers/option.h"
-#include "core/type_traits.h"
 
 OP_CORE_NAMESPACE_BEGIN
 
@@ -30,7 +29,7 @@ public:
 			Base base;
 		};
 
-		constexpr auto layout = core::Layout::single<Combined>;
+		const auto layout = core::Layout::single<Combined>;
 		Combined* ptr = new (core::malloc(layout)) Combined{ SharedCounter<Mode>(), Base(op::move(args)...) };
 
 		auto result = Shared(&ptr->counter, &ptr->base);
@@ -97,10 +96,10 @@ private:
 	Shared() = default;
 	explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
-	template <typename Derived, SMode Mode>
+	template <typename, SMode>
 	friend class Shared;
 
-	template <typename Derived, SMode Mode>
+	template <typename, SMode>
 	friend class Weak;
 
 	OP_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }

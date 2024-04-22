@@ -14,7 +14,7 @@ template <Number T>
 const Vector2<T> Vector2<T>::one = { 1 };
 
 template <Number T>
-const Vector2<T> Vector2<T>::infinite = { op::infinity };
+const Vector2<T> Vector2<T>::infinite = { op::infinity<T> };
 
 template <Number T>
 const Vector2<T> Vector2<T>::right = { 1, 0 };

@@ -31,6 +31,7 @@ public:
 	explicit EntityRef(EntityId id, World const& world) : m_id(id), m_world(world) {}
 
 	OP_NO_DISCARD OP_ALWAYS_INLINE EntityId id() const { return m_id; }
+	OP_NO_DISCARD OP_ALWAYS_INLINE const World& world() const { return m_world; }
 
 private:
 	EntityId m_id;
