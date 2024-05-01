@@ -17,6 +17,8 @@ OP_MSVC_SUPPRESS_WARNING(5220)
 OP_MSVC_SUPPRESS_WARNING(5220)
 OP_MSVC_SUPPRESS_WARNING(4986)
 OP_MSVC_SUPPRESS_WARNING(4062)
+OP_MSVC_SUPPRESS_WARNING(5039)
+OP_MSVC_SUPPRESS_WARNING(4668)
 
 #include "dxc/inc/d3d12shader.h"
 #include "dxc/inc/dxcapi.h"
@@ -74,8 +76,8 @@ Result<Output, String> compile(const Input& input) {
 	// args.push(DXC_ARG_PACK_MATRIX_ROW_MAJOR);
 
 	ComPtr<IDxcResult> result;
-	throw_if_failed(compiler->Compile(&source, &args[0], (u32)args.len(), nullptr, IID_PPV_ARGS(result.GetAddressOf()))
-	);
+	throw_if_failed(
+		compiler->Compile(&source, &args[0], (u32)args.len(), nullptr, IID_PPV_ARGS(result.GetAddressOf())));
 
 	if (result->HasOutput(DXC_OUT_ERRORS)) {
 		ComPtr<IDxcBlobUtf8> output;
@@ -140,11 +142,14 @@ Result<Output, String> compile(const Input& input) {
 					break;
 				}
 				break;
+			case D3D_REGISTER_COMPONENT_UNKNOWN:
 			default:
 				OP_UNREACHABLE;
 			}
 
-			gpu::InputParameter input_parameter = { param_desc.SemanticIndex, op::move(semantic_name), primitive };
+			auto input_parameter = gpu::InputParameter{ .semantic_index = param_desc.SemanticIndex,
+														.semantic_name = op::move(semantic_name),
+														.primitive = primitive };
 			shader_output.input_parameters.push(op::move(input_parameter));
 		}
 	}
